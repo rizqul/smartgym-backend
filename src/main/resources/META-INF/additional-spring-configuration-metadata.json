@@ -1,0 +1,57 @@
+{"properties": [
+  {
+    "name": "app.config.web-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.web-url'"
+  },
+  {
+    "name": "app.config.cors-origins",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.cors-origins'"
+  },
+  {
+    "name": "app.config.init-account",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.init-account'"
+  },
+  {
+    "name": "app.config.jwt-secret",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.jwt-secret'"
+  },
+  {
+    "name": "app.config.hmac-secret",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.hmac-secret'"
+  },
+  {
+    "name": "app.config.aws.s3.bucket",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.aws.s3.bucket'"
+  },
+  {
+    "name": "app.config.aws.s3.public-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.aws.s3.public-url'"
+  },
+  {
+    "name": "spring.cloud.aws.credentials.access-key",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.aws.credentials.access-key'"
+  },
+  {
+    "name": "spring.cloud.aws.credentials.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.aws.credentials.secret-key'"
+  },
+  {
+    "name": "spring.cloud.aws.s3.region",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.aws.s3.region'"
+  },
+  {
+    "name": "spring.cloud.aws.s3.endpoint",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.cloud.aws.s3.endpoint'"
+  }
+]}
