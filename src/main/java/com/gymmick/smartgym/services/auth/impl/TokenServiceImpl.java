@@ -1,0 +1,53 @@
+package com.gymmick.smartgym.services.auth.impl;
+
+import java.util.UUID;
+
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gymmick.smartgym.entity.*;
+import com.gymmick.smartgym.exceptions.*;
+import com.gymmick.smartgym.repositories.TokenRepository;
+import com.gymmick.smartgym.services.auth.TokenService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class TokenServiceImpl implements TokenService {
+
+    private final TokenRepository tokenRepository;
+
+    @Override
+    @Transactional
+    public void store(UUID id, UUID refreshId, User user) {
+        Token token = Token.builder()
+                .id(id)
+                .refreshId(refreshId)
+                .user(user)
+                .build();
+
+        tokenRepository.save(token);
+    }
+
+    @Override
+    @Transactional
+    public void update(Token token) {
+        tokenRepository.save(token);
+    }
+
+    @Override
+    @Cacheable(value = "token", key = "#id")
+    public Token findById(UUID id) {
+        return tokenRepository.findById(id)
+                .orElseThrow(() -> new AuthenticationDeniedException());
+    }
+
+    @Override
+    public Token findByRefreshId(UUID id) {
+        return tokenRepository.findByRefreshId(id)
+                .orElseThrow(() -> new BadRequestException("These JWT token was invalid."));
+    }
+}
