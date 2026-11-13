@@ -40,8 +40,8 @@ public class SecurityConfig {
     private final CustomAccessDeniedException customAccessDeniedException;
     private final CustomAuthenticationEntryPointException customAuthenticationEntryPointException;
 
-    @Value("${app.config.cors-origins}")
-    private String[] allowedOrigins;
+    @Value("${app.config.app-url}")
+    private String[] appUrl;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -68,7 +68,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedOrigins(Arrays.asList(appUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
