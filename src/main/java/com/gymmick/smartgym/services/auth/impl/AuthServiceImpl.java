@@ -152,8 +152,8 @@ public class AuthServiceImpl implements AuthService {
 
         Cookie accessToken = WebUtils.getCookie(request, "access-token");
 
-        if (accessToken == null) {
-            throw new AuthenticationDeniedException();
+        if (accessToken == null || accessToken.getValue().isEmpty()) {
+            return;
         }
 
         UUID tokenId = jwtToken.getTokenId(accessToken.getValue());
