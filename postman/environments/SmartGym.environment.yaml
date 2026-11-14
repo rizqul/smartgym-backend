@@ -6,3 +6,11 @@ values:
     value: admin@gymmick.my.id
   - key: adminPassword
     value: admin12345
+  - key: staffEmail
+    value: ''
+  - key: staffPassword
+    value: ''
+  - key: memberEmail
+    value: ''
+  - key: memberPassword
+    value: ''
