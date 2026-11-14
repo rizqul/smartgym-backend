@@ -1,5 +1,7 @@
 name: SmartGym
 values:
+  - key: apiUrl
+    value: ''
   - key: adminEmail
     value: ''
   - key: adminPassword
