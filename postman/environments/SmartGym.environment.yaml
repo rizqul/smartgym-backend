@@ -1,8 +1,8 @@
 name: SmartGym
 values:
   - key: apiUrl
-    value: ''
+    value: 'https://api.gymmick.my.id'
   - key: adminEmail
-    value: ''
+    value: admin@gymmick.my.id
   - key: adminPassword
-    value: ''
+    value: admin12345
