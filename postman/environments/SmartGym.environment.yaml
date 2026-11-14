@@ -1,0 +1,6 @@
+name: SmartGym
+values:
+  - key: adminEmail
+    value: ''
+  - key: adminPassword
+    value: ''

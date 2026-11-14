@@ -1,0 +1,9 @@
+$kind: http-request
+url: "{{apiUrl}}/user"
+method: GET
+headers:
+  Accept: application/json
+settings:
+  disabledSystemHeaders:
+    - accept
+order: 1000
