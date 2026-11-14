@@ -56,8 +56,6 @@ public class PaginationLinkBuilder {
 
     private static List<Integer> window(int current, int total) {
         List<Integer> result = new ArrayList<>();
-        System.out.println(current);
-        System.out.println(total);
 
         if (total <= 5) {
             IntStream.rangeClosed(1, total).forEach(result::add);

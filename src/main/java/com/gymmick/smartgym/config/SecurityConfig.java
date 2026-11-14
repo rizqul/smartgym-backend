@@ -3,8 +3,7 @@ package com.gymmick.smartgym.config;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -17,12 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.*;
 
-import com.gymmick.smartgym.exceptions.CustomAccessDeniedException;
-import com.gymmick.smartgym.exceptions.CustomAuthenticationEntryPointException;
+import com.gymmick.smartgym.entity.enums.UserRole;
+import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.middleware.JwtAuthMiddleware;
 import com.gymmick.smartgym.services.common.UserService;
 
@@ -52,6 +49,7 @@ public class SecurityConfig {
                         referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
