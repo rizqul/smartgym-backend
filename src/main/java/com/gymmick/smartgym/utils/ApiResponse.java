@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gymmick.smartgym.dto.pagination.PaginationMeta;
 
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class ApiResponse<T> {
     private Integer statusCode;
     private String message;
     private T data;
+    private PaginationMeta paginate;
 
     public static <T> ResponseEntity<ApiResponse<T>> success(HttpStatus status, String message) {
         ApiResponse<T> apiResponse = ApiResponse.<T>builder()
@@ -32,6 +34,17 @@ public class ApiResponse<T> {
                 .statusCode(status.value())
                 .message("OK")
                 .data(data)
+                .build();
+
+        return ResponseEntity.status(status.value()).body(apiResponse);
+    }
+
+    public static <T> ResponseEntity<ApiResponse<T>> success(HttpStatus status, T data, PaginationMeta paginate) {
+        ApiResponse<T> apiResponse = ApiResponse.<T>builder()
+                .statusCode(status.value())
+                .message("OK")
+                .data(data)
+                .paginate(paginate)
                 .build();
 
         return ResponseEntity.status(status.value()).body(apiResponse);
