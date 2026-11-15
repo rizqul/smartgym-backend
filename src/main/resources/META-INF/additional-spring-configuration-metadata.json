@@ -5,9 +5,9 @@
     "description": "A description for 'app.config.app-url'"
   },
   {
-    "name": "app.config.cors-origins",
+    "name": "app.config.cookie-domain",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.cors-origins'"
+    "description": "A description for 'app.config.cookie-domain'"
   },
   {
     "name": "app.config.init-account",
@@ -20,11 +20,6 @@
     "description": "A description for 'app.config.jwt-secret'"
   },
   {
-    "name": "app.config.hmac-secret",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.hmac-secret'"
-  },
-  {
     "name": "app.config.aws.s3.bucket",
     "type": "java.lang.String",
     "description": "A description for 'app.config.aws.s3.bucket'"
@@ -33,30 +28,5 @@
     "name": "app.config.aws.s3.public-url",
     "type": "java.lang.String",
     "description": "A description for 'app.config.aws.s3.public-url'"
-  },
-  {
-    "name": "spring.cloud.aws.credentials.access-key",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.cloud.aws.credentials.access-key'"
-  },
-  {
-    "name": "spring.cloud.aws.credentials.secret-key",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.cloud.aws.credentials.secret-key'"
-  },
-  {
-    "name": "spring.cloud.aws.s3.region",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.cloud.aws.s3.region'"
-  },
-  {
-    "name": "spring.cloud.aws.s3.endpoint",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.cloud.aws.s3.endpoint'"
-  },
-  {
-    "name": "app.config.cookie-domain",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.cookie-domain'"
   }
 ]}
