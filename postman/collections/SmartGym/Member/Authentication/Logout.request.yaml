@@ -1,0 +1,9 @@
+$kind: http-request
+url: "{{apiUrl}}/auth/logout"
+method: POST
+headers:
+  Accept: application/json
+settings:
+  disabledSystemHeaders:
+    - accept
+order: 4000

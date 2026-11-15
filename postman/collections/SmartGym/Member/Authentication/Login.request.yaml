@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{apiUrl}}/auth/login"
+method: POST
+headers:
+  Accept: application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\": \"{{memberEmail}}\",\r
+
+    \    \"password\": \"{{memberPassword}}\"\r
+
+    }"
+settings:
+  disabledSystemHeaders:
+    - accept
+order: 1000
