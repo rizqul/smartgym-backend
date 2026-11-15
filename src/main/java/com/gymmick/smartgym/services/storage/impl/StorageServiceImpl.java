@@ -54,4 +54,20 @@ public class StorageServiceImpl implements StorageService {
             throw new S3Exception("Gagal mengunggah berkas file!", e.getCause());
         }
     }
+
+    @Override
+    public void remove(String fileKey) {
+
+        try {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(storageBucket)
+                    .key(fileKey)
+                    .build();
+
+            s3Client.deleteObject(deleteObjectRequest);
+
+        } catch (Exception e) {
+            throw new S3Exception("Gagal menghapus berkas file!", e.getCause());
+        }
+    }
 }
