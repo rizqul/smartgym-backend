@@ -34,8 +34,11 @@ public class User extends TimeStamp implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String profileUrl;
+
+    @Column(nullable = true)
+    private String phoneNumber;
 
     @JsonIgnore
     @Column(nullable = false)

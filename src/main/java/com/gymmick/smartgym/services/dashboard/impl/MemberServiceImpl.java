@@ -1,23 +1,30 @@
 package com.gymmick.smartgym.services.dashboard.impl;
 
-import java.util.List;
+import java.time.*;
+import java.util.*;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
 import com.gymmick.smartgym.dto.common.UserResponse;
-import com.gymmick.smartgym.dto.dashboard.UserFilterRequest;
+import com.gymmick.smartgym.dto.dashboard.*;
 import com.gymmick.smartgym.dto.pagination.*;
-import com.gymmick.smartgym.entity.User;
-import com.gymmick.smartgym.entity.enums.UserRole;
+import com.gymmick.smartgym.entity.*;
+import com.gymmick.smartgym.entity.enums.*;
+import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.repositories.UserRepository;
+import com.gymmick.smartgym.services.auth.OtpService;
+import com.gymmick.smartgym.services.common.UserService;
 import com.gymmick.smartgym.services.dashboard.MemberService;
+import com.gymmick.smartgym.services.email.EmailService;
 import com.gymmick.smartgym.specification.UserSpecification;
+import com.gymmick.smartgym.utils.OtpToken;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +35,13 @@ public class MemberServiceImpl implements MemberService {
 
     private final UserRepository userRepository;
 
+    private final UserService userService;
+    private final OtpService otpService;
+    private final EmailService emailService;
+
     private final UserMapping userMapping;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public PaginationResponse<UserResponse> findAllMember(UserFilterRequest request) {
@@ -54,5 +67,44 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         return paginationResponse;
+    }
+
+    @Override
+    @Transactional
+    public void requestOtp(MemberOtpRequest request)
+            throws EmailSenderException {
+
+        String otpCode = OtpToken.generateOtp();
+
+        otpService.store(request.getEmail(), otpCode, OtpType.EMAIL_VERIFICATION, Duration.ofMinutes(10));
+
+        String emailTemplate = "email/auth/reset-password";
+        String emailSubject = "Verifikasi Email";
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("email", request.getEmail());
+        variables.put("code", otpCode);
+
+        emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
+    }
+
+    @Override
+    @Transactional
+    public void createMember(MemberCreateRequest request) {
+
+        Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+
+        if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
+            throw new BadRequestException("Kode Otp Tidak Valid!");
+        }
+
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .build();
+
+        userService.store(user);
     }
 }

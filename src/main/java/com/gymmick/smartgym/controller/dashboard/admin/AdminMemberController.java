@@ -6,11 +6,12 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.dto.common.UserResponse;
-import com.gymmick.smartgym.dto.dashboard.UserFilterRequest;
+import com.gymmick.smartgym.dto.dashboard.*;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.services.dashboard.MemberService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -26,4 +27,23 @@ public class AdminMemberController {
 
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
+
+    @PostMapping(path = "/otp")
+    public ResponseEntity<ApiResponse<String>> requestOtp(@Valid @RequestBody MemberOtpRequest request) {
+
+        memberService.requestOtp(request);
+
+        String message = "Berhasil Mengirimkan Otp!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<ApiResponse<String>> createMember(@Valid @RequestBody MemberCreateRequest request) {
+
+        memberService.createMember(request);
+
+        String message = "Berhasil Menambahkan Member!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
+
 }
