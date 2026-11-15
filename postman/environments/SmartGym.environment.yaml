@@ -14,3 +14,9 @@ values:
     value: ''
   - key: memberPassword
     value: ''
+  - key: memberName
+    value: ''
+  - key: memberCreateOtp
+    value: ''
+  - key: memberResetOtp
+    value: ''
