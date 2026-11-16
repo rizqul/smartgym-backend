@@ -99,7 +99,6 @@ public class AuthServiceImpl implements AuthService {
         Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
 
         if (!otp.getType().equals(OtpType.RESET_PASSWORD) || otp.getExpiredAt().isBefore(Instant.now())) {
-
             throw new BadRequestException("Kode Otp Tidak Valid!");
         }
 
