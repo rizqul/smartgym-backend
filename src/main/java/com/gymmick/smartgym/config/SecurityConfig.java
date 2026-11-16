@@ -49,6 +49,7 @@ public class SecurityConfig {
                         referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/midtrans/**").permitAll()
                         .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
