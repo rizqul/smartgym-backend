@@ -1,9 +1,11 @@
 {
   "info": {
-    "_postman_id": "a5c7f89d-2391-4d92-bb83-3e1104e5482e",
+    "_postman_id": "3d19d759-268b-4271-ad9b-fd1ffa080020",
     "name": "SmartGym",
     "description": "Postman Collection for SmartGym API generated from repository postman folder.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "11429476",
+    "_collection_link": "https://go.postman.co/collection/11429476-3d19d759-268b-4271-ad9b-fd1ffa080020?source=collection_link"
   },
   "item": [
     {
@@ -160,13 +162,23 @@
               "item": [
                 {
                   "name": "Member List",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"memberId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
                   "request": {
                     "method": "GET",
                     "header": [
                       {
                         "key": "Accept",
-                        "value": "application/json",
-                        "type": "text"
+                        "value": "application/json"
                       }
                     ],
                     "url": {
@@ -182,8 +194,7 @@
                       "query": [
                         {
                           "key": "size",
-                          "value": "10",
-                          "description": ""
+                          "value": "10"
                         }
                       ]
                     }
@@ -232,18 +243,27 @@
                 },
                 {
                   "name": "Create Member",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          ""
+                        ]
+                      }
+                    }
+                  ],
                   "request": {
                     "method": "POST",
                     "header": [
                       {
                         "key": "Accept",
-                        "value": "application/json",
-                        "type": "text"
+                        "value": "application/json"
                       },
                       {
                         "key": "Content-Type",
-                        "value": "application/json",
-                        "type": "text"
+                        "value": "application/json"
                       }
                     ],
                     "body": {
@@ -265,6 +285,44 @@
                         "dashboard",
                         "members",
                         "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Member",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/{{memberId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "{{memberId}}"
                       ]
                     }
                   },
