@@ -12,4 +12,6 @@ public interface MemberService {
     void requestOtp(MemberOtpRequest request) throws EmailSenderException;
 
     void createMember(MemberCreateRequest request);
+
+    void deleteMember(String id);
 }

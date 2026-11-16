@@ -108,6 +108,17 @@ public class MemberServiceImpl implements MemberService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
-        userService.store(user);
+        userService.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMember(String id) {
+
+        UUID userId = UUID.fromString(id);
+        User user = userService.findById(userId);
+
+        user.setDeletedAt(Instant.now());
+        userService.save(user);
     }
 }

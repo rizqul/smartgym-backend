@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userService.findByEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        userService.store(user);
+        userService.save(user);
     }
 
     @Override

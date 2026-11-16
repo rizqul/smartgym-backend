@@ -1,5 +1,7 @@
 package com.gymmick.smartgym.services.common.impl;
 
+import java.util.UUID;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void store(User user) {
-        userRepository.save(user);
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException());
     }
 
     @Override
@@ -41,5 +43,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public void save(User user) {
+        userRepository.save(user);
     }
 }
