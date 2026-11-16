@@ -28,5 +28,10 @@
     "name": "app.config.aws.s3.public-url",
     "type": "java.lang.String",
     "description": "A description for 'app.config.aws.s3.public-url'"
+  },
+  {
+    "name": "app.config.cookie-same-site",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.cookie-same-site'"
   }
 ]}

@@ -30,6 +30,9 @@ public class AuthController {
     @Value("${app.config.cookie-domain}")
     private String cookieDomain;
 
+    @Value("${app.config.cookie-same-site}")
+    private String cookieSameSite;
+
     @PostMapping(path = "/login")
     public ResponseEntity<ApiResponse<UserResponse>> login(@Valid @RequestBody LoginRequest loginRequest,
             HttpServletRequest request) {
@@ -98,7 +101,7 @@ public class AuthController {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(duration.toSeconds())
-                .sameSite("lax")
+                .sameSite(cookieSameSite)
                 .domain(cookieDomain)
                 .secure(request.isSecure())
                 .build()
