@@ -42,7 +42,7 @@ public class AccountInitializer implements ApplicationRunner {
                     .role(UserRole.ADMIN)
                     .build();
 
-            userService.store(user);
+            userService.save(user);
         }
 
     }
