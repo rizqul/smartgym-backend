@@ -33,17 +33,17 @@ public class AuthController {
     @Value("${app.config.cookie-same-site}")
     private String cookieSameSite;
 
+    @Value("${app.config.cookie-secure}")
+    private Boolean cookieSecure;
+
     @PostMapping(path = "/login")
-    public ResponseEntity<ApiResponse<UserResponse>> login(@Valid @RequestBody LoginRequest loginRequest,
-            HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         LoginResponse response = authService.login(loginRequest);
 
         List<String> cookies = new ArrayList<>();
-        cookies.add(createCookie(request, "access-token", response.getAccessToken(),
-                Duration.ofHours(1)));
-        cookies.add(createCookie(request, "refresh-token", response.getRefreshToken(),
-                Duration.ofDays(30)));
+        cookies.add(createCookie("access-token", response.getAccessToken(), Duration.ofHours(1)));
+        cookies.add(createCookie("refresh-token", response.getRefreshToken(), Duration.ofDays(30)));
 
         String message = "Login Berhasil!";
         return ApiResponse.success(HttpStatus.OK, message, response.getUser(), cookies);
@@ -75,10 +75,8 @@ public class AuthController {
         RefreshResponse response = authService.refresh(request);
 
         List<String> cookies = new ArrayList<>();
-        cookies.add(createCookie(request, "access-token", response.getAccessToken(),
-                Duration.ofHours(1)));
-        cookies.add(createCookie(request, "refresh-token", response.getRefreshToken(),
-                Duration.ofDays(30)));
+        cookies.add(createCookie("access-token", response.getAccessToken(), Duration.ofHours(1)));
+        cookies.add(createCookie("refresh-token", response.getRefreshToken(), Duration.ofDays(30)));
 
         return ApiResponse.success(HttpStatus.NO_CONTENT, cookies);
     }
@@ -89,13 +87,13 @@ public class AuthController {
         authService.logout(request);
 
         List<String> cookies = new ArrayList<>();
-        cookies.add(createCookie(request, "access-token", "", Duration.ofSeconds(0)));
-        cookies.add(createCookie(request, "refresh-token", "", Duration.ofSeconds(0)));
+        cookies.add(createCookie("access-token", "", Duration.ofSeconds(0)));
+        cookies.add(createCookie("refresh-token", "", Duration.ofSeconds(0)));
 
         return ApiResponse.success(HttpStatus.NO_CONTENT, cookies);
     }
 
-    private String createCookie(HttpServletRequest request, String name, String value, Duration duration) {
+    private String createCookie(String name, String value, Duration duration) {
 
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
@@ -103,7 +101,7 @@ public class AuthController {
                 .maxAge(duration.toSeconds())
                 .sameSite(cookieSameSite)
                 .domain(cookieDomain)
-                .secure(request.isSecure())
+                .secure(cookieSecure)
                 .build()
                 .toString();
     }
