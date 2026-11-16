@@ -9,5 +9,7 @@ public interface OtpService {
 
     void store(String email, String code, OtpType type, Duration duration);
 
+    void update(Otp otp);
+
     Otp findByEmailAndCode(String email, String code);
 }

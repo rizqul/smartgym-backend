@@ -98,6 +98,9 @@ public class MemberServiceImpl implements MemberService {
             throw new BadRequestException("Kode Otp Tidak Valid!");
         }
 
+        otp.setExpiredAt(Instant.now());
+        otpService.update(otp);
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())

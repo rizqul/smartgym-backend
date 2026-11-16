@@ -35,11 +35,7 @@ public class Otp extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private OtpType type;
 
-    @Builder.Default
     @Column(nullable = false)
-    private Boolean isUsed = false;
-
-    @Column(updatable = false)
     private Instant expiredAt;
 
 }

@@ -35,6 +35,12 @@ public class OtpServiceImpl implements OtpService {
     };
 
     @Override
+    @Transactional
+    public void update(Otp otp) {
+        otpRepository.save(otp);
+    }
+
+    @Override
     public Otp findByEmailAndCode(String email, String code) {
         return otpRepository.findByEmailAndCode(email, code)
                 .orElseThrow(() -> new BadRequestException("Kode Otp Tidak Valid!"));

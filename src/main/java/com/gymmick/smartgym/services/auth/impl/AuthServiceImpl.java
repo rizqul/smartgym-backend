@@ -102,6 +102,9 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Kode Otp Tidak Valid!");
         }
 
+        otp.setExpiredAt(Instant.now());
+        otpService.update(otp);
+
         User user = userService.findByEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
