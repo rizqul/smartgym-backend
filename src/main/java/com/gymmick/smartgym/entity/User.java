@@ -1,7 +1,9 @@
 package com.gymmick.smartgym.entity;
 
+import java.time.Instant;
 import java.util.*;
 
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +23,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
+@SQLRestriction("deleted_at is null")
 @EntityListeners(AuditingEntityListener.class)
 public class User extends TimeStamp implements UserDetails {
 
@@ -48,6 +51,8 @@ public class User extends TimeStamp implements UserDetails {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.MEMBER;
+
+    private Instant deletedAt;
 
     @JsonIgnore
     @Builder.Default

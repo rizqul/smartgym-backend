@@ -1,5 +1,7 @@
 package com.gymmick.smartgym.services.common.impl;
 
+import java.util.UUID;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,12 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("These credentials do not match our records."));
+    }
+
+    @Override
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException());
     }
 
     @Override

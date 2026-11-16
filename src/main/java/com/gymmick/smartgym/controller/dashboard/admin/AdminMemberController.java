@@ -46,4 +46,12 @@ public class AdminMemberController {
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteMember(@PathVariable String id) {
+
+        memberService.deleteMember(id);
+
+        String message = "Berhasil Menghapus Member!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }
