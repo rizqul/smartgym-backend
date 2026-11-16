@@ -6,7 +6,7 @@ import com.gymmick.smartgym.entity.User;
 
 public interface UserService extends UserDetailsService {
 
-    void store(User user);
+    void save(User user);
 
     User findByEmail(String email);
 
