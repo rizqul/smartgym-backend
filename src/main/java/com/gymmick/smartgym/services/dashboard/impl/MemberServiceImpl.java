@@ -95,8 +95,12 @@ public class MemberServiceImpl implements MemberService {
         Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
 
         if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
+
             throw new BadRequestException("Kode Otp Tidak Valid!");
         }
+
+        otp.setExpiredAt(Instant.now());
+        otpService.update(otp);
 
         User user = User.builder()
                 .name(request.getName())
