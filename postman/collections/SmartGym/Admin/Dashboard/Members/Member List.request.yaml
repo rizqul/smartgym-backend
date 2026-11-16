@@ -1,9 +1,0 @@
-$kind: http-request
-url: "{{apiUrl}}/admin/dashboard/members?size=10"
-method: GET
-queryParams:
-  - key: size
-    value: "10"
-    disabled: false
-    description: ""
-order: 1000
