@@ -40,7 +40,7 @@ public class AuthController {
         cookies.add(createCookie(request, "access-token", response.getAccessToken(),
                 Duration.ofHours(1)));
         cookies.add(createCookie(request, "refresh-token", response.getRefreshToken(),
-                Duration.ofHours(6)));
+                Duration.ofDays(30)));
 
         String message = "Login Berhasil!";
         return ApiResponse.success(HttpStatus.OK, message, response.getUser(), cookies);
@@ -75,7 +75,7 @@ public class AuthController {
         cookies.add(createCookie(request, "access-token", response.getAccessToken(),
                 Duration.ofHours(1)));
         cookies.add(createCookie(request, "refresh-token", response.getRefreshToken(),
-                Duration.ofHours(6)));
+                Duration.ofDays(30)));
 
         return ApiResponse.success(HttpStatus.NO_CONTENT, cookies);
     }

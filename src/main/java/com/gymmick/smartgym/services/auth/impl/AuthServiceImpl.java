@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
         tokenService.store(accessTokenId, refreshTokenId, user);
 
         String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
-        String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofHours(6));
+        String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
 
         LoginResponse loginResponse = LoginResponse.builder()
                 .user(userMapping.toResponse(user))
@@ -135,7 +135,7 @@ public class AuthServiceImpl implements AuthService {
             tokenService.store(accessTokenId, refreshTokenId, token.getUser());
 
             String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
-            String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofHours(6));
+            String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
 
             RefreshResponse refreshResponse = RefreshResponse.builder()
                     .accessToken(accessToken)
