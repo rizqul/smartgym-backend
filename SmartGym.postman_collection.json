@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "3d19d759-268b-4271-ad9b-fd1ffa080020",
+    "_postman_id": "a5ccde95-9f6d-4372-b364-e225c3a79cf9",
     "name": "SmartGym",
     "description": "Postman Collection for SmartGym API generated from repository postman folder.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "11429476",
-    "_collection_link": "https://go.postman.co/collection/11429476-3d19d759-268b-4271-ad9b-fd1ffa080020?source=collection_link"
+    "_exporter_id": "13751418"
   },
   "item": [
     {
@@ -21,13 +20,11 @@
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   },
                   {
                     "key": "Content-Type",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   }
                 ],
                 "body": {
@@ -40,9 +37,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrl}}/auth/login",
+                  "raw": "{{apiUrlDev}}/auth/login",
                   "host": [
-                    "{{apiUrl}}"
+                    "{{apiUrlDev}}"
                   ],
                   "path": [
                     "auth",
@@ -135,14 +132,13 @@
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   }
                 ],
                 "url": {
-                  "raw": "{{apiUrl}}/auth/logout",
+                  "raw": "{{apiUrlDev}}/auth/logout",
                   "host": [
-                    "{{apiUrl}}"
+                    "{{apiUrlDev}}"
                   ],
                   "path": [
                     "auth",
@@ -208,13 +204,11 @@
                     "header": [
                       {
                         "key": "Accept",
-                        "value": "application/json",
-                        "type": "text"
+                        "value": "application/json"
                       },
                       {
                         "key": "Content-Type",
-                        "value": "application/json",
-                        "type": "text"
+                        "value": "application/json"
                       }
                     ],
                     "body": {
@@ -227,9 +221,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members/otp",
+                      "raw": "{{apiUrlDev}}/admin/dashboard/members/otp",
                       "host": [
-                        "{{apiUrl}}"
+                        "{{apiUrlDev}}"
                       ],
                       "path": [
                         "admin",
@@ -243,17 +237,6 @@
                 },
                 {
                   "name": "Create Member",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          ""
-                        ]
-                      }
-                    }
-                  ],
                   "request": {
                     "method": "POST",
                     "header": [
@@ -276,9 +259,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members/create",
+                      "raw": "{{apiUrlDev}}/admin/dashboard/members/create",
                       "host": [
-                        "{{apiUrl}}"
+                        "{{apiUrlDev}}"
                       ],
                       "path": [
                         "admin",
@@ -329,6 +312,85 @@
                   "response": []
                 }
               ]
+            },
+            {
+              "name": "Staff",
+              "item": [
+                {
+                  "name": "Staff List",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrlDev}}/admin/dashboard/staff?size=10",
+                      "host": [
+                        "{{apiUrlDev}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff"
+                      ],
+                      "query": [
+                        {
+                          "key": "size",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Staff",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"{{staffName}}\",\n    \"email\": \"{{staffEmail}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{staffPassword}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrlDev}}/admin/dashboard/staff/create",
+                      "host": [
+                        "{{apiUrlDev}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Staff",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrlDev}}/admin/dashboard/members/{{staffId}}",
+                      "host": [
+                        "{{apiUrlDev}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "{{staffId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         }
@@ -347,13 +409,11 @@
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   },
                   {
                     "key": "Content-Type",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   }
                 ],
                 "body": {
@@ -366,9 +426,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrl}}/auth/login",
+                  "raw": "{{apiUrlDev}}/auth/login",
                   "host": [
-                    "{{apiUrl}}"
+                    "{{apiUrlDev}}"
                   ],
                   "path": [
                     "auth",
@@ -492,14 +552,13 @@
             "header": [
               {
                 "key": "Accept",
-                "value": "application/json",
-                "type": "text"
+                "value": "application/json"
               }
             ],
             "url": {
-              "raw": "{{apiUrl}}/user",
+              "raw": "{{apiUrlDev}}/user",
               "host": [
-                "{{apiUrl}}"
+                "{{apiUrlDev}}"
               ],
               "path": [
                 "user"
