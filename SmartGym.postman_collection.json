@@ -280,7 +280,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
+                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"081212341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -358,7 +358,7 @@
                       "script": {
                         "type": "text/javascript",
                         "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data[0].id)"
+                          "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data.MONTHLY[0].id)"
                         ]
                       }
                     }
@@ -398,7 +398,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\r\n    \"name\": \"30 Hari\",\r\n    \"duration\": 30,\r\n    \"price\": 1000000\r\n}",
+                      "raw": "{\r\n    \"type\": \"weekly\", // weekly | monthly | yearly\r\n    \"name\": \"7 Hari\",\r\n    \"description\": \"Akses Gym Selama 7 Hari!\",\r\n    \"duration\": 7,\r\n    \"price\": 80000\r\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -637,6 +637,40 @@
         {
           "name": "Membership",
           "item": [
+            {
+              "name": "Membership List",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data.MONTHLY[0].id)"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{apiUrl}}/member/membership",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "membership"
+                  ]
+                }
+              },
+              "response": []
+            },
             {
               "name": "Buy Membership",
               "request": {
