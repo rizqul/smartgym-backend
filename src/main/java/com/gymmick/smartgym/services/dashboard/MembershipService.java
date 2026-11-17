@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.gymmick.smartgym.dto.dashboard.*;
 import com.gymmick.smartgym.dto.member.MembershipTransactionCreateRequest;
-import com.gymmick.smartgym.entity.User;
+import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.MembershipType;
 
 public interface MembershipService {
@@ -17,5 +17,7 @@ public interface MembershipService {
 
     String buyMembership(MembershipTransactionCreateRequest request, User user);
 
-    void activationMembership(String orderId);
+    void activationMembership(Transaction transaction);
+
+    MembershipPackage findById(String id);
 }
