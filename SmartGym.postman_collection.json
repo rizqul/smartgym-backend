@@ -1,10 +1,11 @@
 {
   "info": {
-    "_postman_id": "a5ccde95-9f6d-4372-b364-e225c3a79cf9",
+    "_postman_id": "ed68d2c3-59a9-4bcf-85a7-38cfc3f73d21",
     "name": "SmartGym",
     "description": "Postman Collection for SmartGym API generated from repository postman folder.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "13751418"
+    "_exporter_id": "11429476",
+    "_collection_link": "https://go.postman.co/collection/11429476-ed68d2c3-59a9-4bcf-85a7-38cfc3f73d21?source=collection_link"
   },
   "item": [
     {
@@ -37,9 +38,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrlDev}}/auth/login",
+                  "raw": "{{apiUrl}}/auth/login",
                   "host": [
-                    "{{apiUrlDev}}"
+                    "{{apiUrl}}"
                   ],
                   "path": [
                     "auth",
@@ -244,9 +245,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/members/otp",
+                      "raw": "{{apiUrl}}/admin/dashboard/members/otp",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -282,9 +283,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/members/create",
+                      "raw": "{{apiUrl}}/admin/dashboard/members/create",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -341,13 +342,25 @@
               "item": [
                 {
                   "name": "Staff List",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
                   "request": {
                     "method": "GET",
                     "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/staff?size=10",
+                      "raw": "{{apiUrl}}/admin/dashboard/staff?size=10",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -379,9 +392,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/staff/create",
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/create",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -399,9 +412,9 @@
                     "method": "DELETE",
                     "header": [],
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/members/{{staffId}}",
+                      "raw": "{{apiUrl}}/admin/dashboard/members/{{staffId}}",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -471,7 +484,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\r\n    \"type\": \"weekly\", // weekly | monthly | yearly\r\n    \"name\": \"7 Hari\",\r\n    \"description\": \"Akses Gym Selama 7 Hari!\",\r\n    \"duration\": 7,\r\n    \"price\": 80000\r\n}",
+                      "raw": "{\r\n    \"type\": \"monthly\", // weekly | monthly | yearly\r\n    \"name\": \"30 Hari\",\r\n    \"description\": \"Akses Gym Selama 30 Hari!\",\r\n    \"duration\": 30,\r\n    \"price\": 300000\r\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -568,9 +581,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrlDev}}/auth/login",
+                  "raw": "{{apiUrl}}/auth/login",
                   "host": [
-                    "{{apiUrlDev}}"
+                    "{{apiUrl}}"
                   ],
                   "path": [
                     "auth",
@@ -792,9 +805,9 @@
               }
             ],
             "url": {
-              "raw": "{{apiUrlDev}}/user",
+              "raw": "{{apiUrl}}/user",
               "host": [
-                "{{apiUrlDev}}"
+                "{{apiUrl}}"
               ],
               "path": [
                 "user"
