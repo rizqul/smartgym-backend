@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.midtrans.Config;
-import com.midtrans.Midtrans;
-import com.midtrans.service.MidtransSnapApi;
-import com.midtrans.service.impl.MidtransSnapApiImpl;
+import com.midtrans.*;
+import com.midtrans.service.*;
+import com.midtrans.service.impl.*;
 
 import jakarta.annotation.PostConstruct;
 
@@ -34,14 +33,19 @@ public class MidtransConfig {
     }
 
     @Bean
-    Config snapConfig() {
+    Config midtransApiConfig() {
         return Config.builder()
                 .setPaymentOverrideNotification(notificationUrl)
                 .build();
     }
 
     @Bean
-    MidtransSnapApi midtransSnapApi(Config snapConfig) {
-        return new MidtransSnapApiImpl(snapConfig);
+    MidtransCoreApi midtransCoreApi(Config midtransApiConfig) {
+        return new MidtransCoreApiImpl(midtransApiConfig);
+    }
+
+    @Bean
+    MidtransSnapApi midtransSnapApi(Config midtransApiConfig) {
+        return new MidtransSnapApiImpl(midtransApiConfig);
     }
 }

@@ -1,5 +1,6 @@
 package com.gymmick.smartgym.services.transaction.impl;
 
+import java.time.Instant;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gymmick.smartgym.dto.transaction.TransactionData;
 import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.TransactionStatus;
+import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.repositories.TransactionRespository;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.midtrans.httpclient.error.MidtransError;
@@ -51,7 +53,22 @@ public class TransactionServiceImpl implements TransactionService {
         return response.get("redirect_url").toString();
     }
 
-    public void updateTransactionStatus(String id, TransactionStatus status){
+    @Override
+    @Transactional
+    public void updateTransactionStatus(String orderId, String status) {
 
+        Transaction transaction = transactionRespository.findByOrderId(orderId)
+                .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
+
+        if (status.equals("expired")) {
+            transaction.setStatus(TransactionStatus.EXPIRED);
+        }
+
+        if (status.equals("settlement")) {
+            transaction.setPaidAt(Instant.now());
+            transaction.setStatus(TransactionStatus.SUCCESS);
+        }
+
+        transactionRespository.save(transaction);
     }
 }
