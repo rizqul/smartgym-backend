@@ -32,139 +32,141 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+  private final AuthenticationManager authenticationManager;
+  private final PasswordEncoder passwordEncoder;
 
-    private final UserService userService;
+  private final UserService userService;
 
-    private final EmailService emailService;
-    private final TokenService tokenService;
-    private final OtpService otpService;
+  private final EmailService emailService;
+  private final TokenService tokenService;
+  private final OtpService otpService;
 
-    private final JwtToken jwtToken;
+  private final JwtToken jwtToken;
 
-    private final UserMapping userMapping;
+  private final UserMapping userMapping;
 
-    @Override
-    @Transactional
-    public LoginResponse login(LoginRequest request)
-            throws BadRequestException, BadCredentialsException {
+  @Override
+  @Transactional
+  public LoginResponse login(LoginRequest request)
+      throws BadRequestException, BadCredentialsException {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        User user = (User) userService.loadUserByUsername(request.getEmail());
+    User user = (User) userService.loadUserByUsername(request.getEmail());
 
-        UUID accessTokenId = UUID.randomUUID();
-        UUID refreshTokenId = UUID.randomUUID();
+    UUID accessTokenId = UUID.randomUUID();
+    UUID refreshTokenId = UUID.randomUUID();
 
-        tokenService.store(accessTokenId, refreshTokenId, user);
+    tokenService.store(accessTokenId, refreshTokenId, user);
 
-        String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
-        String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
+    String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
+    String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
 
-        LoginResponse loginResponse = LoginResponse.builder()
-                .user(userMapping.toResponse(user))
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+    LoginResponse loginResponse = LoginResponse.builder()
+        .user(userMapping.toResponse(user))
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .build();
 
-        return loginResponse;
+    return loginResponse;
+  }
+
+  @Override
+  @Transactional
+  public void forgotPassword(ForgotPasswordRequest request)
+      throws EmailSenderException {
+
+    userService.findByEmail(request.getEmail());
+
+    String otpCode = OtpToken.generateOtp();
+
+    otpService.store(request.getEmail(), otpCode, OtpType.RESET_PASSWORD, Duration.ofMinutes(10));
+
+    String emailTemplate = "email/auth/reset-password";
+    String emailSubject = "Reset Password";
+
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("email", request.getEmail());
+    variables.put("code", otpCode);
+
+    emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
+  }
+
+  @Override
+  @Transactional
+  public void resetPassword(ResetPasswordRequest request)
+      throws EmailSenderException {
+
+    Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+
+    if (!otp.getType().equals(OtpType.RESET_PASSWORD) || otp.getExpiredAt().isBefore(Instant.now())) {
+      throw new BadRequestException("Kode Otp Tidak Valid!");
     }
 
-    @Override
-    @Transactional
-    public void forgotPassword(ForgotPasswordRequest request)
-            throws EmailSenderException {
+    otp.setExpiredAt(Instant.now());
+    otpService.update(otp);
 
-        String otpCode = OtpToken.generateOtp();
+    User user = userService.findByEmail(request.getEmail());
+    user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        otpService.store(request.getEmail(), otpCode, OtpType.RESET_PASSWORD, Duration.ofMinutes(10));
+    userService.save(user);
+  }
 
-        String emailTemplate = "email/auth/reset-password";
-        String emailSubject = "Reset Password";
+  @Override
+  @Transactional
+  public RefreshResponse refresh(HttpServletRequest request)
+      throws BadRequestException {
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("email", request.getEmail());
-        variables.put("code", otpCode);
+    Cookie refreshTokenCookie = WebUtils.getCookie(request, "refresh-token");
 
-        emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
+    if (refreshTokenCookie == null) {
+      throw new AuthenticationDeniedException();
     }
 
-    @Override
-    @Transactional
-    public void resetPassword(ResetPasswordRequest request)
-            throws EmailSenderException {
+    UUID tokenId = jwtToken.getTokenId(refreshTokenCookie.getValue());
+    Token token = tokenService.findByRefreshId(tokenId);
 
-        Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+    if (token != null && !token.getRevoked()) {
+      token.setRevoked(true);
+      tokenService.update(token);
 
-        if (!otp.getType().equals(OtpType.RESET_PASSWORD) || otp.getExpiredAt().isBefore(Instant.now())) {
-            throw new BadRequestException("Kode Otp Tidak Valid!");
-        }
+      UUID accessTokenId = UUID.randomUUID();
+      UUID refreshTokenId = UUID.randomUUID();
 
-        otp.setExpiredAt(Instant.now());
-        otpService.update(otp);
+      tokenService.store(accessTokenId, refreshTokenId, token.getUser());
 
-        User user = userService.findByEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+      String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
+      String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
 
-        userService.save(user);
+      RefreshResponse refreshResponse = RefreshResponse.builder()
+          .accessToken(accessToken)
+          .refreshToken(refreshToken)
+          .build();
+
+      return refreshResponse;
     }
 
-    @Override
-    @Transactional
-    public RefreshResponse refresh(HttpServletRequest request)
-            throws BadRequestException {
+    throw new BadRequestException("These JWT token was invalid.");
+  }
 
-        Cookie refreshTokenCookie = WebUtils.getCookie(request, "refresh-token");
+  @Override
+  @Transactional
+  public void logout(HttpServletRequest request)
+      throws AuthenticationDeniedException, BadRequestException {
 
-        if (refreshTokenCookie == null) {
-            throw new AuthenticationDeniedException();
-        }
+    Cookie accessToken = WebUtils.getCookie(request, "access-token");
 
-        UUID tokenId = jwtToken.getTokenId(refreshTokenCookie.getValue());
-        Token token = tokenService.findByRefreshId(tokenId);
-
-        if (token != null && !token.getRevoked()) {
-            token.setRevoked(true);
-            tokenService.update(token);
-
-            UUID accessTokenId = UUID.randomUUID();
-            UUID refreshTokenId = UUID.randomUUID();
-
-            tokenService.store(accessTokenId, refreshTokenId, token.getUser());
-
-            String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
-            String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
-
-            RefreshResponse refreshResponse = RefreshResponse.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-
-            return refreshResponse;
-        }
-
-        throw new BadRequestException("These JWT token was invalid.");
+    if (accessToken == null || accessToken.getValue().isEmpty()) {
+      return;
     }
 
-    @Override
-    @Transactional
-    public void logout(HttpServletRequest request)
-            throws AuthenticationDeniedException, BadRequestException {
+    UUID tokenId = jwtToken.getTokenId(accessToken.getValue());
+    Token token = tokenService.findById(tokenId);
 
-        Cookie accessToken = WebUtils.getCookie(request, "access-token");
-
-        if (accessToken == null || accessToken.getValue().isEmpty()) {
-            return;
-        }
-
-        UUID tokenId = jwtToken.getTokenId(accessToken.getValue());
-        Token token = tokenService.findById(tokenId);
-
-        if (token != null && !token.getRevoked()) {
-            token.setRevoked(true);
-            tokenService.update(token);
-        }
+    if (token != null && !token.getRevoked()) {
+      token.setRevoked(true);
+      tokenService.update(token);
     }
+  }
 }
