@@ -1,10 +1,11 @@
 {
   "info": {
-    "_postman_id": "a5ccde95-9f6d-4372-b364-e225c3a79cf9",
+    "_postman_id": "ed68d2c3-59a9-4bcf-85a7-38cfc3f73d21",
     "name": "SmartGym",
     "description": "Postman Collection for SmartGym API generated from repository postman folder.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "13751418"
+    "_exporter_id": "11429476",
+    "_collection_link": "https://go.postman.co/collection/11429476-ed68d2c3-59a9-4bcf-85a7-38cfc3f73d21?source=collection_link"
   },
   "item": [
     {
@@ -37,9 +38,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrlDev}}/auth/login",
+                  "raw": "{{apiUrl}}/auth/login",
                   "host": [
-                    "{{apiUrlDev}}"
+                    "{{apiUrl}}"
                   ],
                   "path": [
                     "auth",
@@ -147,6 +148,29 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "Refresh Token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{apiUrl}}/auth/refresh",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "refresh"
+                  ]
+                }
+              },
+              "response": []
             }
           ]
         },
@@ -221,9 +245,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/members/otp",
+                      "raw": "{{apiUrl}}/admin/dashboard/members/otp",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -251,7 +275,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
+                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"081212341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -259,9 +283,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/members/create",
+                      "raw": "{{apiUrl}}/admin/dashboard/members/create",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -318,13 +342,25 @@
               "item": [
                 {
                   "name": "Staff List",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
                   "request": {
                     "method": "GET",
                     "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/staff?size=10",
+                      "raw": "{{apiUrl}}/admin/dashboard/staff?size=10",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -356,9 +392,9 @@
                       }
                     },
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/staff/create",
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/create",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
@@ -376,15 +412,134 @@
                     "method": "DELETE",
                     "header": [],
                     "url": {
-                      "raw": "{{apiUrlDev}}/admin/dashboard/members/{{staffId}}",
+                      "raw": "{{apiUrl}}/admin/dashboard/members/{{staffId}}",
                       "host": [
-                        "{{apiUrlDev}}"
+                        "{{apiUrl}}"
                       ],
                       "path": [
                         "admin",
                         "dashboard",
                         "members",
                         "{{staffId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Memberships",
+          "item": [
+            {
+              "name": "Packages",
+              "item": [
+                {
+                  "name": "Package List",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data.MONTHLY[0].id)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "memberships",
+                        "packages"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Package",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"type\": \"monthly\", // weekly | monthly | yearly\r\n    \"name\": \"30 Hari\",\r\n    \"description\": \"Akses Gym Selama 30 Hari!\",\r\n    \"duration\": 30,\r\n    \"price\": 300000\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "memberships",
+                        "packages",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Package",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/delete/{{membershipPackageId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "memberships",
+                        "packages",
+                        "delete",
+                        "{{membershipPackageId}}"
                       ]
                     }
                   },
@@ -426,9 +581,9 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrlDev}}/auth/login",
+                  "raw": "{{apiUrl}}/auth/login",
                   "host": [
-                    "{{apiUrlDev}}"
+                    "{{apiUrl}}"
                   ],
                   "path": [
                     "auth",
@@ -537,6 +692,100 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "Refresh Token",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{apiUrl}}/auth/refresh",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "refresh"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Membership",
+          "item": [
+            {
+              "name": "Membership List",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data.MONTHLY[0].id)"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{apiUrl}}/member/membership",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "membership"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Buy Membership",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"transactionId\": \"{{$randomUUID}}\",\r\n    \"packageId\": \"{{membershipPackageId}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/member/membership",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "membership"
+                  ]
+                }
+              },
+              "response": []
             }
           ]
         }
@@ -556,9 +805,9 @@
               }
             ],
             "url": {
-              "raw": "{{apiUrlDev}}/user",
+              "raw": "{{apiUrl}}/user",
               "host": [
-                "{{apiUrlDev}}"
+                "{{apiUrl}}"
               ],
               "path": [
                 "user"

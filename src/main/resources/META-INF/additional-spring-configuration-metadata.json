@@ -38,5 +38,35 @@
     "name": "app.config.cookie-secure",
     "type": "java.lang.String",
     "description": "A description for 'app.config.cookie-secure'"
+  },
+  {
+    "name": "app.config.midtrans.server-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.server-key'"
+  },
+  {
+    "name": "app.config.midtrans.client-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.client-key'"
+  },
+  {
+    "name": "app.config.midtrans.production",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.production'"
+  },
+  {
+    "name": "app.config.midtrans.notification-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.notification-url'"
+  },
+  {
+    "name": "app.config.midtrans.membership.redirect-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.membership.redirect-url'"
+  },
+  {
+    "name": "app.config.midtrans.pt-booking.redirect-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.pt-booking.redirect-url'"
   }
 ]}

@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gymmick.smartgym.entity.enums.UserRole;
+import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.entity.shared.TimeStamp;
 
 import jakarta.persistence.*;
@@ -52,6 +52,10 @@ public class User extends TimeStamp implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.MEMBER;
 
+    private MembershipStatus membershipStatus;
+
+    private Instant membershipExpiredAt;
+
     private Instant deletedAt;
 
     @JsonIgnore
@@ -73,6 +77,13 @@ public class User extends TimeStamp implements UserDetails {
     @JsonIgnore
     public String getUsername() {
         return this.email;
+    }
+
+    public MembershipStatus getMembershipStatus() {
+        return membershipStatus == MembershipStatus.ACTIVE
+                && (membershipExpiredAt == null || membershipExpiredAt.isAfter(Instant.now()))
+                        ? MembershipStatus.ACTIVE
+                        : MembershipStatus.NON_ACTIVE;
     }
 
     @Override
