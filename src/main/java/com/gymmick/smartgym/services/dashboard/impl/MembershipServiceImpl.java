@@ -2,7 +2,6 @@ package com.gymmick.smartgym.services.dashboard.impl;
 
 import java.time.*;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -105,10 +104,7 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     @Transactional
-    public void activationMembership(String orderId) {
-
-        Transaction transaction = transactionRespository.findByOrderId(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException());
+    public void activationMembership(Transaction transaction) {
 
         if (transaction.getStatus() == TransactionStatus.PROCESS) {
             MembershipPackage membershipPackage = this.findById(transaction.getPackageId().toString());
@@ -136,6 +132,7 @@ public class MembershipServiceImpl implements MembershipService {
         }
     };
 
+    @Override
     public MembershipPackage findById(String id) {
         UUID packageId = UUID.fromString(id);
         return membershipPackageRepository.findById(packageId)

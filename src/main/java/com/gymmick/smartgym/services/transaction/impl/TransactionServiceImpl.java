@@ -38,6 +38,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Map<String, String> callbacks = new HashMap<>();
         callbacks.put("finish", data.getCallbackUrl());
+        callbacks.put("error", data.getCallbackUrl());
 
         params.put("transaction_details", transactionDetails);
         params.put("item_details", data.getItemDetails());
@@ -60,12 +61,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void updateTransactionStatus(String orderId, String status) {
+    public Transaction updateTransaction(String orderId, String status) {
 
         Transaction transaction = transactionRespository.findByOrderId(orderId)
                 .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
 
-        if (status.equals("expired")) {
+        if (status.equals("expire")) {
             transaction.setStatus(TransactionStatus.EXPIRED);
         }
 
@@ -74,6 +75,6 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStatus(TransactionStatus.PROCESS);
         }
 
-        transactionRespository.save(transaction);
+        return transactionRespository.save(transaction);
     }
 }
