@@ -27,7 +27,7 @@ public class Transaction extends TimeStamp {
     private UUID id;
 
     @Column(nullable = false)
-    private String packageId;
+    private UUID packageId;
 
     @Column(nullable = false)
     private String orderId;

@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class TransactionData {
 
-    private String packageId;
+    private UUID packageId;
 
     private String orderId;
 
@@ -20,4 +20,6 @@ public class TransactionData {
     private TransactionType type;
 
     private List<Map<String, String>> itemDetails;
+
+    private String callbackUrl;
 }

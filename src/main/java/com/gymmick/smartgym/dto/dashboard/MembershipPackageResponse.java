@@ -2,6 +2,8 @@ package com.gymmick.smartgym.dto.dashboard;
 
 import java.util.UUID;
 
+import com.gymmick.smartgym.entity.enums.MembershipType;
+
 import lombok.*;
 
 @Getter
@@ -12,6 +14,10 @@ public class MembershipPackageResponse {
     private UUID id;
 
     private String name;
+
+    private String description;
+
+    private MembershipType type;
 
     private Integer duration;
 

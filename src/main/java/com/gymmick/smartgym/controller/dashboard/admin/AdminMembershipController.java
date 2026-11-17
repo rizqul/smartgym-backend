@@ -1,17 +1,17 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
-
 import com.gymmick.smartgym.dto.dashboard.*;
+import com.gymmick.smartgym.entity.enums.MembershipType;
 import com.gymmick.smartgym.services.dashboard.MembershipService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/admin/dashboard/memberships")
@@ -21,8 +21,8 @@ public class AdminMembershipController {
     private final MembershipService membershipService;
 
     @GetMapping(path = "/packages")
-    public ResponseEntity<ApiResponse<List<MembershipPackageResponse>>> findAllMemberPackage() {
-        List<MembershipPackageResponse> responses = membershipService.findAllPackage();
+    public ResponseEntity<ApiResponse<Map<MembershipType, List<MembershipPackageResponse>>>> findAllMemberPackage() {
+        Map<MembershipType, List<MembershipPackageResponse>> responses = membershipService.findAllPackage();
 
         return ApiResponse.success(HttpStatus.OK, "OK", responses);
     }

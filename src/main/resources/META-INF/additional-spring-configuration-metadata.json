@@ -58,5 +58,15 @@
     "name": "app.config.midtrans.notification-url",
     "type": "java.lang.String",
     "description": "A description for 'app.config.midtrans.notification-url'"
+  },
+  {
+    "name": "app.config.midtrans.membership.redirect-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.membership.redirect-url'"
+  },
+  {
+    "name": "app.config.midtrans.pt-booking.redirect-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.pt-booking.redirect-url'"
   }
 ]}

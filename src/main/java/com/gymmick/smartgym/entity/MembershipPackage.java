@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.gymmick.smartgym.entity.enums.MembershipType;
 import com.gymmick.smartgym.entity.shared.TimeStamp;
 
 import jakarta.persistence.*;
@@ -25,7 +26,13 @@ public class MembershipPackage extends TimeStamp {
     private UUID id;
 
     @Column(nullable = false)
+    private MembershipType type;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String description;
 
     @Column(nullable = false)
     private Integer duration;

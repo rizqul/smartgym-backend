@@ -29,14 +29,19 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public String createTransaction(User user, TransactionData data) throws MidtransError {
+
         Map<String, Object> params = new HashMap<>();
 
         Map<String, String> transactionDetails = new HashMap<>();
         transactionDetails.put("order_id", data.getOrderId());
         transactionDetails.put("gross_amount", data.getGrossAmount().toString());
 
+        Map<String, String> callbacks = new HashMap<>();
+        callbacks.put("finish", data.getCallbackUrl());
+
         params.put("transaction_details", transactionDetails);
         params.put("item_details", data.getItemDetails());
+        params.put("callbacks", callbacks);
 
         Map<String, Object> response = midtransSnapApi.createTransaction(params).toMap();
         Transaction transaction = Transaction.builder()
@@ -66,7 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (status.equals("settlement")) {
             transaction.setPaidAt(Instant.now());
-            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setStatus(TransactionStatus.PROCESS);
         }
 
         transactionRespository.save(transaction);

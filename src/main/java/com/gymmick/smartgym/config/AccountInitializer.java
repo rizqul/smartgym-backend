@@ -1,9 +1,7 @@
 package com.gymmick.smartgym.config;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +29,8 @@ public class AccountInitializer implements ApplicationRunner {
         String email = account[1].trim();
 
         if (!userService.existsByEmail(email)) {
-            String emailHash = DigestUtils.sha256Hex(email);
-            String profileUrl = String.format("https://gravatar.com/avatar/%s", emailHash);
+            String profileUrl = String
+                    .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256", account[0]);
 
             User user = User.builder()
                     .name(account[0])
@@ -40,10 +38,10 @@ public class AccountInitializer implements ApplicationRunner {
                     .profileUrl(profileUrl)
                     .password(passwordEncoder.encode(account[2].trim()))
                     .role(UserRole.ADMIN)
+                    .phoneNumber("081212341234")
                     .build();
 
             userService.save(user);
         }
-
     }
 }

@@ -33,10 +33,6 @@ public class Membership extends TimeStamp {
     @JoinColumn(name = "member_id", nullable = false)
     private User member;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "package_id", nullable = false)
-    private MembershipPackage packet;
-
     private Instant startDate;
 
     private Instant endDate;
