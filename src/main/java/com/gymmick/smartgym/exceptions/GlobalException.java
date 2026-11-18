@@ -37,7 +37,7 @@ public class GlobalException {
     public ResponseEntity<ApiResponse<String>> handleBadCredentialsException(
             BadCredentialsException exception) {
 
-        String message = "Tidak Ada User Yang Cocok Dengan Data Yang Diberikan!";
+        String message = "Alamat Email atau Kata Sandi Salah!";
         return ApiResponse.error(HttpStatus.UNPROCESSABLE_CONTENT, message);
     }
 
