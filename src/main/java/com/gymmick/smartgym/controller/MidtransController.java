@@ -38,7 +38,9 @@ public class MidtransController {
                 Map<String, Object> transactionResult = midtransCoreApi.checkTransaction(orderId).toMap();
 
                 String transactionStatus = transactionResult.get("transaction_status").toString();
-                Transaction transaction = transactionService.updateTransaction(orderId, transactionStatus);
+                String paymentType = transactionResult.get("payment_type").toString();
+
+                Transaction transaction = transactionService.updateTransaction(orderId, transactionStatus, paymentType);
 
                 if (transaction.getType().equals(TransactionType.MEMBERSHIP)
                         && transactionStatus.equals("settlement")) {
