@@ -118,12 +118,12 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @Transactional
     public void activationMembership(Transaction transaction) {
-
         if (transaction.getStatus() == TransactionStatus.PROCESS) {
             MembershipPackage membershipPackage = this.findById(transaction.getPackageId().toString());
 
             Membership membership = Membership.builder()
                     .transaction(transaction)
+                    .membershipPackage(membershipPackage)
                     .member(transaction.getMember())
                     .startDate(Instant.now())
                     .endDate(Instant.now().plus(Duration.ofDays(membershipPackage.getDuration())))

@@ -26,6 +26,10 @@ public class Membership extends TimeStamp {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "package_id", nullable = false)
+    private MembershipPackage membershipPackage;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "transaction_id", nullable = false)
     private Transaction transaction;
 
