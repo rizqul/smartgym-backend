@@ -6,13 +6,14 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
 
 import com.gymmick.smartgym.dto.auth.*;
 import com.gymmick.smartgym.dto.common.UserResponse;
 import com.gymmick.smartgym.services.auth.AuthService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -50,7 +51,7 @@ public class AuthController {
 
         authService.forgotPassword(request);
 
-        String message = "Kode Otp Berhasil Dikirim!";
+        String message = "Kode OTP Berhasil Dikirim!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -69,7 +70,9 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> reset(HttpServletRequest httpRequest,
             @Valid @RequestBody ResetPasswordRequest request) {
 
-        authService.resetPassword(httpRequest, request);
+        String token = getCookieValue(httpRequest, "reset-token");
+
+        authService.resetPassword(token, request);
 
         List<String> cookies = new ArrayList<>();
         cookies.add(createCookie("reset-token", "", Duration.ofSeconds(0)));
@@ -81,7 +84,9 @@ public class AuthController {
     @PostMapping(path = "/refresh")
     public ResponseEntity<ApiResponse<String>> refreshToken(HttpServletRequest request) {
 
-        RefreshTokenResponse response = authService.refreshToken(request);
+        String token = getCookieValue(request, "refresh-token");
+
+        RefreshTokenResponse response = authService.refreshToken(token);
 
         List<String> cookies = new ArrayList<>();
         cookies.add(createCookie("access-token", response.getAccessToken(), Duration.ofHours(1)));
@@ -93,7 +98,9 @@ public class AuthController {
     @PostMapping(path = "/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest request) {
 
-        authService.logout(request);
+        String token = getCookieValue(request, "access-token");
+
+        authService.logout(token);
 
         List<String> cookies = new ArrayList<>();
         cookies.add(createCookie("access-token", "", Duration.ofSeconds(0)));
@@ -103,7 +110,6 @@ public class AuthController {
     }
 
     private String createCookie(String name, String value, Duration duration) {
-
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .path("/")
@@ -113,5 +119,11 @@ public class AuthController {
                 .secure(cookieSecure)
                 .build()
                 .toString();
+    }
+
+    private String getCookieValue(HttpServletRequest request, String name) {
+        return Optional.ofNullable(WebUtils.getCookie(request, name))
+                .map(Cookie::getValue)
+                .orElse("");
     }
 }
