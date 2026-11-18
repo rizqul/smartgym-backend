@@ -13,6 +13,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.util.WebUtils;
 
 import com.gymmick.smartgym.entity.Token;
+import com.gymmick.smartgym.entity.enums.TokenType;
 import com.gymmick.smartgym.services.auth.TokenService;
 import com.gymmick.smartgym.services.common.UserService;
 import com.gymmick.smartgym.utils.JwtToken;
@@ -51,7 +52,7 @@ public class JwtAuthMiddleware extends OncePerRequestFilter {
                 UUID tokenId = jwtToken.getTokenId(accessToken.getValue());
                 Token token = tokenService.findById(tokenId);
 
-                if (token != null && !token.getRevoked()
+                if (token != null && !token.getRevoked() && token.getType().equals(TokenType.AUTH_USER)
                         && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                     UserDetails userDetails = userService.loadUserByUsername(token.getUser().getEmail());

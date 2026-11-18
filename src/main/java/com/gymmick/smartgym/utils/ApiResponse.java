@@ -76,6 +76,20 @@ public class ApiResponse<T> {
         return ResponseEntity.status(status.value()).headers(cookieHeaders).body(apiResponse);
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> success(HttpStatus status, String message, List<String> cookies) {
+        HttpHeaders cookieHeaders = new HttpHeaders();
+        for (String cookie : cookies) {
+            cookieHeaders.add("set-cookie", cookie);
+        }
+
+        ApiResponse<T> apiResponse = ApiResponse.<T>builder()
+                .statusCode(status.value())
+                .message(message)
+                .build();
+
+        return ResponseEntity.status(status.value()).headers(cookieHeaders).body(apiResponse);
+    }
+
     public static <T> ResponseEntity<ApiResponse<T>> success(HttpStatus status, List<String> cookies) {
         HttpHeaders cookieHeaders = new HttpHeaders();
 

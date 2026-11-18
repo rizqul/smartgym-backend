@@ -1,26 +1,20 @@
 package com.gymmick.smartgym.services.auth;
 
-import org.springframework.security.authentication.BadCredentialsException;
-
 import com.gymmick.smartgym.dto.auth.*;
-import com.gymmick.smartgym.exceptions.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
 
-    LoginResponse login(LoginRequest request)
-            throws BadRequestException, BadCredentialsException;
+    LoginResponse login(LoginRequest request);
 
-    void forgotPassword(ForgotPasswordRequest request)
-            throws EmailSenderException;
+    void forgotPassword(ForgotPasswordRequest request);
 
-    void resetPassword(ResetPasswordRequest request)
-            throws EmailSenderException;
+    ResetPasswordOTPResponse resetOtpValidation(ResetPasswordOTPRequest request);
 
-    RefreshResponse refresh(HttpServletRequest request)
-            throws BadRequestException;
+    void resetPassword(HttpServletRequest httpRequest, ResetPasswordRequest request);
 
-    void logout(HttpServletRequest request)
-            throws AuthenticationDeniedException, BadRequestException;
+    RefreshTokenResponse refreshToken(HttpServletRequest request);
+
+    void logout(HttpServletRequest request);
 }

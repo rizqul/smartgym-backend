@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gymmick.smartgym.entity.Otp;
 import com.gymmick.smartgym.entity.enums.OtpType;
-import com.gymmick.smartgym.exceptions.BadRequestException;
+import com.gymmick.smartgym.exceptions.ResourceNotFoundException;
 import com.gymmick.smartgym.repositories.OtpRepository;
 import com.gymmick.smartgym.services.auth.OtpService;
 
@@ -36,13 +36,19 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     @Transactional
-    public void update(Otp otp) {
+    public void save(Otp otp) {
         otpRepository.save(otp);
     }
 
     @Override
+    public Otp findByCodeAndType(String code, OtpType type) {
+        return otpRepository.findByCodeAndType(code, type)
+                .orElseThrow(() -> new ResourceNotFoundException("Kode OTP Tidak Valid!"));
+    };
+
+    @Override
     public Otp findByEmailAndCode(String email, String code) {
         return otpRepository.findByEmailAndCode(email, code)
-                .orElseThrow(() -> new BadRequestException("Kode Otp Tidak Valid!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Kode OTP Tidak Valid!"));
     };
 }
