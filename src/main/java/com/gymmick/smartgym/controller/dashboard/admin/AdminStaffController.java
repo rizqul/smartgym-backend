@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gymmick.smartgym.dto.common.UserResponse;
 import com.gymmick.smartgym.dto.dashboard.StaffCreateRequest;
+import com.gymmick.smartgym.dto.dashboard.StaffUpdateRequest;
 import com.gymmick.smartgym.dto.dashboard.UserFilterRequest;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.services.dashboard.StaffService;
@@ -51,6 +53,17 @@ public class AdminStaffController {
     staffService.deleteStaff(id);
 
     String message = "Berhasil Menghapus staff!";
+    return ApiResponse.success(HttpStatus.OK, message);
+  }
+
+  @PutMapping(path = "/{id}")
+  public ResponseEntity<ApiResponse<String>> updateStaff(@PathVariable String id,
+      @Valid @RequestBody StaffUpdateRequest request) {
+
+    staffService.updateStaff(id, request);
+
+    String message = "Berhasil Mengupdate staff";
+
     return ApiResponse.success(HttpStatus.OK, message);
   }
 

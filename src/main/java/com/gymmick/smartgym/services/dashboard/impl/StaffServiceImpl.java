@@ -2,6 +2,7 @@ package com.gymmick.smartgym.services.dashboard.impl;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -98,21 +99,39 @@ public class StaffServiceImpl implements StaffService {
   }
 
   @Override
+  @Transactional
   public void updateStaff(String id, StaffUpdateRequest request) {
-    // TODO Auto-generated method stub
 
     UUID uuid = UUID.fromString(id);
 
     User staff = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException());
 
-    String name = (request.getName() != null && request.getName().isBlank()) ? request.getName() : staff.getName();
+    String name = (request.getName() != null && !request.getName().isBlank()) ? request.getName() : staff.getName();
 
-    String email = (request.getEmail() != null && request.getEmail().isBlank()) ? request.getEmail() : staff.getEmail();
+    String email = (request.getEmail() != null && !request.getEmail().isBlank()) ? request.getEmail()
+        : staff.getEmail();
 
-    String phoneNumber = (request.getPhoneNumber() != null && request.getPhoneNumber().isBlank())
+    String phoneNumber = (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank())
         ? request.getPhoneNumber()
         : staff.getPhoneNumber();
 
+    String password = (request.getPassword() != null && !request.getPassword().isBlank()) ? request.getPassword()
+        : staff.getPassword();
+
+    String profileUrl = (request.getProfileUrl() != null && !request.getProfileUrl().isBlank())
+        ? request.getProfileUrl()
+        : staff.getProfileUrl();
+
+    if (!Objects.equals(request.getEmail(), staff.getEmail())) {
+      staff.setEmail(email);
+    }
+
+    staff.setName(name);
+    staff.setPhoneNumber(phoneNumber);
+    staff.setPassword(password);
+    staff.setProfileUrl(profileUrl);
+
+    userRepository.save(staff);
   }
 
 }
