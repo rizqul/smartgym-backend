@@ -65,6 +65,19 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     @Transactional
+    public void updatePackage(String id, MembershipPackageUpdateRequest request) {
+        MembershipPackage membershipPackage = this.findById(id);
+
+        membershipPackage.setType(request.getType());
+        membershipPackage.setName(request.getName());
+        membershipPackage.setDescription(request.getDescription());
+        membershipPackage.setDuration(request.getDuration());
+
+        membershipPackageRepository.save(membershipPackage);
+    }
+
+    @Override
+    @Transactional
     public void deletePackage(String id) {
         MembershipPackage membershipPackage = this.findById(id);
 

@@ -13,6 +13,8 @@ public interface MembershipService {
 
     void createPackage(MembershipPackageCreateRequest request);
 
+    void updatePackage(String id, MembershipPackageUpdateRequest request);
+
     void deletePackage(String id);
 
     String buyMembership(MembershipTransactionCreateRequest request, User user);
