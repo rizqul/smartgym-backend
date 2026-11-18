@@ -35,6 +35,9 @@ public class Transaction extends TimeStamp {
     @Column(nullable = false)
     private String paymentUrl;
 
+    @Column(nullable = true)
+    private String paymentType;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false)
     private User member;
