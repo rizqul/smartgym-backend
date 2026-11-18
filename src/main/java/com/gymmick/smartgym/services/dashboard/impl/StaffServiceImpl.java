@@ -16,11 +16,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
 import com.gymmick.smartgym.dto.common.UserResponse;
 import com.gymmick.smartgym.dto.dashboard.StaffCreateRequest;
+import com.gymmick.smartgym.dto.dashboard.StaffUpdateRequest;
 import com.gymmick.smartgym.dto.dashboard.UserFilterRequest;
 import com.gymmick.smartgym.dto.pagination.PaginationMeta;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.UserRole;
+import com.gymmick.smartgym.exceptions.ResourceNotFoundException;
 import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.common.UserService;
@@ -93,6 +95,24 @@ public class StaffServiceImpl implements StaffService {
         .build();
 
     return paginationResponse;
+  }
+
+  @Override
+  public void updateStaff(String id, StaffUpdateRequest request) {
+    // TODO Auto-generated method stub
+
+    UUID uuid = UUID.fromString(id);
+
+    User staff = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException());
+
+    String name = (request.getName() != null && request.getName().isBlank()) ? request.getName() : staff.getName();
+
+    String email = (request.getEmail() != null && request.getEmail().isBlank()) ? request.getEmail() : staff.getEmail();
+
+    String phoneNumber = (request.getPhoneNumber() != null && request.getPhoneNumber().isBlank())
+        ? request.getPhoneNumber()
+        : staff.getPhoneNumber();
+
   }
 
 }
