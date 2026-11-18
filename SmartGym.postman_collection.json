@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "ed68d2c3-59a9-4bcf-85a7-38cfc3f73d21",
+    "_postman_id": "19ba50bb-231e-45bc-a762-114d05634b2b",
     "name": "SmartGym",
     "description": "Postman Collection for SmartGym API generated from repository postman folder.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "11429476",
-    "_collection_link": "https://go.postman.co/collection/11429476-ed68d2c3-59a9-4bcf-85a7-38cfc3f73d21?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/11429476-19ba50bb-231e-45bc-a762-114d05634b2b?source=collection_link"
   },
   "item": [
     {
@@ -89,24 +89,58 @@
               "response": []
             },
             {
+              "name": "Reset OTP Verify",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"code\": \"{{adminResetOtp}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/auth/reset-verify",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-verify"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Reset Password",
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   },
                   {
                     "key": "Content-Type",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"{{adminEmail}}\",\n    \"code\": \"\",\n    \"password\": \"\"\n}",
+                  "raw": "{\n    \"password\": \"{{adminPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -137,9 +171,9 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{apiUrlDev}}/auth/logout",
+                  "raw": "{{apiUrl}}/auth/logout",
                   "host": [
-                    "{{apiUrlDev}}"
+                    "{{apiUrl}}"
                   ],
                   "path": [
                     "auth",
@@ -632,24 +666,58 @@
               "response": []
             },
             {
+              "name": "Reset OTP Verify",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"code\": \"{{memberResetOtp}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/auth/reset-verify",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-verify"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Reset Password",
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   },
                   {
                     "key": "Content-Type",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberResetOtp}}\",\n    \"password\": \"{{memberPassword}}\"\n}",
+                  "raw": "{\n    \"password\": \"{{memberPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"

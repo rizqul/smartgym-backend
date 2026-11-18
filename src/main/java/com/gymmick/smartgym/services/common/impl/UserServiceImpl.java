@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable(value = "user", key = "#id", condition = "#id != null")
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("These credentials do not match our records."));
+                .orElseThrow(() -> new UsernameNotFoundException("Alamat Email atau Kata Sandi Salah!"));
     }
 
     @Override
