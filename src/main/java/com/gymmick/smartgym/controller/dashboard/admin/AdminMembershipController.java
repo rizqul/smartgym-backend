@@ -37,6 +37,16 @@ public class AdminMembershipController {
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
+    @PatchMapping(path = "/packages/update/{id}")
+    public ResponseEntity<ApiResponse<String>> updateMemberPackage(@PathVariable String id,
+            @Valid @RequestBody MembershipPackageUpdateRequest request) {
+
+        membershipService.updatePackage(id, request);
+
+        String message = "Berhasil Menambahkan Membership Package!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
+
     @DeleteMapping(path = "/packages/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteMemberPackage(@PathVariable String id) {
 
