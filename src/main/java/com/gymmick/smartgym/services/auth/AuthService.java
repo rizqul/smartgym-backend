@@ -2,8 +2,6 @@ package com.gymmick.smartgym.services.auth;
 
 import com.gymmick.smartgym.dto.auth.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 public interface AuthService {
 
     LoginResponse login(LoginRequest request);
@@ -12,9 +10,9 @@ public interface AuthService {
 
     ResetPasswordOTPResponse resetOtpValidation(ResetPasswordOTPRequest request);
 
-    void resetPassword(HttpServletRequest httpRequest, ResetPasswordRequest request);
+    void resetPassword(String token, ResetPasswordRequest request);
 
-    RefreshTokenResponse refreshToken(HttpServletRequest request);
+    RefreshTokenResponse refreshToken(String token);
 
-    void logout(HttpServletRequest request);
+    void logout(String token);
 }
