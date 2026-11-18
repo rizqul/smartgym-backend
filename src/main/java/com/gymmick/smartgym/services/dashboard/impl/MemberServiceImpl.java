@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         otp.setExpiredAt(Instant.now());
-        otpService.update(otp);
+        otpService.save(otp);
 
         User user = User.builder()
                 .name(request.getName())
