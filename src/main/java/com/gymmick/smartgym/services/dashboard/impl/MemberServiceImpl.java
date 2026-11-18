@@ -33,92 +33,104 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    private final UserService userService;
-    private final OtpService otpService;
-    private final EmailService emailService;
+  private final UserService userService;
+  private final OtpService otpService;
+  private final EmailService emailService;
 
-    private final UserMapping userMapping;
+  private final UserMapping userMapping;
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public PaginationResponse<UserResponse> findAllMember(UserFilterRequest request) {
-        Integer page = request.getPage();
-        Integer size = request.getSize();
+  @Override
+  public PaginationResponse<UserResponse> findAllMember(UserFilterRequest request) {
+    Integer page = request.getPage();
+    Integer size = request.getSize();
 
-        Specification<User> specification = UserSpecification.getUserByRoleSpecification(request, UserRole.MEMBER);
+    Specification<User> specification = UserSpecification.getUserByRoleSpecification(request, UserRole.MEMBER);
 
-        Sort sortBy = Sort.by(User::getCreatedAt).descending();
-        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+    Sort sortBy = Sort.by(User::getCreatedAt).descending();
+    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
-        Page<User> userPage = userRepository.findAll(specification, pageRequest);
+    Page<User> userPage = userRepository.findAll(specification, pageRequest);
 
-        List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
-        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
-                userPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
-                        .replaceQueryParam("page", p)
-                        .toUriString());
+    List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
+    PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
+        userPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
+            .replaceQueryParam("page", p)
+            .toUriString());
 
-        PaginationResponse<UserResponse> paginationResponse = PaginationResponse.<UserResponse>builder()
-                .data(userResponse)
-                .pagination(paginationMeta)
-                .build();
+    PaginationResponse<UserResponse> paginationResponse = PaginationResponse.<UserResponse>builder()
+        .data(userResponse)
+        .pagination(paginationMeta)
+        .build();
 
-        return paginationResponse;
+    return paginationResponse;
+  }
+
+  @Override
+  @Transactional
+  public void requestOtp(MemberOtpRequest request)
+      throws EmailSenderException {
+
+    String otpCode = OtpToken.generateOtp();
+
+    otpService.store(request.getEmail(), otpCode, OtpType.EMAIL_VERIFICATION, Duration.ofMinutes(10));
+
+    String emailTemplate = "email/auth/reset-password";
+    String emailSubject = "Verifikasi Email";
+
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("email", request.getEmail());
+    variables.put("code", otpCode);
+
+    emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
+  }
+
+  @Override
+  @Transactional
+  public void createMember(MemberCreateRequest request) {
+
+    Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+
+    if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
+      throw new BadRequestException("Kode Otp Tidak Valid!");
     }
 
-    @Override
-    @Transactional
-    public void requestOtp(MemberOtpRequest request)
-            throws EmailSenderException {
+    otp.setExpiredAt(Instant.now());
+    otpService.save(otp);
 
-        String otpCode = OtpToken.generateOtp();
+    User user = User.builder()
+        .name(request.getName())
+        .email(request.getEmail())
+        .phoneNumber(request.getPhoneNumber())
+        .password(passwordEncoder.encode(request.getPassword()))
+        .build();
 
-        otpService.store(request.getEmail(), otpCode, OtpType.EMAIL_VERIFICATION, Duration.ofMinutes(10));
+    userService.save(user);
+  }
 
-        String emailTemplate = "email/auth/reset-password";
-        String emailSubject = "Verifikasi Email";
+  @Override
+  @Transactional
+  public void deleteMember(String id) {
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("email", request.getEmail());
-        variables.put("code", otpCode);
+    UUID userId = UUID.fromString(id);
+    User user = userService.findById(userId);
 
-        emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
-    }
+    user.setDeletedAt(Instant.now());
+    userService.save(user);
+  }
 
-    @Override
-    @Transactional
-    public void createMember(MemberCreateRequest request) {
+  @Override
+  public void updatePasswordMember(String email, MemberUpdatePasswordRequest request) {
+    // TODO Auto-generated method stub
 
-        Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+  }
 
-        if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
-            throw new BadRequestException("Kode Otp Tidak Valid!");
-        }
+  @Override
+  public void updateProfileMember(String id, MemberUpdateProfileRequest request) {
+    // TODO Auto-generated method stub
 
-        otp.setExpiredAt(Instant.now());
-        otpService.save(otp);
-
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
-
-        userService.save(user);
-    }
-
-    @Override
-    @Transactional
-    public void deleteMember(String id) {
-
-        UUID userId = UUID.fromString(id);
-        User user = userService.findById(userId);
-
-        user.setDeletedAt(Instant.now());
-        userService.save(user);
-    }
+  }
 }
