@@ -17,5 +17,4 @@ public interface MemberService {
 
   void updateProfileMember(String id, MemberUpdateProfileRequest request);
 
-  void updatePasswordMember(String email, MemberUpdatePasswordRequest request);
 }

@@ -123,14 +123,28 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
-  public void updatePasswordMember(String email, MemberUpdatePasswordRequest request) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
+  @Transactional
   public void updateProfileMember(String id, MemberUpdateProfileRequest request) {
-    // TODO Auto-generated method stub
+
+    UUID uuid = UUID.fromString(id);
+
+    User member = userRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException());
+
+    String name = (request.getName() != null && !request.getName().isBlank()) ? request.getName() : member.getName();
+
+    String phoneNumber = (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank())
+        ? request.getPhoneNumber()
+        : member.getPhoneNumber();
+
+    String profileUrl = (request.getProfileUrl() != null && !request.getProfileUrl().isBlank())
+        ? request.getProfileUrl()
+        : member.getProfileUrl();
+
+    member.setName(name);
+    member.setPhoneNumber(phoneNumber);
+    member.setProfileUrl(profileUrl);
+
+    userRepository.save(member);
 
   }
 }
