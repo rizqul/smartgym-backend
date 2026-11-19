@@ -89,10 +89,12 @@ public class MembershipServiceImpl implements MembershipService {
     @Transactional
     public String buyMembership(User user, MembershipTransactionCreateRequest request) {
         try {
-            Optional<Transaction> transaction = transactionRespository.findTopByMemberId(user.getId());
+            Optional<Transaction> transaction = transactionRespository
+                    .findFirstByMemberIdAndStatusEqualsOrderByCreatedAtAsc(user.getId(), TransactionStatus.PENDING);
+
             transaction.ifPresent(t -> {
                 if (t.getStatus().equals(TransactionStatus.PENDING)) {
-                    throw new BadRequestException("Silahkan selesaikan transaksi sebelumnya!");
+                    throw new BadRequestException("Silahkan Selesaikan Transaksi Sebelumnya!");
                 }
             });
 
