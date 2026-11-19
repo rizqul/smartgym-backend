@@ -1,5 +1,8 @@
 package com.gymmick.smartgym.controller;
 
+import java.util.Map;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.entity.Transaction;
@@ -13,12 +16,6 @@ import com.midtrans.service.MidtransCoreApi;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
 @RestController
 @RequestMapping("/midtrans")
 @RequiredArgsConstructor
@@ -31,9 +28,6 @@ public class MidtransController {
 
     @PostMapping(path = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
     public String notification(@RequestBody Map<String, Object> response) {
-
-        System.out.println("Test123");
-
         try {
             if (!response.isEmpty()) {
                 String orderId = response.get("order_id").toString();
@@ -53,7 +47,6 @@ public class MidtransController {
 
             return "OK";
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -69,6 +62,10 @@ public class MidtransController {
             throw new BadRequestException("Menunggu Pembayaran!");
         }
 
+        if (transactionStatus.equals("cancel")) {
+            throw new BadRequestException("Transaksi Telah Dibatalkan!");
+        }
+
         if (transactionStatus.equals("expire")) {
             throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
         }
@@ -76,5 +73,4 @@ public class MidtransController {
         String message = "Aktivasi Membership Berhasil!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
-
 }
