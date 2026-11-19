@@ -19,24 +19,31 @@ public class AccountInitializer implements ApplicationRunner {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.config.init-account}")
-    private String[] account;
+    @Value("${app.config.initial-account-name}")
+    private String accountName;
+
+    @Value("${app.config.initial-account-email}")
+    private String accountEmail;
+
+    @Value("${app.config.initial-account-password}")
+    private String accountPassword;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
 
-        String email = account[1].trim();
+        String email = accountEmail.trim();
 
         if (!userService.existsByEmail(email)) {
             String profileUrl = String
-                    .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256", account[0]);
+                    .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
+                            accountName.trim().toLowerCase().replaceAll("\\s+", ""));
 
             User user = User.builder()
-                    .name(account[0])
+                    .name(accountName)
                     .email(email)
                     .profileUrl(profileUrl)
-                    .password(passwordEncoder.encode(account[2].trim()))
+                    .password(passwordEncoder.encode(accountPassword.trim()))
                     .role(UserRole.ADMIN)
                     .phoneNumber("081212341234")
                     .build();

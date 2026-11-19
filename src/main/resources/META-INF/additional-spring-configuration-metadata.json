@@ -5,14 +5,34 @@
     "description": "A description for 'app.config.app-url'"
   },
   {
+    "name": "app.config.initial-account-name",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.initial-account-name'"
+  },
+  {
+    "name": "app.config.initial-account-email",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.initial-account-email'"
+  },
+  {
+    "name": "app.config.initial-account-password",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.initial-account-password'"
+  },
+  {
     "name": "app.config.cookie-domain",
     "type": "java.lang.String",
     "description": "A description for 'app.config.cookie-domain'"
   },
   {
-    "name": "app.config.init-account",
+    "name": "app.config.cookie-same-site",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.init-account'"
+    "description": "A description for 'app.config.cookie-same-site'"
+  },
+  {
+    "name": "app.config.cookie-secure",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.cookie-secure'"
   },
   {
     "name": "app.config.jwt-secret",
@@ -28,16 +48,6 @@
     "name": "app.config.aws.s3.public-url",
     "type": "java.lang.String",
     "description": "A description for 'app.config.aws.s3.public-url'"
-  },
-  {
-    "name": "app.config.cookie-same-site",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.cookie-same-site'"
-  },
-  {
-    "name": "app.config.cookie-secure",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.cookie-secure'"
   },
   {
     "name": "app.config.midtrans.server-key",
