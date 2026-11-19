@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   @Cacheable(value = "user", key = "#id", condition = "#id != null")
@@ -83,16 +84,14 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public User updatePassword(String email, UserUpdatePasswordRequest request) {
 
-    // User user = userRepository.findByEmail(email).orElseThrow(() -> new
-    // ResourceNotFoundException());
-    //
-    // if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-    // throw new BadCredentialsException("incorrect password");
-    // }
-    //
-    // user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-    // User updatedPasswordUser = userRepository.save(user);
-    // return updatedPasswordUser;
-    return null;
+    User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException());
+
+    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+      throw new BadCredentialsException("incorrect password");
+    }
+
+    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    User updatedPasswordUser = userRepository.save(user);
+    return updatedPasswordUser;
   }
 }

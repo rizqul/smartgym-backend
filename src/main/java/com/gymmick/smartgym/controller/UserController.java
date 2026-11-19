@@ -12,6 +12,7 @@ import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.services.common.UserService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -42,7 +43,7 @@ public class UserController {
 
   @PutMapping(path = "/password")
   public ResponseEntity<ApiResponse<UserResponse>> updatePassword(@AuthenticationPrincipal User user,
-      @RequestBody UserUpdatePasswordRequest request) {
+      @Valid @RequestBody UserUpdatePasswordRequest request) {
 
     userService.updatePassword(user.getEmail(), request);
     String message = "update password user berhasil";
