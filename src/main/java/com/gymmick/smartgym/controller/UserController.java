@@ -4,8 +4,7 @@ import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import com.gymmick.smartgym.dto.UserUpdatePasswordRequest;
-import com.gymmick.smartgym.dto.UserUpdateProfileRequest;
+import com.gymmick.smartgym.dto.*;
 import com.gymmick.smartgym.dto.common.UserResponse;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.mappers.UserMapping;
@@ -31,22 +30,22 @@ public class UserController {
         return ApiResponse.success(HttpStatus.OK, userResponse);
     }
 
-    @PutMapping(path = "/profile")
-    public ResponseEntity<ApiResponse<UserResponse>> updateProfile(@AuthenticationPrincipal User user,
-            @RequestBody UserUpdateProfileRequest request) {
+    @PutMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> updateProfile(@AuthenticationPrincipal User user,
+            @Valid @ModelAttribute UserProfileUpdateRequest request) {
 
-        userService.updateProfile(user.getId(), request);
-        String message = "update user berhasil";
+        userService.updateProfile(user, request);
+        String message = "Berhasil Memperbaharui Profil!";
 
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
     @PutMapping(path = "/password")
-    public ResponseEntity<ApiResponse<UserResponse>> updatePassword(@AuthenticationPrincipal User user,
-            @Valid @RequestBody UserUpdatePasswordRequest request) {
+    public ResponseEntity<ApiResponse<String>> updatePassword(@AuthenticationPrincipal User user,
+            @Valid @RequestBody UserPasswordUpdateRequest request) {
 
-        userService.updatePassword(user.getEmail(), request);
-        String message = "update password user berhasil";
+        userService.updatePassword(user, request);
+        String message = "Berhasil Memperbaharui Kata Sandi!";
 
         return ApiResponse.success(HttpStatus.OK, message);
     }
