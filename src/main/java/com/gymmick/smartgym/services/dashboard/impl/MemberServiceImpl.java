@@ -61,12 +61,10 @@ public class MemberServiceImpl implements MemberService {
                         .replaceQueryParam("page", p)
                         .toUriString());
 
-        PaginationResponse<UserResponse> paginationResponse = PaginationResponse.<UserResponse>builder()
+        return PaginationResponse.<UserResponse>builder()
                 .data(userResponse)
                 .pagination(paginationMeta)
                 .build();
-
-        return paginationResponse;
     }
 
     @Override
@@ -101,9 +99,14 @@ public class MemberServiceImpl implements MemberService {
         otp.setExpiredAt(Instant.now());
         otpService.save(otp);
 
+        String profileUrl = String
+                .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
+                        request.getName().toLowerCase().replaceAll("\s+", "+"));
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
+                .profileUrl(profileUrl)
                 .phoneNumber(request.getPhoneNumber())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
@@ -118,7 +121,10 @@ public class MemberServiceImpl implements MemberService {
         UUID userId = UUID.fromString(id);
         User user = userService.findById(userId);
 
+        user.setMembershipStatus(MembershipStatus.NON_ACTIVE);
+        user.setMembershipExpiredAt(null);
         user.setDeletedAt(Instant.now());
+
         userService.save(user);
     }
 }
