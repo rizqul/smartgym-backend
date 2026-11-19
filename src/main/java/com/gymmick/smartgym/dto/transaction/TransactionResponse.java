@@ -3,36 +3,34 @@ package com.gymmick.smartgym.dto.transaction;
 import java.time.Instant;
 import java.util.UUID;
 
-import com.gymmick.smartgym.entity.User;
-import com.gymmick.smartgym.entity.enums.TransactionStatus;
-import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.dto.user.UserTransactionResponse;
+import com.gymmick.smartgym.entity.enums.*;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
 public class TransactionResponse {
 
-  private UUID id;
+    private UUID id;
 
-  private UUID packageId;
+    private UUID packageId;
 
-  private String orderId;
+    private String orderId;
 
-  private String paymentUrl;
+    private UserTransactionResponse member;
 
-  private User member;
+    private TransactionType type;
 
-  private TransactionType type;
+    private String paymentUrl;
 
-  private Long amount;
+    private Long amount;
 
-  private TransactionStatus status;
+    private TransactionStatus status;
 
-  private Instant paidAt;
+    private Instant paidAt;
 
-  private Instant createdAt;
+    private Instant createdAt;
 
-  private Instant updatedAt;
+    private Instant updatedAt;
 }

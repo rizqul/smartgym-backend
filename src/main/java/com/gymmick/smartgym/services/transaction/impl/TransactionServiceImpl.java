@@ -42,8 +42,35 @@ public class TransactionServiceImpl implements TransactionService {
         Integer page = request.getPage();
         Integer size = request.getSize();
 
-        Specification<Transaction> specification = TransactionSpecification.getTransactionByTransactionType(request,
-                TransactionType.MEMBERSHIP);
+        Specification<Transaction> specification = TransactionSpecification.getTransaction(request);
+
+        Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+
+        Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
+
+        List<TransactionResponse> transactionResponse = transactionMapping
+                .toListResponses(transactionPage.getContent());
+
+        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, transactionPage.getTotalPages(), size,
+                transactionPage.getTotalElements(),
+                p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
+
+        PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
+                .data(transactionResponse)
+                .pagination(paginationMeta)
+                .build();
+
+        return paginationResponse;
+    }
+
+    @Override
+    public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request) {
+
+        Integer page = request.getPage();
+        Integer size = request.getSize();
+
+        Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
 
         Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
         PageRequest pageRequest = PageRequest.of(page, size, sortBy);

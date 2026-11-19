@@ -9,6 +9,8 @@ public interface TransactionService {
 
     PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
 
+    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request);
+
     String createTransaction(User user, TransactionData data) throws MidtransError;
 
     Transaction updateTransaction(String orderId, String status, String paymentType);
