@@ -36,7 +36,7 @@ public class AdminStaffController {
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(path = "/update/{id}")
     public ResponseEntity<ApiResponse<String>> updateStaff(@PathVariable String id,
             @Valid @RequestBody UserStaffUpdateRequest request) {
 
@@ -47,7 +47,7 @@ public class AdminStaffController {
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteStaff(@PathVariable String id) {
 
         staffService.deleteStaff(id);
