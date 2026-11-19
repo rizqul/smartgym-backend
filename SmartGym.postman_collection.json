@@ -644,6 +644,30 @@
                   "response": []
                 }
               ]
+            },
+            {
+              "name": "Transactions",
+              "item": [
+                {
+                  "name": "List Transactions",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "transactions"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
@@ -1177,6 +1201,24 @@
         {
           "name": "Transactions",
           "item": [
+            {
+              "name": "List Transaction",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/transactions",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "transactions"
+                  ]
+                }
+              },
+              "response": []
+            },
             {
               "name": "Cancel Transaction",
               "request": {
