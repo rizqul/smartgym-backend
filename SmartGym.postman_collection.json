@@ -1051,7 +1051,7 @@
       "name": "User",
       "item": [
         {
-          "name": "Me",
+          "name": "Profile",
           "request": {
             "method": "GET",
             "header": [
@@ -1067,6 +1067,76 @@
               ],
               "path": [
                 "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "{{memberName}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{apiUrl}}/user/profile",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldPassword\": \"{{memberPassword}}\",\r\n    \"newPassword\": \"{{memberNewPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiUrl}}/user/password",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "user",
+                "password"
               ]
             }
           },
