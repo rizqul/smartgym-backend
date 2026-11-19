@@ -33,7 +33,7 @@ public class AdminMemberController {
 
         memberService.requestOtp(request);
 
-        String message = "Berhasil Mengirimkan Otp!";
+        String message = "Berhasil Mengirim Kode OTP!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
