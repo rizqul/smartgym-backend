@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.gymmick.smartgym.dto.common.UserTrainerResponse;
+import com.gymmick.smartgym.dto.user.UserTrainerResponse;
 import com.gymmick.smartgym.entity.Trainer;
 import com.gymmick.smartgym.entity.User;
 

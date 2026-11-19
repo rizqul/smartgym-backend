@@ -14,8 +14,8 @@ import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.services.auth.*;
-import com.gymmick.smartgym.services.common.UserService;
-import com.gymmick.smartgym.services.email.EmailService;
+import com.gymmick.smartgym.services.user.UserService;
+import com.gymmick.smartgym.services.utils.EmailService;
 import com.gymmick.smartgym.utils.*;
 
 import lombok.RequiredArgsConstructor;

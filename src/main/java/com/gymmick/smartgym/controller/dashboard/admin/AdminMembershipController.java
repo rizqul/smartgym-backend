@@ -5,9 +5,9 @@ import java.util.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import com.gymmick.smartgym.dto.dashboard.*;
+import com.gymmick.smartgym.dto.membership.*;
 import com.gymmick.smartgym.entity.enums.MembershipType;
-import com.gymmick.smartgym.services.dashboard.MembershipService;
+import com.gymmick.smartgym.services.membership.MembershipService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import jakarta.validation.Valid;
