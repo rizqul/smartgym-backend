@@ -19,7 +19,7 @@ import org.springframework.web.cors.*;
 import com.gymmick.smartgym.entity.enums.UserRole;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.middleware.JwtAuthMiddleware;
-import com.gymmick.smartgym.services.common.UserService;
+import com.gymmick.smartgym.services.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 

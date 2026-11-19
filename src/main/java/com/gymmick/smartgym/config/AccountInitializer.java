@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.UserRole;
-import com.gymmick.smartgym.services.common.UserService;
+import com.gymmick.smartgym.services.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 

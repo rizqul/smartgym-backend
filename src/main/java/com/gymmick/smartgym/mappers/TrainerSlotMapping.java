@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.mapstruct.*;
 
-import com.gymmick.smartgym.dto.common.TrainerSlotResponse;
+import com.gymmick.smartgym.dto.trainer.TrainerSlotResponse;
 import com.gymmick.smartgym.entity.TrainerSlot;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

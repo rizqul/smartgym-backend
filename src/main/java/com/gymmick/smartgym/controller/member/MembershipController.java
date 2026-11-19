@@ -6,12 +6,12 @@ import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import com.gymmick.smartgym.dto.dashboard.MembershipPackageResponse;
-import com.gymmick.smartgym.dto.member.MembershipTransactionCreateRequest;
+import com.gymmick.smartgym.dto.membership.MembershipPackageResponse;
+import com.gymmick.smartgym.dto.membership.MembershipTransactionCreateRequest;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.MembershipType;
 import com.gymmick.smartgym.exceptions.BadRequestException;
-import com.gymmick.smartgym.services.dashboard.MembershipService;
+import com.gymmick.smartgym.services.membership.MembershipService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.utils.ApiResponse;
 

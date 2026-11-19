@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import com.gymmick.smartgym.dto.common.UserResponse;
-import com.gymmick.smartgym.dto.dashboard.*;
+import com.gymmick.smartgym.dto.member.*;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
-import com.gymmick.smartgym.services.dashboard.MemberService;
+import com.gymmick.smartgym.dto.user.*;
+import com.gymmick.smartgym.services.user.MemberService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import jakarta.validation.Valid;

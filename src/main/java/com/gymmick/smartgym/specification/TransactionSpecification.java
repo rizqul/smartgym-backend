@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gymmick.smartgym.dto.dashboard.TransactionFilterRequest;
+import com.gymmick.smartgym.dto.transaction.TransactionFilterRequest;
 import com.gymmick.smartgym.entity.Transaction;
 import com.gymmick.smartgym.entity.enums.TransactionType;
 

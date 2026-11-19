@@ -1,6 +1,6 @@
 package com.gymmick.smartgym.dto.auth;
 
-import com.gymmick.smartgym.dto.common.UserResponse;
+import com.gymmick.smartgym.dto.user.UserResponse;
 
 import lombok.*;
 
