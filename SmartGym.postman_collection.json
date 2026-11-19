@@ -215,7 +215,7 @@
               "name": "Members",
               "item": [
                 {
-                  "name": "Member List",
+                  "name": "List Member",
                   "event": [
                     {
                       "listen": "test",
@@ -256,7 +256,7 @@
                   "response": []
                 },
                 {
-                  "name": "OTP Request",
+                  "name": "Send Member OTP",
                   "request": {
                     "method": "POST",
                     "header": [
@@ -461,6 +461,158 @@
                   "response": []
                 }
               ]
+            },
+            {
+              "name": "Trainer",
+              "item": [
+                {
+                  "name": "Trainer Slot",
+                  "item": [
+                    {
+                      "name": "List Slot Trainer",
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula\",\r\n    \"slotDate\": \"2026-11-20\",\r\n    \"startTime\": \"2026-11-20T08:00\",\r\n    \"endTime\": \"2026-11-20T09:00\",\r\n    \"quota\": \"6\"\r\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date=2026-11-21",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "trainers",
+                            "slot",
+                            "{{trainerId}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "date",
+                              "value": "2026-11-21"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Create Slot",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula Sesi 1\",\r\n    \"slotDate\": \"2026-11-20\",\r\n    \"startTime\": \"2026-11-20T10:30\",\r\n    \"endTime\": \"2026-11-20T11:30\",\r\n    \"quota\": \"5\"\r\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/create/{{trainerId}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "trainers",
+                            "slot",
+                            "create",
+                            "{{trainerId}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "List Trainer",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"trainerId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers?size=10",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers"
+                      ],
+                      "query": [
+                        {
+                          "key": "size",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Trainer",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"name\": \"{{trainerName}}\",\r\n    \"email\": \"{{trainerEmail}}\",\r\n    \"phoneNumber\": \"081212341234\",\r\n    \"password\": \"{{trainerPassword}}\",\r\n    \"specialization\": \"{{trainerSpecialization}}\",\r\n    \"experience\": \"{{trainerExperience}}\",\r\n    \"rate\": \"{{trainerRate}}\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
@@ -536,6 +688,42 @@
                         "memberships",
                         "packages",
                         "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update Package",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"type\": \"monthly\", // weekly | monthly | yearly\r\n    \"name\": \"28 Hari\",\r\n    \"description\": \"Akses Gym Selama 28 Hari!\",\r\n    \"duration\": 28\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/update/{{membershipPackageId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "memberships",
+                        "packages",
+                        "update",
+                        "{{membershipPackageId}}"
                       ]
                     }
                   },
@@ -790,7 +978,7 @@
           "name": "Membership",
           "item": [
             {
-              "name": "Membership List",
+              "name": "Membership Package",
               "event": [
                 {
                   "listen": "test",
