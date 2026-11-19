@@ -54,5 +54,4 @@ public class AdminMemberController {
     String message = "Berhasil Menghapus Member!";
     return ApiResponse.success(HttpStatus.OK, message);
   }
-
 }
