@@ -9,7 +9,6 @@ import com.gymmick.smartgym.dto.common.TrainerSlotResponse;
 import com.gymmick.smartgym.dto.common.UserTrainerResponse;
 import com.gymmick.smartgym.dto.dashboard.*;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
-import com.gymmick.smartgym.entity.TrainerSlot;
 import com.gymmick.smartgym.services.dashboard.TrainerService;
 import com.gymmick.smartgym.utils.ApiResponse;
 

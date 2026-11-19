@@ -127,4 +127,5 @@ public class MemberServiceImpl implements MemberService {
 
         userService.save(user);
     }
+
 }

@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
@@ -36,6 +34,8 @@ public class SecurityConfig {
 
     private final CustomAccessDeniedException customAccessDeniedException;
     private final CustomAuthenticationEntryPointException customAuthenticationEntryPointException;
+
+    private final PasswordEncoderConfig passwordEncodercoConfig;
 
     @Value("${app.config.app-url}")
     private String[] appUrl;
@@ -83,7 +83,7 @@ public class SecurityConfig {
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncodercoConfig.passwordEncoder());
 
         return provider;
     }
@@ -93,8 +93,4 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
