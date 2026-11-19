@@ -31,70 +31,68 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserService userService;
-    private final JwtAuthMiddleware jwtAuthMiddleware;
+  private final UserService userService;
+  private final JwtAuthMiddleware jwtAuthMiddleware;
 
-    private final CustomAccessDeniedException customAccessDeniedException;
-    private final CustomAuthenticationEntryPointException customAuthenticationEntryPointException;
+  private final CustomAccessDeniedException customAccessDeniedException;
+  private final CustomAuthenticationEntryPointException customAuthenticationEntryPointException;
 
-    @Value("${app.config.app-url}")
-    private String[] appUrl;
+  private final PasswordEncoderConfig passwordEncodercoConfig;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.referrerPolicy(
-                        referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/midtrans/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
-                        .requestMatchers("/member/**").hasRole(UserRole.MEMBER.toString())
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(customAccessDeniedException)
-                        .authenticationEntryPoint(customAuthenticationEntryPointException));
+  @Value("${app.config.app-url}")
+  private String[] appUrl;
 
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(jwtAuthMiddleware, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .headers(headers -> headers.referrerPolicy(
+            referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/midtrans/**").permitAll()
+            .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
+            .requestMatchers("/member/**").hasRole(UserRole.MEMBER.toString())
+            .anyRequest().authenticated())
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(exception -> exception
+            .accessDeniedHandler(customAccessDeniedException)
+            .authenticationEntryPoint(customAuthenticationEntryPointException));
 
-        return http.build();
-    }
+    http.authenticationProvider(authenticationProvider());
+    http.addFilterBefore(jwtAuthMiddleware, UsernamePasswordAuthenticationFilter.class);
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(appUrl));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Cache-Control", "Content-Type"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
+    return http.build();
+  }
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList(appUrl));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("Cache-Control", "Content-Type"));
+    configuration.setAllowCredentials(true);
+    configuration.setMaxAge(3600L);
 
-        return source;
-    }
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
 
-    @Bean
-    DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
-        provider.setPasswordEncoder(passwordEncoder());
+    return source;
+  }
 
-        return provider;
-    }
+  @Bean
+  DaoAuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
+    provider.setPasswordEncoder(passwordEncodercoConfig.passwordEncoder());
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+    return provider;
+  }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    return config.getAuthenticationManager();
+  }
+
 }

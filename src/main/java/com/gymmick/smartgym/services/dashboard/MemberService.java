@@ -7,11 +7,11 @@ import com.gymmick.smartgym.exceptions.EmailSenderException;
 
 public interface MemberService {
 
-    PaginationResponse<UserResponse> findAllMember(UserFilterRequest request);
+  PaginationResponse<UserResponse> findAllMember(UserFilterRequest request);
 
-    void requestOtp(MemberOtpRequest request) throws EmailSenderException;
+  void requestOtp(MemberOtpRequest request) throws EmailSenderException;
 
-    void createMember(MemberCreateRequest request);
+  void createMember(MemberCreateRequest request);
 
-    void deleteMember(String id);
+  void deleteMember(String id);
 }
