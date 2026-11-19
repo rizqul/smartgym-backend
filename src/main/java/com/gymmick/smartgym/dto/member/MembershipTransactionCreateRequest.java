@@ -7,9 +7,6 @@ import lombok.*;
 @Setter
 public class MembershipTransactionCreateRequest {
 
-    @NotBlank(message = "The transaction id field is required.")
-    private String transactionId;
-
     @NotBlank(message = "The package id field is required.")
     private String packageId;
 }

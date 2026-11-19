@@ -1,5 +1,8 @@
 package com.gymmick.smartgym.controller;
 
+import java.util.Map;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.entity.Transaction;
@@ -13,12 +16,6 @@ import com.midtrans.service.MidtransCoreApi;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
 @RestController
 @RequestMapping("/midtrans")
 @RequiredArgsConstructor
@@ -31,7 +28,6 @@ public class MidtransController {
 
     @PostMapping(path = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
     public String notification(@RequestBody Map<String, Object> response) {
-
         try {
             if (!response.isEmpty()) {
                 String orderId = response.get("order_id").toString();
@@ -42,10 +38,10 @@ public class MidtransController {
 
                 Transaction transaction = transactionService.updateTransaction(orderId, transactionStatus, paymentType);
 
-                if (transaction.getType().equals(TransactionType.MEMBERSHIP)
-                        && transactionStatus.equals("settlement")) {
-
-                    membershipService.activationMembership(transaction);
+                if (transactionStatus.equals("settlement")) {
+                    if (transaction.getType().equals(TransactionType.MEMBERSHIP)) {
+                        membershipService.activationMembership(transaction);
+                    }
                 }
             }
 
@@ -56,22 +52,26 @@ public class MidtransController {
     }
 
     @GetMapping(path = "/membership")
-    public ResponseEntity<ApiResponse<String>> validationOrder(@RequestParam String order_id,
-            String transaction_status) throws MidtransError {
+    public ResponseEntity<ApiResponse<String>> validationOrder(@RequestParam(name = "order_id") String orderId) {
+        try {
+            String transactionStatus = this.getTransactionStatus(orderId);
 
-        Map<String, Object> transactionResult = midtransCoreApi.checkTransaction(order_id).toMap();
-        String transactionStatus = transactionResult.get("transaction_status").toString();
-
-        if (transactionStatus.equals("pending")) {
-            throw new BadRequestException("Menunggu Pembayaran!");
+            return switch (transactionStatus) {
+                case "pending" -> throw new BadRequestException("Menunggu Pembayaran!");
+                case "cancel" -> throw new BadRequestException("Transaksi Telah Dibatalkan!");
+                case "expire" -> throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
+                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Aktivasi Membership Berhasil!");
+                default -> throw new BadRequestException(
+                        "Terjadi Kesalahan Saat Melakukan Pengecekan Transaksi!");
+            };
+        } catch (MidtransError e) {
+            throw new BadRequestException(e.getMessage());
         }
-
-        if (transactionStatus.equals("expire")) {
-            throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
-        }
-
-        String message = "Aktivasi Membership Berhasil!";
-        return ApiResponse.success(HttpStatus.OK, message);
     }
 
+    private String getTransactionStatus(String orderId) throws MidtransError {
+        return midtransCoreApi.checkTransaction(orderId).toMap()
+                .get("transaction_status")
+                .toString();
+    }
 }

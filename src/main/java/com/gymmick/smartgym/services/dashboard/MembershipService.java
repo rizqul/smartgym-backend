@@ -17,7 +17,7 @@ public interface MembershipService {
 
     void deletePackage(String id);
 
-    String buyMembership(MembershipTransactionCreateRequest request, User user);
+    String buyMembership(User user, MembershipTransactionCreateRequest request);
 
     void activationMembership(Transaction transaction);
 

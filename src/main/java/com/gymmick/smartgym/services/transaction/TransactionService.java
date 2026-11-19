@@ -9,9 +9,11 @@ import com.midtrans.httpclient.error.MidtransError;
 
 public interface TransactionService {
 
+    PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
+
     String createTransaction(User user, TransactionData data) throws MidtransError;
 
     Transaction updateTransaction(String orderId, String status, String paymentType);
 
-    PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
+    void cancelTransaction(String orderId) throws MidtransError;
 }
