@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -80,6 +79,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         Trainer trainer = Trainer.builder()
                 .name(request.getName())
+                .email(request.getEmail())
                 .profileUrl(profileUrl)
                 .phoneNumber(request.getPhoneNumber())
                 .experience(request.getExperience())
