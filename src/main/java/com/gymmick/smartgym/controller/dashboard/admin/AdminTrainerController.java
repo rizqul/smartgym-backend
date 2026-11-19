@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.trainer.*;
-import com.gymmick.smartgym.dto.user.*;
 import com.gymmick.smartgym.services.user.TrainerService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
@@ -22,8 +21,8 @@ public class AdminTrainerController {
     private final TrainerService trainerService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserTrainerResponse>>> findAll(UserFilterRequest request) {
-        PaginationResponse<UserTrainerResponse> response = trainerService.findAllTrainer(request);
+    public ResponseEntity<ApiResponse<List<TrainerResponse>>> findAll(TrainerSearchRequest request) {
+        PaginationResponse<TrainerResponse> response = trainerService.findAllTrainer(request);
 
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }

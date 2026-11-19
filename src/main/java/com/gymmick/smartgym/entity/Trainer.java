@@ -24,12 +24,19 @@ public class Trainer extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private String name;
 
+    @Column(nullable = false)
+    private String profileUrl;
+
+    @Column(nullable = true)
+    private String phoneNumber;
+
+    @Column(nullable = false)
     private TrainerSpecialization specialization;
 
+    @Column(nullable = false)
     private Integer experience;
 
     @Column(nullable = false)

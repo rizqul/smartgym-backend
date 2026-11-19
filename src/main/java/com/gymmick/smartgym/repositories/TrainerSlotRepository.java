@@ -12,7 +12,7 @@ public interface TrainerSlotRepository extends JpaRepository<TrainerSlot, UUID>,
 
     @Query("""
         SELECT t FROM TrainerSlot t 
-        WHERE (t.trainer.id = :trainerId OR t.trainer.user.id = :trainerId) 
+        WHERE (t.trainer.id = :trainerId) 
             AND t.slotDate >= :startOfDay 
             AND t.slotDate < :endOfDay 
         ORDER BY t.startTime ASC
@@ -25,7 +25,7 @@ public interface TrainerSlotRepository extends JpaRepository<TrainerSlot, UUID>,
     @Query("""
         SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END 
         FROM TrainerSlot t 
-        WHERE (t.trainer.id = :trainerId OR t.trainer.user.id = :trainerId) 
+        WHERE (t.trainer.id = :trainerId) 
             AND t.startTime < :endTime 
             AND t.endTime > :startTime
     """)
