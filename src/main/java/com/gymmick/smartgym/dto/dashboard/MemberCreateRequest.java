@@ -27,4 +27,12 @@ public class MemberCreateRequest {
     @NotBlank(message = "The password field is required.")
     @Size(min = 8, message = "The password field must be at least 8 characters.")
     private String password;
+
+    public String getName() {
+        return this.name.trim();
+    }
+
+    public String getEmail() {
+        return this.email.trim().toLowerCase();
+    }
 }
