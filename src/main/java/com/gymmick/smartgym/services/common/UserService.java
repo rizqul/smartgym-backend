@@ -10,15 +10,15 @@ import com.gymmick.smartgym.entity.User;
 
 public interface UserService extends UserDetailsService {
 
-  void save(User user);
+    User save(User user);
 
-  User findById(UUID id);
+    User findById(UUID id);
 
-  User findByEmail(String email);
+    User findByEmail(String email);
 
-  boolean existsByEmail(String email);
+    boolean existsByEmail(String email);
 
-  User updateProfile(UUID id, UserUpdateProfileRequest request);
+    User updateProfile(UUID id, UserUpdateProfileRequest request);
 
-  User updatePassword(String email, UserUpdatePasswordRequest request);
+    User updatePassword(String email, UserUpdatePasswordRequest request);
 }

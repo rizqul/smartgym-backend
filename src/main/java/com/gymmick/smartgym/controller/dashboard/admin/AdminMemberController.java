@@ -19,39 +19,39 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminMemberController {
 
-  private final MemberService memberService;
+    private final MemberService memberService;
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserFilterRequest request) {
-    PaginationResponse<UserResponse> response = memberService.findAllMember(request);
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserFilterRequest request) {
+        PaginationResponse<UserResponse> response = memberService.findAllMember(request);
 
-    return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
-  }
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+    }
 
-  @PostMapping(path = "/otp")
-  public ResponseEntity<ApiResponse<String>> requestOtp(@Valid @RequestBody MemberOtpRequest request) {
+    @PostMapping(path = "/otp")
+    public ResponseEntity<ApiResponse<String>> requestOtp(@Valid @RequestBody MemberOtpRequest request) {
 
-    memberService.requestOtp(request);
+        memberService.requestOtp(request);
 
-    String message = "Berhasil Mengirim Kode OTP!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        String message = "Berhasil Mengirim Kode OTP!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-  @PostMapping(path = "/create")
-  public ResponseEntity<ApiResponse<String>> createMember(@Valid @RequestBody MemberCreateRequest request) {
+    @PostMapping(path = "/create")
+    public ResponseEntity<ApiResponse<String>> createMember(@Valid @RequestBody MemberCreateRequest request) {
 
-    memberService.createMember(request);
+        memberService.createMember(request);
 
-    String message = "Berhasil Menambahkan Member!";
-    return ApiResponse.success(HttpStatus.CREATED, message);
-  }
+        String message = "Berhasil Menambahkan Member!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
 
-  @DeleteMapping(path = "/{id}")
-  public ResponseEntity<ApiResponse<String>> deleteMember(@PathVariable String id) {
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteMember(@PathVariable String id) {
 
-    memberService.deleteMember(id);
+        memberService.deleteMember(id);
 
-    String message = "Berhasil Menghapus Member!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        String message = "Berhasil Menghapus Member!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }

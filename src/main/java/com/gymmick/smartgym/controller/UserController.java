@@ -20,34 +20,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-  private final UserMapping userMapping;
-  private final UserService userService;
+    private final UserMapping userMapping;
+    private final UserService userService;
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<UserResponse>> profile(@AuthenticationPrincipal User user) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<UserResponse>> profile(@AuthenticationPrincipal User user) {
 
-    UserResponse userResponse = userMapping.toResponse(user);
+        UserResponse userResponse = userMapping.toResponse(user);
 
-    return ApiResponse.success(HttpStatus.OK, userResponse);
-  }
+        return ApiResponse.success(HttpStatus.OK, userResponse);
+    }
 
-  @PutMapping(path = "/profile")
-  public ResponseEntity<ApiResponse<UserResponse>> updateProfile(@AuthenticationPrincipal User user,
-      @RequestBody UserUpdateProfileRequest request) {
+    @PutMapping(path = "/profile")
+    public ResponseEntity<ApiResponse<UserResponse>> updateProfile(@AuthenticationPrincipal User user,
+            @RequestBody UserUpdateProfileRequest request) {
 
-    userService.updateProfile(user.getId(), request);
-    String message = "update user berhasil";
+        userService.updateProfile(user.getId(), request);
+        String message = "update user berhasil";
 
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-  @PutMapping(path = "/password")
-  public ResponseEntity<ApiResponse<UserResponse>> updatePassword(@AuthenticationPrincipal User user,
-      @Valid @RequestBody UserUpdatePasswordRequest request) {
+    @PutMapping(path = "/password")
+    public ResponseEntity<ApiResponse<UserResponse>> updatePassword(@AuthenticationPrincipal User user,
+            @Valid @RequestBody UserUpdatePasswordRequest request) {
 
-    userService.updatePassword(user.getEmail(), request);
-    String message = "update password user berhasil";
+        userService.updatePassword(user.getEmail(), request);
+        String message = "update password user berhasil";
 
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }

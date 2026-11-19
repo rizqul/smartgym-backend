@@ -10,14 +10,14 @@ import lombok.*;
 @Setter
 public class MemberUpdatePasswordRequest {
 
-  @NotBlank(message = "The email field is required.")
-  @Email(message = "The email field must be a valid email address.")
-  private String email;
+    @NotBlank(message = "The email field is required.")
+    @Email(message = "The email field must be a valid email address.")
+    private String email;
 
-  @NotBlank
-  private String oldPassword;
+    @NotBlank
+    private String oldPassword;
 
-  @NotBlank(message = "The password field is required.")
-  @Size(min = 8, message = "The password field must be at least 8 characters.")
-  private String newPassword;
+    @NotBlank(message = "The password field is required.")
+    @Size(min = 8, message = "The password field must be at least 8 characters.")
+    private String newPassword;
 }

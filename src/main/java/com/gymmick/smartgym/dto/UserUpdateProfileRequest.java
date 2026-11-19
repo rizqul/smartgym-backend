@@ -9,10 +9,10 @@ import lombok.*;
 @Setter
 public class UserUpdateProfileRequest {
 
-  private String name;
+    private String name;
 
-  @IdPhoneNumber
-  private String phoneNumber;
+    @IdPhoneNumber
+    private String phoneNumber;
 
-  private String profileUrl;
+    private String profileUrl;
 }

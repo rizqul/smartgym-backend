@@ -20,13 +20,13 @@ public class UserResponse {
 
     private String profileUrl;
 
-    private UserRole role;
-
     private String phoneNumber;
 
     private MembershipStatus membershipStatus;
 
     private Instant membershipExpiredAt;
+
+    private UserRole role;
 
     private Instant createdAt;
 
