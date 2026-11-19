@@ -54,8 +54,8 @@ public class MemberServiceImpl implements MemberService {
         PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
         Page<User> userPage = userRepository.findAll(specification, pageRequest);
-
         List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
+
         PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
                 userPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
                         .replaceQueryParam("page", p)

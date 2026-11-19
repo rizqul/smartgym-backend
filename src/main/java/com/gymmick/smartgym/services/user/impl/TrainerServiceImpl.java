@@ -13,15 +13,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
 import com.gymmick.smartgym.dto.pagination.*;
 import com.gymmick.smartgym.dto.trainer.*;
-import com.gymmick.smartgym.dto.user.*;
 import com.gymmick.smartgym.entity.*;
-import com.gymmick.smartgym.entity.enums.UserRole;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.TrainerMapping;
 import com.gymmick.smartgym.mappers.TrainerSlotMapping;
 import com.gymmick.smartgym.repositories.*;
-import com.gymmick.smartgym.services.user.TrainerService;
-import com.gymmick.smartgym.services.user.UserService;
+import com.gymmick.smartgym.services.user.*;
 import com.gymmick.smartgym.specification.TrainerSpecification;
 
 import lombok.RequiredArgsConstructor;
@@ -34,32 +31,28 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainerRepository trainerRepository;
     private final TrainerSlotRepository trainerSlotRepository;
 
-    private final UserService userService;
-
     private final TrainerMapping trainerMapping;
     private final TrainerSlotMapping trainerSlotMapping;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Override
-    public PaginationResponse<UserTrainerResponse> findAllTrainer(UserFilterRequest request) {
+    public PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request) {
         Integer page = request.getPage();
         Integer size = request.getSize();
 
         Specification<Trainer> specification = TrainerSpecification.getTrainerSpecification(request);
 
-        Sort sortBy = Sort.by(User::getCreatedAt).descending();
+        Sort sortBy = Sort.by(Trainer::getCreatedAt).descending();
         PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
         Page<Trainer> trainerPage = trainerRepository.findAll(specification, pageRequest);
-        List<UserTrainerResponse> trainers = trainerMapping.toListResponses(trainerPage.getContent());
+        List<TrainerResponse> trainers = trainerMapping.toListResponses(trainerPage.getContent());
 
         PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, trainerPage.getTotalPages(), size,
                 trainerPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
                         .replaceQueryParam("page", p)
                         .toUriString());
 
-        return PaginationResponse.<UserTrainerResponse>builder()
+        return PaginationResponse.<TrainerResponse>builder()
                 .data(trainers)
                 .pagination(paginationMeta)
                 .build();
@@ -85,19 +78,10 @@ public class TrainerServiceImpl implements TrainerService {
                 .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
                         request.getName().toLowerCase().replaceAll("\s+", "+"));
 
-        User user = User.builder()
+        Trainer trainer = Trainer.builder()
                 .name(request.getName())
-                .email(request.getEmail())
                 .profileUrl(profileUrl)
                 .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(UserRole.TRAINER)
-                .build();
-
-        User trainerUser = userService.save(user);
-
-        Trainer trainer = Trainer.builder()
-                .user(trainerUser)
                 .experience(request.getExperience())
                 .specialization(request.getSpecialization())
                 .rate(request.getRate())
@@ -143,7 +127,6 @@ public class TrainerServiceImpl implements TrainerService {
 
     public Trainer findById(UUID id) {
         return trainerRepository.findById(id)
-                .or(() -> trainerRepository.findByUserId(id))
                 .orElseThrow(() -> new ResourceNotFoundException());
     }
 

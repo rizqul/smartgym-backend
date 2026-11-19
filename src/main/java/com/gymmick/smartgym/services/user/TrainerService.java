@@ -4,11 +4,10 @@ import java.util.List;
 
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.trainer.*;
-import com.gymmick.smartgym.dto.user.*;
 
 public interface TrainerService {
 
-    PaginationResponse<UserTrainerResponse> findAllTrainer(UserFilterRequest request);
+    PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request);
 
     void createTrainer(TrainerCreateRequest request);
 

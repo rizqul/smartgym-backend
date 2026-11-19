@@ -8,5 +8,5 @@ import com.gymmick.smartgym.entity.Trainer;
 
 public interface TrainerRepository extends JpaRepository<Trainer, UUID>, JpaSpecificationExecutor<Trainer> {
 
-    Optional<Trainer> findByUserId(UUID id);
+    Optional<Trainer> findById(UUID id);
 }

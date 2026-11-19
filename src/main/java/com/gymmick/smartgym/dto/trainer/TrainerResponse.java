@@ -1,4 +1,4 @@
-package com.gymmick.smartgym.dto.user;
+package com.gymmick.smartgym.dto.trainer;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -9,15 +9,11 @@ import lombok.*;
 
 @Data
 @Builder
-public class UserTrainerResponse {
+public class TrainerResponse {
 
     private UUID id;
 
-    private UUID userId;
-
     private String name;
-
-    private String email;
 
     private String profileUrl;
 
@@ -28,8 +24,6 @@ public class UserTrainerResponse {
     private Integer experience;
 
     private Long rate;
-
-    private UserRole role;
 
     private Instant createdAt;
 

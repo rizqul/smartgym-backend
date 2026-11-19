@@ -14,7 +14,6 @@ public class TrainerSlotRequest {
 
     @NotNull(message = "The slot date field is required.")
     @Date(message = "The slot date field must be a valid date.")
-    @FutureOrPresentDate(message = "The slot date field must be in the future.")
     private String slotDate;
 
     @NotNull(message = "The start time field is required.")
