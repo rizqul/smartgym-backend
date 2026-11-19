@@ -14,6 +14,8 @@ public @interface FileSize {
 
     long max() default 10;
 
+    boolean required() default true;
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
