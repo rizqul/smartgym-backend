@@ -13,8 +13,6 @@ public class TransactionData {
 
     private UUID packageId;
 
-    private String orderId;
-
     private Long grossAmount;
 
     private TransactionType type;

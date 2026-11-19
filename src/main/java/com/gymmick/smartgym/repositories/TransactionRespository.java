@@ -14,6 +14,8 @@ public interface TransactionRespository
 
     Optional<Transaction> findByOrderId(String orderId);
 
+    Optional<Transaction> findTopByMemberId(UUID id);
+
     @Query(value = "SELECT t.*, m.* FROM transactions t INNER JOIN membership_packages m ON t.package_id = m.id  WHERE t.id = :id", nativeQuery = true)
     Object findByMembershipPackageId(@Param("id") UUID id);
 }

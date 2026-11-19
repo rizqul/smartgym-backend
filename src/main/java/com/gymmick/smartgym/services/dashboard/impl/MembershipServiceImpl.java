@@ -87,8 +87,15 @@ public class MembershipServiceImpl implements MembershipService {
 
     @Override
     @Transactional
-    public String buyMembership(MembershipTransactionCreateRequest request, User user) {
+    public String buyMembership(User user, MembershipTransactionCreateRequest request) {
         try {
+            Optional<Transaction> transaction = transactionRespository.findTopByMemberId(user.getId());
+            transaction.ifPresent(t -> {
+                if (t.getStatus().equals(TransactionStatus.PENDING)) {
+                    throw new BadRequestException("Silahkan selesaikan transaksi sebelumnya!");
+                }
+            });
+
             MembershipPackage membershipPackage = this.findById(request.getPackageId());
 
             Map<String, String> itemDetail = new HashMap<>();
@@ -102,7 +109,6 @@ public class MembershipServiceImpl implements MembershipService {
 
             TransactionData transactionData = TransactionData.builder()
                     .packageId(UUID.fromString(request.getPackageId()))
-                    .orderId(request.getTransactionId())
                     .grossAmount(membershipPackage.getPrice())
                     .type(TransactionType.MEMBERSHIP)
                     .itemDetails(itemDetails)

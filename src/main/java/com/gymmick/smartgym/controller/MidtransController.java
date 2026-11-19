@@ -32,6 +32,8 @@ public class MidtransController {
     @PostMapping(path = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
     public String notification(@RequestBody Map<String, Object> response) {
 
+        System.out.println("Test123");
+
         try {
             if (!response.isEmpty()) {
                 String orderId = response.get("order_id").toString();
@@ -51,6 +53,7 @@ public class MidtransController {
 
             return "OK";
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new BadRequestException(e.getMessage());
         }
     }
