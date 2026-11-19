@@ -8,7 +8,7 @@ import com.gymmick.smartgym.entity.User;
 
 public interface UserService extends UserDetailsService {
 
-    void save(User user);
+    User save(User user);
 
     User findById(UUID id);
 
