@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.mapstruct.*;
 
-import com.gymmick.smartgym.dto.dashboard.MembershipPackageResponse;
+import com.gymmick.smartgym.dto.membership.MembershipPackageResponse;
 import com.gymmick.smartgym.entity.MembershipPackage;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

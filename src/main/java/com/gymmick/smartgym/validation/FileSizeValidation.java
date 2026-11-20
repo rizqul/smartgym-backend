@@ -8,15 +8,20 @@ import jakarta.validation.*;
 
 public class FileSizeValidation implements ConstraintValidator<FileSize, Object> {
 
+    private boolean required;
     private double maxSize;
 
     @Override
     public void initialize(FileSize constraintAnnotation) {
+        this.required = constraintAnnotation.required();
         this.maxSize = constraintAnnotation.max();
     }
 
     @Override
     public boolean isValid(Object file, ConstraintValidatorContext context) {
+        if (!this.required && file == null) {
+            return true;
+        }
 
         if (file == null || file.getClass().equals(String.class)) {
             return false;

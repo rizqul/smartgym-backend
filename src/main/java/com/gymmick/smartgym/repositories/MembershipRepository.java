@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface MembershipRepository extends JpaRepository<Membership, UUID> {
 
+    @Query("SELECT m FROM Membership m WHERE m.transaction.id = :id")
     Optional<Membership> findByTransactionId(UUID id);
 
     @Query("SELECT m FROM Membership m " +

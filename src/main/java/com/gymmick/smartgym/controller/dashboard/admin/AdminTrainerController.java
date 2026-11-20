@@ -1,31 +1,57 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
-import com.gymmick.smartgym.dto.common.UserResponse;
-import com.gymmick.smartgym.dto.dashboard.TrainerCreateRequest;
-import com.gymmick.smartgym.services.dashboard.TrainerService;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import com.gymmick.smartgym.dto.pagination.PaginationResponse;
+import com.gymmick.smartgym.dto.trainer.*;
+import com.gymmick.smartgym.services.user.TrainerService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/dashboard/trainer")
+@RequestMapping("/admin/dashboard/trainers")
 @RequiredArgsConstructor
 public class AdminTrainerController {
 
-  private final TrainerService trainerService;
+    private final TrainerService trainerService;
 
-  @PostMapping
-  public ResponseEntity<ApiResponse<UserResponse>> createTrainer(TrainerCreateRequest request) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<TrainerResponse>>> findAll(TrainerSearchRequest request) {
+        PaginationResponse<TrainerResponse> response = trainerService.findAllTrainer(request);
 
-    trainerService.createTrainer(request);
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+    }
 
-    String message = "trainer berhasil dibuat";
-    return ApiResponse.success(HttpStatus.CREATED, message);
-  }
+    @PostMapping(path = "/create")
+    public ResponseEntity<ApiResponse<String>> createTrainer(@Valid @RequestBody TrainerCreateRequest request) {
+
+        trainerService.createTrainer(request);
+
+        String message = "Berhasil Menambahkan Trainer!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
+
+    @GetMapping(path = "/slot/{id}")
+    public ResponseEntity<ApiResponse<List<TrainerSlotResponse>>> findSlotByTrainerId(@PathVariable String id,
+            TrainerSlotFilterRequest request) {
+
+        List<TrainerSlotResponse> trainers = trainerService.findSlotByTrainerIdAndDate(id, request);
+
+        return ApiResponse.success(HttpStatus.OK, trainers);
+    }
+
+    @PostMapping(path = "/slot/create/{id}")
+    public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
+            @Valid @RequestBody TrainerSlotRequest request) {
+
+        trainerService.createSlot(id, request);
+
+        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
 }

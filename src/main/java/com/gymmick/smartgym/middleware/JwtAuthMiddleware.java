@@ -15,7 +15,7 @@ import org.springframework.web.util.WebUtils;
 import com.gymmick.smartgym.entity.Token;
 import com.gymmick.smartgym.entity.enums.TokenType;
 import com.gymmick.smartgym.services.auth.TokenService;
-import com.gymmick.smartgym.services.common.UserService;
+import com.gymmick.smartgym.services.user.UserService;
 import com.gymmick.smartgym.utils.JwtToken;
 
 import jakarta.servlet.*;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
 
 import com.gymmick.smartgym.dto.auth.*;
-import com.gymmick.smartgym.dto.common.UserResponse;
+import com.gymmick.smartgym.dto.user.UserResponse;
 import com.gymmick.smartgym.services.auth.AuthService;
 import com.gymmick.smartgym.utils.ApiResponse;
 

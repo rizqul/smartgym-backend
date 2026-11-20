@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
@@ -21,7 +19,7 @@ import org.springframework.web.cors.*;
 import com.gymmick.smartgym.entity.enums.UserRole;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.middleware.JwtAuthMiddleware;
-import com.gymmick.smartgym.services.common.UserService;
+import com.gymmick.smartgym.services.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,68 +29,68 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final UserService userService;
-  private final JwtAuthMiddleware jwtAuthMiddleware;
+    private final UserService userService;
+    private final JwtAuthMiddleware jwtAuthMiddleware;
 
-  private final CustomAccessDeniedException customAccessDeniedException;
-  private final CustomAuthenticationEntryPointException customAuthenticationEntryPointException;
+    private final CustomAccessDeniedException customAccessDeniedException;
+    private final CustomAuthenticationEntryPointException customAuthenticationEntryPointException;
 
-  private final PasswordEncoderConfig passwordEncodercoConfig;
+    private final PasswordEncoderConfig passwordEncodercoConfig;
 
-  @Value("${app.config.app-url}")
-  private String[] appUrl;
+    @Value("${app.config.app-url}")
+    private String[] appUrl;
 
-  @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .csrf(csrf -> csrf.disable())
-        .headers(headers -> headers.referrerPolicy(
-            referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/**").permitAll()
-            .requestMatchers("/midtrans/**").permitAll()
-            .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
-            .requestMatchers("/member/**").hasRole(UserRole.MEMBER.toString())
-            .anyRequest().authenticated())
-        .sessionManagement(session -> session
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(exception -> exception
-            .accessDeniedHandler(customAccessDeniedException)
-            .authenticationEntryPoint(customAuthenticationEntryPointException));
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.referrerPolicy(
+                        referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN)))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/midtrans/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
+                        .requestMatchers("/member/**").hasRole(UserRole.MEMBER.toString())
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(customAccessDeniedException)
+                        .authenticationEntryPoint(customAuthenticationEntryPointException));
 
-    http.authenticationProvider(authenticationProvider());
-    http.addFilterBefore(jwtAuthMiddleware, UsernamePasswordAuthenticationFilter.class);
+        http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(jwtAuthMiddleware, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-  }
+        return http.build();
+    }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(appUrl));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("Cache-Control", "Content-Type"));
-    configuration.setAllowCredentials(true);
-    configuration.setMaxAge(3600L);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(appUrl));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
-    return source;
-  }
+        return source;
+    }
 
-  @Bean
-  DaoAuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
-    provider.setPasswordEncoder(passwordEncodercoConfig.passwordEncoder());
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService);
+        provider.setPasswordEncoder(passwordEncodercoConfig.passwordEncoder());
 
-    return provider;
-  }
+        return provider;
+    }
 
-  @Bean
-  AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
-  }
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
 }
