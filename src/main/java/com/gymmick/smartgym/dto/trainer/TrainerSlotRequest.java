@@ -14,6 +14,7 @@ public class TrainerSlotRequest {
 
     @NotNull(message = "The slot date field is required.")
     @Date(message = "The slot date field must be a valid date.")
+    @FutureOrPresentDate(message = "The slot date field must be in the future.")
     private String slotDate;
 
     @NotNull(message = "The start time field is required.")
@@ -26,10 +27,6 @@ public class TrainerSlotRequest {
     @FutureOrPresentDateTime(message = "The end time field must be in the future.")
     private String endTime;
 
-    @NotBlank(message = "The quota field is required.")
-    @NumberValue(message = "The quota field must be a number.")
-    private String quota;
-
     public Instant getSlotDate() {
         return LocalDate.parse(this.slotDate).atStartOfDay(ZoneId.systemDefault()).toInstant();
     }
@@ -40,9 +37,5 @@ public class TrainerSlotRequest {
 
     public Instant getEndTime() {
         return LocalDateTime.parse(this.endTime).atZone(ZoneId.systemDefault()).toInstant();
-    }
-
-    public Integer getQuota() {
-        return Integer.parseInt(this.quota);
     }
 }

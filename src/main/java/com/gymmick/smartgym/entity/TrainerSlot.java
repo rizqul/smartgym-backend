@@ -32,9 +32,6 @@ public class TrainerSlot extends TimeStamp {
     private String description;
 
     @Column(nullable = false)
-    private Integer quota;
-
-    @Column(nullable = false)
     private Instant slotDate;
 
     @Column(nullable = false)
