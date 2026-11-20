@@ -72,4 +72,23 @@ public class MidtransController {
             throw new BadRequestException(e.getMessage());
         }
     }
+
+    @GetMapping(path = "/pt-booking")
+    public ResponseEntity<ApiResponse<String>> validationBooking(@RequestParam(name = "order_id") String orderId) {
+        try {
+            Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
+            String transactionStatus = transactionResult.get("transaction_status").toString();
+
+            return switch (transactionStatus) {
+                case "pending" -> throw new BadRequestException("Menunggu Pembayaran!");
+                case "cancel" -> throw new BadRequestException("Transaksi Telah Dibatalkan!");
+                case "expire" -> throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
+                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Booking Trainer Berhasil!");
+                default -> throw new BadRequestException(
+                        "Terjadi Kesalahan Saat Melakukan Pengecekan Transaksi!");
+            };
+        } catch (MidtransError e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
 }
