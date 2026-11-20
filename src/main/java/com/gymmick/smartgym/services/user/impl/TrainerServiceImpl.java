@@ -1,6 +1,7 @@
 package com.gymmick.smartgym.services.user.impl;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import org.springframework.data.domain.*;
@@ -97,15 +98,21 @@ public class TrainerServiceImpl implements TrainerService {
         Instant startTime = request.getStartTime();
         Instant endTime = request.getEndTime();
 
+        Instant slotDate = request.getSlotDate().plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
+
+        if (!slotDate.equals(startTime.truncatedTo(ChronoUnit.DAYS))
+                && !slotDate.equals(endTime.truncatedTo(ChronoUnit.DAYS))) {
+
+            throw new BadRequestException("Tanggal jadwal harus sama dengan waktu training!");
+        }
+
         if (!startTime.isBefore(endTime)) {
             throw new BadRequestException("Waktu mulai harus lebih awal dari waktu selesai!");
         }
 
         UUID trainerId = UUID.fromString(id);
-        Trainer trainer = this.findById(trainerId);
-
         boolean isOverlapping = trainerSlotRepository.existsOverlappingSlot(
-                trainer.getId(),
+                trainerId,
                 startTime,
                 endTime);
 
@@ -113,6 +120,7 @@ public class TrainerServiceImpl implements TrainerService {
             throw new BadRequestException("Jadwal bertabrakan dengan jadwal lain yang sudah ada untuk trainer ini!");
         }
 
+        Trainer trainer = this.findById(trainerId);
         TrainerSlot trainerSlot = TrainerSlot.builder()
                 .trainer(trainer)
                 .description(request.getDescription())
