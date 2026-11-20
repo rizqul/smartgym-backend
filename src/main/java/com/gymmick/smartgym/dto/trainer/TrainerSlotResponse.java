@@ -15,8 +15,6 @@ public class TrainerSlotResponse {
 
     private String description;
 
-    private Integer quota;
-
     private Instant startTime;
 
     private Instant endTime;

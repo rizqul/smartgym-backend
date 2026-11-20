@@ -37,6 +37,11 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapping transactionMapping;
 
     @Override
+    public Map<String, Object> checkTransactionStatus(String orderId) throws MidtransError {
+        return midtransCoreApi.checkTransaction(orderId).toMap();
+    }
+
+    @Override
     public PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request) {
 
         Integer page = request.getPage();

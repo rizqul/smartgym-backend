@@ -6,8 +6,7 @@ import com.gymmick.smartgym.entity.User;
 
 public interface TrainerBookingService {
 
-  String createBookedTrainer(User member, TrainerTransactionCreateRequest request);
+    String createBookedTrainer(User member, TrainerTransactionCreateRequest request);
 
-  void finalizeBookedTrainer(Transaction transaction);
-
+    void finalizeBookedTrainer(Transaction transaction);
 }
