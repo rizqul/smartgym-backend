@@ -7,11 +7,12 @@ import com.gymmick.smartgym.dto.trainer.*;
 
 public interface TrainerService {
 
-    PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request);
+  PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request);
 
-    void createTrainer(TrainerCreateRequest request);
+  void createTrainer(TrainerCreateRequest request);
 
-    void createSlot(String trainerId, TrainerSlotRequest request);
+  void createSlot(String trainerId, TrainerSlotRequest request);
 
-    List<TrainerSlotResponse> findSlotByTrainerIdAndDate(String id, TrainerSlotFilterRequest request);
+  List<TrainerSlotResponse> findSlotByTrainerIdAndDate(String id, TrainerSlotFilterRequest request);
+
 }
