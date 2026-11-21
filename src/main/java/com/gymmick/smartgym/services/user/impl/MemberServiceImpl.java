@@ -121,7 +121,6 @@ public class MemberServiceImpl implements MemberService {
         UUID userId = UUID.fromString(id);
         User user = userService.findById(userId);
 
-        user.setMembershipStatus(MembershipStatus.NON_ACTIVE);
         user.setMembershipExpiredAt(null);
         user.setDeletedAt(Instant.now());
 
