@@ -45,32 +45,6 @@ public class StaffServiceImpl implements StaffService {
     private String awsPublicUrl;
 
     @Override
-    @Transactional
-    public void createStaff(UserStaffCreateRequest request) {
-
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(UserRole.STAFF)
-                .build();
-
-        userService.save(user);
-    }
-
-    @Override
-    @Transactional
-    public void deleteStaff(String id) {
-
-        UUID userId = UUID.fromString(id);
-        User user = userService.findById(userId);
-
-        user.setDeletedAt(Instant.now());
-        userService.save(user);
-    }
-
-    @Override
     public PaginationResponse<UserResponse> findAllStaff(UserFilterRequest request) {
 
         Integer page = request.getPage();
@@ -95,6 +69,26 @@ public class StaffServiceImpl implements StaffService {
                 .build();
 
         return paginationResponse;
+    }
+
+    @Override
+    @Transactional
+    public void createStaff(UserStaffCreateRequest request) {
+
+        String profileUrl = String
+                .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
+                        request.getName().toLowerCase().replaceAll("\s+", "+"));
+
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .profileUrl(profileUrl)
+                .phoneNumber(request.getPhoneNumber())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(UserRole.STAFF)
+                .build();
+
+        userService.save(user);
     }
 
     @Override
@@ -139,5 +133,16 @@ public class StaffServiceImpl implements StaffService {
         staff.setPassword(password);
 
         userRepository.save(staff);
+    }
+
+    @Override
+    @Transactional
+    public void deleteStaff(String id) {
+
+        UUID userId = UUID.fromString(id);
+        User user = userService.findById(userId);
+
+        user.setDeletedAt(Instant.now());
+        userService.save(user);
     }
 }
