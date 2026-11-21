@@ -132,9 +132,8 @@ public class MembershipServiceImpl implements MembershipService {
             membershipRepository.save(membership);
 
             User user = transaction.getMember();
-            user.setMembershipStatus(MembershipStatus.ACTIVE);
             user.setMembershipExpiredAt(
-                    user.getMembershipExpiredAt() == null
+                    user.getMembershipExpiredAt() == null || Instant.now().isAfter(user.getMembershipExpiredAt())
                             ? Instant.now().plus(Duration.ofDays(membershipPackage.getDuration()))
                             : user.getMembershipExpiredAt().plus(Duration.ofDays(membershipPackage.getDuration())));
 

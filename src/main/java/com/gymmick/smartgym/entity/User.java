@@ -52,8 +52,6 @@ public class User extends TimeStamp implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.MEMBER;
 
-    private MembershipStatus membershipStatus;
-
     private Instant membershipExpiredAt;
 
     private Instant deletedAt;
@@ -77,13 +75,6 @@ public class User extends TimeStamp implements UserDetails {
     @JsonIgnore
     public String getUsername() {
         return this.email;
-    }
-
-    public MembershipStatus getMembershipStatus() {
-        return membershipStatus == MembershipStatus.ACTIVE
-                && (membershipExpiredAt == null || membershipExpiredAt.isAfter(Instant.now()))
-                        ? MembershipStatus.ACTIVE
-                        : MembershipStatus.NON_ACTIVE;
     }
 
     @Override
