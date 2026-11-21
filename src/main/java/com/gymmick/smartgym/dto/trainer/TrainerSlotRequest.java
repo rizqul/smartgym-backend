@@ -9,7 +9,6 @@ import lombok.*;
 @Setter
 public class TrainerSlotRequest {
 
-    @NotNull(message = "The description field is required.")
     private String description;
 
     @NotNull(message = "The slot date field is required.")
