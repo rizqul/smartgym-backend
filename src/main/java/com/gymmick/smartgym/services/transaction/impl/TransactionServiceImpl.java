@@ -1,5 +1,6 @@
 package com.gymmick.smartgym.services.transaction.impl;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -108,22 +109,28 @@ public class TransactionServiceImpl implements TransactionService {
         transactionDetails.put("order_id", orderId);
         transactionDetails.put("gross_amount", data.getGrossAmount().toString());
 
+        List<String> payments = new ArrayList<>();
+        payments.add(data.getPaymentType().toString());
+
         Map<String, String> callbacks = new HashMap<>();
         callbacks.put("finish", data.getCallbackUrl());
         callbacks.put("error", data.getCallbackUrl());
 
         params.put("transaction_details", transactionDetails);
         params.put("item_details", data.getItemDetails());
+        params.put("enabled_payments", payments);
         params.put("callbacks", callbacks);
 
         Map<String, Object> response = midtransSnapApi.createTransaction(params).toMap();
         Transaction transaction = Transaction.builder()
-                .packageId(data.getPackageId())
-                .orderId(orderId)
-                .paymentUrl(response.get("redirect_url").toString())
                 .member(user)
-                .type(data.getType())
+                .orderId(orderId)
+                .packageId(data.getPackageId())
+                .name(data.getPackageName())
+                .paymentUrl(response.get("redirect_url").toString())
+                .paymentType(data.getPaymentType())
                 .amount(data.getGrossAmount())
+                .type(data.getType())
                 .build();
 
         transactionRespository.save(transaction);
@@ -135,7 +142,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public Transaction updateTransaction(String orderId, String status, String paymentType) {
         Transaction transaction = this.findByOrderId(orderId);
-        transaction.setPaymentType(paymentType);
+        transaction.setExpiredAt(Instant.now().plus(Duration.ofMinutes(15)));
 
         if (status.equals("expire")) {
             transaction.setStatus(TransactionStatus.EXPIRED);

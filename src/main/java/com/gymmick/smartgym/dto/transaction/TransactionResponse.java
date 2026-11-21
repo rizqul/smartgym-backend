@@ -14,15 +14,19 @@ public class TransactionResponse {
 
     private UUID id;
 
+    private String orderId;
+
     private UUID packageId;
 
-    private String orderId;
+    private String name;
 
     private UserTransactionResponse member;
 
     private TransactionType type;
 
     private String paymentUrl;
+
+    private PaymentType paymentType;
 
     private Long amount;
 

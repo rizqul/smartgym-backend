@@ -1,6 +1,7 @@
 package com.gymmick.smartgym.validation;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 
 import com.gymmick.smartgym.validation.annotation.FutureOrPresentDate;
 
@@ -18,8 +19,9 @@ public class FutureOrPresentDateValidation implements ConstraintValidator<Future
             return true;
         }
 
-        Instant input = LocalDate.parse(value).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+        Instant input = LocalDate.parse(value).atStartOfDay().atZone(ZoneId.systemDefault())
+                .toInstant().plus(Duration.ofDays(1)).truncatedTo(ChronoUnit.DAYS);
 
-        return LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().equals(input);
+        return LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().isBefore(input);
     }
 }
