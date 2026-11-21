@@ -20,6 +20,6 @@ public class FutureOrPresentDateTimeValidation implements ConstraintValidator<Fu
 
         Instant input = LocalDateTime.parse(value).atZone(ZoneId.systemDefault()).toInstant();
 
-        return !input.isBefore(Instant.now());
+        return input.isAfter(Instant.now());
     }
 }

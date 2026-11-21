@@ -20,6 +20,6 @@ public class FutureOrPresentDateValidation implements ConstraintValidator<Future
 
         Instant input = LocalDate.parse(value).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
 
-        return !input.isBefore(Instant.now());
+        return LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().equals(input);
     }
 }

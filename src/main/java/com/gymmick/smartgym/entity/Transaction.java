@@ -43,6 +43,7 @@ public class Transaction extends TimeStamp {
     private User member;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TransactionType type;
 
     @Column(nullable = false)
@@ -50,6 +51,7 @@ public class Transaction extends TimeStamp {
 
     @Builder.Default
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TransactionStatus status = TransactionStatus.PENDING;
 
     private Instant paidAt;

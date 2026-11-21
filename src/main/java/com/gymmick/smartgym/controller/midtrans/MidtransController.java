@@ -10,9 +10,9 @@ import com.gymmick.smartgym.entity.enums.TransactionType;
 import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.services.membership.MembershipService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
+import com.gymmick.smartgym.services.user.TrainerBookingService;
 import com.gymmick.smartgym.utils.ApiResponse;
 import com.midtrans.httpclient.error.MidtransError;
-import com.midtrans.service.MidtransCoreApi;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,9 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MidtransController {
 
-    private final MidtransCoreApi midtransCoreApi;
-
     private final MembershipService membershipService;
+    private final TrainerBookingService trainerBookingService;
     private final TransactionService transactionService;
 
     @PostMapping(path = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +30,7 @@ public class MidtransController {
         try {
             if (!response.isEmpty()) {
                 String orderId = response.get("order_id").toString();
-                Map<String, Object> transactionResult = midtransCoreApi.checkTransaction(orderId).toMap();
+                Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
 
                 String transactionStatus = transactionResult.get("transaction_status").toString();
                 String paymentType = transactionResult.get("payment_type").toString();
@@ -41,6 +40,10 @@ public class MidtransController {
                 if (transactionStatus.equals("settlement")) {
                     if (transaction.getType().equals(TransactionType.MEMBERSHIP)) {
                         membershipService.activationMembership(transaction);
+                    }
+
+                    if (transaction.getType().equals(TransactionType.PT_BOOKING)) {
+                        trainerBookingService.finalizeBookedTrainer(transaction);
                     }
                 }
             }
@@ -54,7 +57,8 @@ public class MidtransController {
     @GetMapping(path = "/membership")
     public ResponseEntity<ApiResponse<String>> validationOrder(@RequestParam(name = "order_id") String orderId) {
         try {
-            String transactionStatus = this.getTransactionStatus(orderId);
+            Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
+            String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {
                 case "pending" -> throw new BadRequestException("Menunggu Pembayaran!");
@@ -69,9 +73,22 @@ public class MidtransController {
         }
     }
 
-    private String getTransactionStatus(String orderId) throws MidtransError {
-        return midtransCoreApi.checkTransaction(orderId).toMap()
-                .get("transaction_status")
-                .toString();
+    @GetMapping(path = "/pt-booking")
+    public ResponseEntity<ApiResponse<String>> validationBooking(@RequestParam(name = "order_id") String orderId) {
+        try {
+            Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
+            String transactionStatus = transactionResult.get("transaction_status").toString();
+
+            return switch (transactionStatus) {
+                case "pending" -> throw new BadRequestException("Menunggu Pembayaran!");
+                case "cancel" -> throw new BadRequestException("Transaksi Telah Dibatalkan!");
+                case "expire" -> throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
+                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Booking Trainer Berhasil!");
+                default -> throw new BadRequestException(
+                        "Terjadi Kesalahan Saat Melakukan Pengecekan Transaksi!");
+            };
+        } catch (MidtransError e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 }

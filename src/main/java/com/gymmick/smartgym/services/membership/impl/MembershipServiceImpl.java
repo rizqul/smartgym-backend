@@ -150,7 +150,7 @@ public class MembershipServiceImpl implements MembershipService {
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRespository.save(transaction);
         }
-    };
+    }
 
     @Override
     public MembershipPackage findById(String id) {
