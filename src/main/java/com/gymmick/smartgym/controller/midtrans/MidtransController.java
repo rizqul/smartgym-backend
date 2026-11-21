@@ -9,6 +9,7 @@ import com.gymmick.smartgym.entity.Transaction;
 import com.gymmick.smartgym.entity.enums.TransactionType;
 import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.services.membership.MembershipService;
+import com.gymmick.smartgym.services.transaction.MidtransService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.services.user.TrainerBookingService;
 import com.gymmick.smartgym.utils.ApiResponse;
@@ -25,12 +26,14 @@ public class MidtransController {
     private final TrainerBookingService trainerBookingService;
     private final TransactionService transactionService;
 
+    private final MidtransService midtransService;
+
     @PostMapping(path = "/notification", produces = MediaType.APPLICATION_JSON_VALUE)
     public String notification(@RequestBody Map<String, Object> response) {
         try {
             if (!response.isEmpty()) {
                 String orderId = response.get("order_id").toString();
-                Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
+                Map<String, Object> transactionResult = midtransService.midtransCheckTransaction(orderId);
 
                 String transactionStatus = transactionResult.get("transaction_status").toString();
                 String paymentType = transactionResult.get("payment_type").toString();
@@ -57,7 +60,7 @@ public class MidtransController {
     @GetMapping(path = "/membership")
     public ResponseEntity<ApiResponse<String>> validationOrder(@RequestParam(name = "order_id") String orderId) {
         try {
-            Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
+            Map<String, Object> transactionResult = midtransService.midtransCheckTransaction(orderId);
             String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {
@@ -76,7 +79,7 @@ public class MidtransController {
     @GetMapping(path = "/pt-booking")
     public ResponseEntity<ApiResponse<String>> validationBooking(@RequestParam(name = "order_id") String orderId) {
         try {
-            Map<String, Object> transactionResult = transactionService.checkTransactionStatus(orderId);
+            Map<String, Object> transactionResult = midtransService.midtransCheckTransaction(orderId);
             String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {

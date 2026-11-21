@@ -34,6 +34,8 @@ public class TransactionResponse {
 
     private Instant paidAt;
 
+    private Instant expiredAt;
+
     private Instant createdAt;
 
     private Instant updatedAt;

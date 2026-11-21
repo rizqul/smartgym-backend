@@ -31,16 +31,10 @@ import lombok.RequiredArgsConstructor;
 public class TransactionServiceImpl implements TransactionService {
 
     private final MidtransSnapApi midtransSnapApi;
-    private final MidtransCoreApi midtransCoreApi;
 
     private final TransactionRespository transactionRespository;
 
     private final TransactionMapping transactionMapping;
-
-    @Override
-    public Map<String, Object> checkTransactionStatus(String orderId) throws MidtransError {
-        return midtransCoreApi.checkTransaction(orderId).toMap();
-    }
 
     @Override
     public PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request) {
@@ -99,6 +93,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Transaction findByOrderId(String orderId) {
+        return transactionRespository.findByOrderId(orderId)
+                .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
+    }
+
+    @Override
     @Transactional
     public String createTransaction(User user, TransactionData data) throws MidtransError {
 
@@ -144,6 +144,10 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = this.findByOrderId(orderId);
         transaction.setExpiredAt(Instant.now().plus(Duration.ofMinutes(15)));
 
+        if (status.equals("cancel")) {
+            transaction.setStatus(TransactionStatus.CANCELLED);
+        }
+
         if (status.equals("expire")) {
             transaction.setStatus(TransactionStatus.EXPIRED);
         }
@@ -156,18 +160,4 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRespository.save(transaction);
     }
 
-    @Override
-    @Transactional
-    public void cancelTransaction(String orderId) throws MidtransError {
-        Transaction transaction = this.findByOrderId(orderId);
-        midtransCoreApi.cancelTransaction(orderId);
-
-        transaction.setStatus(TransactionStatus.CANCELLED);
-        transactionRespository.save(transaction);
-    }
-
-    public Transaction findByOrderId(String orderId) {
-        return transactionRespository.findByOrderId(orderId)
-                .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
-    }
 }
