@@ -110,9 +110,11 @@ public class MembershipServiceImpl implements MembershipService {
 
             TransactionData transactionData = TransactionData.builder()
                     .packageId(UUID.fromString(request.getPackageId()))
+                    .packageName(membershipPackage.getName())
                     .grossAmount(membershipPackage.getPrice())
                     .type(TransactionType.MEMBERSHIP)
                     .itemDetails(itemDetails)
+                    .paymentType(request.getPaymentType())
                     .callbackUrl(membershipRedirectUrl)
                     .build();
 
