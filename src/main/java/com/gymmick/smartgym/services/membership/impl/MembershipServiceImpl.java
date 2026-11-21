@@ -110,9 +110,11 @@ public class MembershipServiceImpl implements MembershipService {
 
             TransactionData transactionData = TransactionData.builder()
                     .packageId(UUID.fromString(request.getPackageId()))
+                    .packageName(membershipPackage.getName())
                     .grossAmount(membershipPackage.getPrice())
                     .type(TransactionType.MEMBERSHIP)
                     .itemDetails(itemDetails)
+                    .paymentType(request.getPaymentType())
                     .callbackUrl(membershipRedirectUrl)
                     .build();
 
@@ -139,9 +141,8 @@ public class MembershipServiceImpl implements MembershipService {
             membershipRepository.save(membership);
 
             User user = transaction.getMember();
-            user.setMembershipStatus(MembershipStatus.ACTIVE);
             user.setMembershipExpiredAt(
-                    user.getMembershipExpiredAt() == null
+                    user.getMembershipExpiredAt() == null || Instant.now().isAfter(user.getMembershipExpiredAt())
                             ? Instant.now().plus(Duration.ofDays(membershipPackage.getDuration()))
                             : user.getMembershipExpiredAt().plus(Duration.ofDays(membershipPackage.getDuration())));
 

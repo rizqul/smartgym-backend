@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gymmick.smartgym.dto.trainer.TrainerTransactionCreateRequest;
 import com.gymmick.smartgym.dto.transaction.TransactionData;
 import com.gymmick.smartgym.entity.*;
-import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.repositories.*;
@@ -35,12 +34,10 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
     @Override
     @Transactional
     public String createBookedTrainer(User member, TrainerTransactionCreateRequest request) {
-
         try {
             Optional<Transaction> transaction = transactionRespository
-                    .findFirstByMemberIdAndStatusEqualsAndTypeOrderByCreatedAtAsc(member.getId(),
-                            TransactionStatus.PENDING,
-                            TransactionType.PT_BOOKING);
+                    .findFirstByMemberIdAndStatusEqualsOrderByCreatedAtAsc(member.getId(),
+                            TransactionStatus.PENDING);
 
             transaction.ifPresent(t -> {
                 if (t.getStatus().equals(TransactionStatus.PENDING)) {
@@ -49,11 +46,24 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
             });
 
             UUID trainerSlotId = UUID.fromString(request.getSlotId());
-            TrainerSlot trainerSlot = this.findById(trainerSlotId);
+
+            TrainerSlot trainerSlot = trainerSlotRepository.findByIdForUpdate(trainerSlotId)
+                    .orElseThrow(() -> new ResourceNotFoundException());
+
+            int updatedStatus = trainerSlotRepository.updateStatusIfMatch(
+                    trainerSlotId, SlotStatus.AVAILABLE, SlotStatus.BOOKED);
+
+            if (updatedStatus == 0) {
+                throw new BadRequestException("Slot Ini Telah Di Booking!");
+            }
+
+            String slotName = String.format("%s - %s",
+                    trainerSlot.getTrainer().getName(),
+                    trainerSlot.getDescription());
 
             Map<String, String> bookingDetail = new HashMap<>();
             bookingDetail.put("id", request.getSlotId());
-            bookingDetail.put("name", member.getName() + "-" + trainerSlot.getTrainer().getName());
+            bookingDetail.put("name", slotName);
             bookingDetail.put("price", trainerSlot.getTrainer().getRate().toString());
             bookingDetail.put("quantity", "1");
 
@@ -62,16 +72,17 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
             TransactionData transactionData = TransactionData.builder()
                     .packageId(trainerSlotId)
+                    .packageName(slotName)
                     .grossAmount(trainerSlot.getTrainer().getRate())
                     .type(TransactionType.PT_BOOKING)
                     .itemDetails(bookingDetails)
+                    .paymentType(request.getPaymentType())
                     .callbackUrl(ptBookedRedirectUrl)
                     .build();
 
-            trainerSlot.setStatus(SlotStatus.FULL_BOOKED);
-            trainerSlotRepository.save(trainerSlot);
-
             return transactionService.createTransaction(member, transactionData);
+        } catch (BadRequestException | ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }

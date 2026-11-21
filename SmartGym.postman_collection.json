@@ -521,7 +521,7 @@
                           }
                         ],
                         "url": {
-                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date=2026-11-21",
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date=2026-11-22",
                           "host": [
                             "{{apiUrl}}"
                           ],
@@ -535,7 +535,7 @@
                           "query": [
                             {
                               "key": "date",
-                              "value": "2026-11-21"
+                              "value": "2026-11-22"
                             }
                           ]
                         }
@@ -554,7 +554,7 @@
                         ],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula Sesi 1\",\r\n    \"slotDate\": \"2026-11-21\",\r\n    \"startTime\": \"2026-11-21T10:30\",\r\n    \"endTime\": \"2026-11-21T11:30\"\r\n}",
+                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula\",\r\n    \"slotDate\": \"2026-11-23\",\r\n    \"startTime\": \"2026-11-23T10:30\",\r\n    \"endTime\": \"2026-11-23T11:30\"\r\n}",
                           "options": {
                             "raw": {
                               "language": "json"
@@ -1201,6 +1201,116 @@
           ]
         },
         {
+          "name": "Trainer",
+          "item": [
+            {
+              "name": "Trainer Slot",
+              "item": [
+                {
+                  "name": "List Trainer Slot",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date=2026-11-22",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "member",
+                        "trainers",
+                        "slot",
+                        "{{trainerId}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "date",
+                          "value": "2026-11-22"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Booking Slot",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"slotId\": \"{{trainerSlotId}}\",\n    \"paymentType\": \"other_qris\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/member/trainers/booking",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "member",
+                        "trainers",
+                        "booking"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "List Trainer",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json()\r\npm.environment.set(\"trainerId\", response.data[0].id)"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/trainers?size=10",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "trainers"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
           "name": "Transactions",
           "item": [
             {
@@ -1216,6 +1326,25 @@
                   "path": [
                     "member",
                     "transactions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check Transaction",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/transactions/{{orderId}}",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "transactions",
+                    "{{orderId}}"
                   ]
                 }
               },
@@ -1332,116 +1461,6 @@
                   "path": [
                     "user",
                     "password"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Trainer",
-          "item": [
-            {
-              "name": "Trainer Slot",
-              "item": [
-                {
-                  "name": "List Trainer Slot",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id)"
-                        ]
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date=2026-11-21",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "member",
-                        "trainers",
-                        "slot",
-                        "{{trainerId}}"
-                      ],
-                      "query": [
-                        {
-                          "key": "date",
-                          "value": "2026-11-21"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Booking Slot",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"slotId\": \"{{trainerSlotId}}\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/member/trainers/booking",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "member",
-                        "trainers",
-                        "booking"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            },
-            {
-              "name": "List Trainer",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const response = pm.response.json()\r\npm.environment.set(\"trainerId\", response.data[0].id)"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{apiUrl}}/member/trainers?size=10",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "member",
-                    "trainers"
-                  ],
-                  "query": [
-                    {
-                      "key": "size",
-                      "value": "10"
-                    }
                   ]
                 }
               },
