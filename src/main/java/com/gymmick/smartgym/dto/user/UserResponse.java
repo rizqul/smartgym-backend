@@ -3,7 +3,6 @@ package com.gymmick.smartgym.dto.user;
 import java.time.Instant;
 import java.util.UUID;
 
-import com.gymmick.smartgym.entity.enums.MembershipStatus;
 import com.gymmick.smartgym.entity.enums.UserRole;
 
 import lombok.*;
@@ -21,8 +20,6 @@ public class UserResponse {
     private String profileUrl;
 
     private String phoneNumber;
-
-    private MembershipStatus membershipStatus;
 
     private Instant membershipExpiredAt;
 
