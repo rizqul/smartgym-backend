@@ -24,7 +24,8 @@ public class TransactionSchedule {
         transactionRespository.findByType(TransactionType.PT_BOOKING)
                 .stream()
                 .forEach(transaction -> {
-                    if (Instant.now().isAfter(transaction.getExpiredAt())
+                    if (transaction.getExpiredAt() != null
+                            && Instant.now().isAfter(transaction.getExpiredAt())
                             && transaction.getStatus().equals(TransactionStatus.PENDING)) {
 
                         trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
