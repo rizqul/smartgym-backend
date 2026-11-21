@@ -5,7 +5,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-import com.gymmick.smartgym.dto.common.TransactionResponse;
+import com.gymmick.smartgym.dto.transaction.TransactionResponse;
 import com.gymmick.smartgym.entity.Transaction;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

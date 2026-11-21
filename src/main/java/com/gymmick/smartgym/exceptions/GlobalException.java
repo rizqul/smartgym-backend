@@ -38,7 +38,7 @@ public class GlobalException {
             BadCredentialsException exception) {
 
         String message = "Alamat Email atau Kata Sandi Salah!";
-        return ApiResponse.error(HttpStatus.UNPROCESSABLE_CONTENT, message);
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -46,7 +46,7 @@ public class GlobalException {
             UsernameNotFoundException exception) {
 
         String message = exception.getMessage();
-        return ApiResponse.error(HttpStatus.UNPROCESSABLE_CONTENT, message);
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
     }
 
     @ExceptionHandler(AuthenticationDeniedException.class)

@@ -7,7 +7,6 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.WebUtils;
 
 import com.gymmick.smartgym.dto.auth.*;
 import com.gymmick.smartgym.entity.*;
@@ -15,11 +14,10 @@ import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.services.auth.*;
-import com.gymmick.smartgym.services.common.UserService;
-import com.gymmick.smartgym.services.email.EmailService;
+import com.gymmick.smartgym.services.user.UserService;
+import com.gymmick.smartgym.services.utils.EmailService;
 import com.gymmick.smartgym.utils.*;
 
-import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -114,22 +112,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void resetPassword(HttpServletRequest httpRequest, ResetPasswordRequest request) {
+    public void resetPassword(String token, ResetPasswordRequest request) {
 
-        Cookie resetTokenCookie = WebUtils.getCookie(httpRequest, "reset-token");
+        UUID tokenId = jwtToken.getTokenId(token);
+        Token resetToken = tokenService.findById(tokenId);
 
-        if (resetTokenCookie == null) {
-            throw new BadRequestException("Terjadi Kesalahan, Silahkan Coba Lagi!");
-        }
+        if (!resetToken.getRevoked()) {
+            resetToken.setRevoked(true);
+            tokenService.save(resetToken);
 
-        UUID tokenId = jwtToken.getTokenId(resetTokenCookie.getValue());
-        Token token = tokenService.findById(tokenId);
-
-        if (!token.getRevoked()) {
-            token.setRevoked(true);
-            tokenService.save(token);
-
-            User user = token.getUser();
+            User user = resetToken.getUser();
             user.setPassword(passwordEncoder.encode(request.getPassword()));
 
             userService.save(user);
@@ -138,57 +130,47 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public RefreshTokenResponse refreshToken(HttpServletRequest request) {
+    public RefreshTokenResponse refreshToken(String token) {
 
-        Cookie refreshTokenCookie = WebUtils.getCookie(request, "refresh-token");
+        UUID tokenId = jwtToken.getTokenId(token);
+        Token refreshToken = tokenService.findByRefreshId(tokenId);
 
-        if (refreshTokenCookie == null) {
-            throw new AuthenticationDeniedException();
+        if (refreshToken.getRevoked()) {
+            throw new BadRequestException("Token JWT tidak valid atau telah kedaluwarsa!");
         }
 
-        UUID tokenId = jwtToken.getTokenId(refreshTokenCookie.getValue());
-        Token token = tokenService.findByRefreshId(tokenId);
+        refreshToken.setRevoked(true);
+        tokenService.save(refreshToken);
 
-        if (token != null && !token.getRevoked()) {
-            token.setRevoked(true);
-            tokenService.save(token);
+        UUID accessTokenId = UUID.randomUUID();
+        UUID refreshTokenId = UUID.randomUUID();
 
-            UUID accessTokenId = UUID.randomUUID();
-            UUID refreshTokenId = UUID.randomUUID();
+        tokenService.store(accessTokenId, refreshTokenId, refreshToken.getUser(), TokenType.AUTH_USER);
 
-            tokenService.store(accessTokenId, refreshTokenId, token.getUser(), TokenType.AUTH_USER);
+        String newAccessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
+        String newRefreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
 
-            String accessToken = jwtToken.createToken(accessTokenId, Duration.ofHours(1));
-            String refreshToken = jwtToken.createToken(refreshTokenId, Duration.ofDays(30));
+        return RefreshTokenResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
 
-            RefreshTokenResponse refreshResponse = RefreshTokenResponse.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-
-            return refreshResponse;
-        }
-
-        throw new BadRequestException("These JWT token was invalid.");
     }
 
     @Override
     @Transactional
-    public void logout(HttpServletRequest request)
-            throws AuthenticationDeniedException, BadRequestException {
+    public void logout(String token) {
 
-        Cookie accessToken = WebUtils.getCookie(request, "access-token");
-
-        if (accessToken == null || accessToken.getValue().isEmpty()) {
+        if (token.isBlank()) {
             return;
         }
 
-        UUID tokenId = jwtToken.getTokenId(accessToken.getValue());
-        Token token = tokenService.findById(tokenId);
+        UUID tokenId = jwtToken.getTokenId(token);
+        Token authToken = tokenService.findById(tokenId);
 
-        if (token != null && !token.getRevoked()) {
-            token.setRevoked(true);
-            tokenService.save(token);
+        if (!authToken.getRevoked()) {
+            authToken.setRevoked(true);
+            tokenService.save(authToken);
         }
     }
 }

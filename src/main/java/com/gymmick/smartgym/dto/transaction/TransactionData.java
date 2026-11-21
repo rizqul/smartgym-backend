@@ -2,7 +2,7 @@ package com.gymmick.smartgym.dto.transaction;
 
 import java.util.*;
 
-import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.entity.enums.*;
 
 import lombok.*;
 
@@ -13,9 +13,11 @@ public class TransactionData {
 
     private UUID packageId;
 
-    private String orderId;
+    private String packageName;
 
     private Long grossAmount;
+
+    private PaymentType paymentType;
 
     private TransactionType type;
 

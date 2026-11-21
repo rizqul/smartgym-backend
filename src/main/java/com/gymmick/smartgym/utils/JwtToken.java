@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
-import com.gymmick.smartgym.exceptions.AuthenticationDeniedException;
+import com.gymmick.smartgym.exceptions.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,11 +34,29 @@ public class JwtToken {
         return jwtEncoder.encode(params).getTokenValue();
     }
 
+    public String createCheckinToken(Duration duration) {
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .id(UUID.randomUUID().toString())
+                .claim("purpose", "checkin")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plus(duration))
+                .build();
+
+        JwtEncoderParameters params = JwtEncoderParameters.from(
+                JwsHeader.with(MacAlgorithm.HS256).build(), claims);
+
+        return jwtEncoder.encode(params).getTokenValue();
+    }
+
     public Jwt verifyToken(String token) {
         try {
+            if (token.isBlank()) {
+                throw new Exception();
+            }
+
             return jwtDecoder.decode(token);
         } catch (Exception e) {
-            throw new AuthenticationDeniedException("These JWT token was invalid or expired.");
+            throw new BadRequestException("Token JWT tidak valid atau telah kedaluwarsa!");
         }
     }
 

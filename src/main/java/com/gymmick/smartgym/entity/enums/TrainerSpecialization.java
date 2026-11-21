@@ -1,0 +1,13 @@
+package com.gymmick.smartgym.entity.enums;
+
+public enum TrainerSpecialization {
+    GENERAL_FITNESS,
+    WEIGHT_LOSS,
+    BODYBUILDING,
+    STRENGTH_CONDITIONING,
+    FUNCTIONAL_TRAINING,
+    CARDIO_ENDURANCE,
+    MOBILITY_FLEXIBILITY,
+    CORRECTIVE_REHAB,
+    SPORTS_PERFORMANCE
+}

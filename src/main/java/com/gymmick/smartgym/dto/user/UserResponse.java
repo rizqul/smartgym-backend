@@ -1,0 +1,31 @@
+package com.gymmick.smartgym.dto.user;
+
+import java.time.Instant;
+import java.util.UUID;
+
+import com.gymmick.smartgym.entity.enums.UserRole;
+
+import lombok.*;
+
+@Data
+@Builder
+public class UserResponse {
+
+    private UUID id;
+
+    private String name;
+
+    private String email;
+
+    private String profileUrl;
+
+    private String phoneNumber;
+
+    private Instant membershipExpiredAt;
+
+    private UserRole role;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+}

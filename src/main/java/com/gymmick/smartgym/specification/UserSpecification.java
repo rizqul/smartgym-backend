@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gymmick.smartgym.dto.dashboard.UserFilterRequest;
+import com.gymmick.smartgym.dto.user.UserFilterRequest;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.UserRole;
 

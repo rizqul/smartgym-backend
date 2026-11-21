@@ -11,7 +11,9 @@ import jakarta.validation.*;
 @Constraint(validatedBy = FileValidation.class)
 public @interface File {
 
-    String message() default "The input field must be a file.";
+    String message() default "The input field must be a valid file.";
+
+    boolean required() default true;
 
     String[] contentType() default { "*/*" };
 

@@ -1,27 +1,32 @@
 package com.gymmick.smartgym.specification;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gymmick.smartgym.dto.dashboard.TransactionFilterRequest;
-import com.gymmick.smartgym.entity.Transaction;
-import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.dto.transaction.TransactionFilterRequest;
+import com.gymmick.smartgym.entity.*;
 
 import jakarta.persistence.criteria.Predicate;
 
 public class TransactionSpecification {
-  public static Specification<Transaction> getTransactionByTransactionType(TransactionFilterRequest request,
-      TransactionType type) {
-    return ((root, query, criteriaBuilder) -> {
+    public static Specification<Transaction> getTransaction(TransactionFilterRequest request) {
+        return ((root, query, criteriaBuilder) -> {
 
-      List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
 
-      predicates.add(criteriaBuilder.equal(root.get("type"), type.toString()));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+    }
 
-      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-    });
-  }
+    public static Specification<Transaction> getMyTransaction(User user, TransactionFilterRequest request) {
+        return ((root, query, criteriaBuilder) -> {
 
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(criteriaBuilder.equal(root.get("member"), user));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+    }
 }
