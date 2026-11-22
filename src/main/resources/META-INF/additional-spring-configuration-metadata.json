@@ -78,5 +78,10 @@
     "name": "app.config.midtrans.pt-booking.redirect-url",
     "type": "java.lang.String",
     "description": "A description for 'app.config.midtrans.pt-booking.redirect-url'"
+  },
+  {
+    "name": "app.config.midtrans.signature-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.signature-key'"
   }
 ]}

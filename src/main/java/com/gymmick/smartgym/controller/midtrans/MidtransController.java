@@ -32,15 +32,22 @@ public class MidtransController {
     public String notification(@RequestBody Map<String, Object> response) {
         try {
             if (!response.isEmpty()) {
+                String signatureKey = response.get("signature_key").toString();
+                String statusCode = response.get("status_code").toString();
+
                 String orderId = response.get("order_id").toString();
-                Map<String, Object> transactionResult = midtransService.midtransCheckTransaction(orderId);
+                String grossAmount = response.get("gross_amount").toString();
+
+                Map<String, Object> transactionResult = midtransService.validateNotification(orderId, statusCode,
+                        grossAmount, signatureKey);
 
                 String transactionStatus = transactionResult.get("transaction_status").toString();
-                String paymentType = transactionResult.get("payment_type").toString();
+                String fraudStatus = transactionResult.get("fraud_status").toString();
 
+                String paymentType = transactionResult.get("payment_type").toString();
                 Transaction transaction = transactionService.updateTransaction(orderId, transactionStatus, paymentType);
 
-                if (transactionStatus.equals("settlement")) {
+                if (transactionStatus.equals("settlement") && fraudStatus.equals("accept")) {
                     if (transaction.getType().equals(TransactionType.MEMBERSHIP)) {
                         membershipService.activationMembership(transaction);
                     }
@@ -60,7 +67,7 @@ public class MidtransController {
     @GetMapping(path = "/membership")
     public ResponseEntity<ApiResponse<String>> validationOrder(@RequestParam(name = "order_id") String orderId) {
         try {
-            Map<String, Object> transactionResult = midtransService.midtransCheckTransaction(orderId);
+            Map<String, Object> transactionResult = midtransService.checkTransactionFromMidtrans(orderId);
             String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {
@@ -79,7 +86,7 @@ public class MidtransController {
     @GetMapping(path = "/pt-booking")
     public ResponseEntity<ApiResponse<String>> validationBooking(@RequestParam(name = "order_id") String orderId) {
         try {
-            Map<String, Object> transactionResult = midtransService.midtransCheckTransaction(orderId);
+            Map<String, Object> transactionResult = midtransService.checkTransactionFromMidtrans(orderId);
             String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {
