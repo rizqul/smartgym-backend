@@ -55,16 +55,13 @@ public class CheckinServiceImpl implements CheckinService {
         }
 
         Instant now = Instant.now();
-//        Membership membership = membershipRepository.findCurrentMemberships(
-//                member.getId(), now, TransactionStatus.SUCCESS).stream()
-//                .findFirst()
-//                .orElseThrow(() -> new BadRequestException("Membership Anda tidak aktif atau telah kedaluwarsa."));
 
-//        if(member.)
+        if (member.getMembershipExpiredAt() == null || member.getMembershipExpiredAt().isBefore(now)) {
+            throw new BadRequestException("Membership Anda tidak aktif atau telah kedaluwarsa.");
+        }
 
         Checkin checkin = Checkin.builder()
                 .member(member)
-//                .membership(membership)
                 .method(CheckinMethod.QR)
                 .status(CheckinStatus.GRANTED)
                 .checkInAt(now)
@@ -99,15 +96,13 @@ public class CheckinServiceImpl implements CheckinService {
     }
 
     private CheckinResponse toResponse(Checkin checkin) {
-        Membership membership = checkin.getMembership();
         User member = checkin.getMember();
 
         return CheckinResponse.builder()
                 .id(checkin.getId())
                 .memberId(member.getId())
                 .memberName(member.getName())
-                .membershipName(membership.getMembershipPackage().getName())
-                .membershipExpiresAt(membership.getEndDate())
+                .membershipExpiresAt(member.getMembershipExpiredAt())
                 .method(checkin.getMethod())
                 .status(checkin.getStatus())
                 .checkInAt(checkin.getCheckInAt())
