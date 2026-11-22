@@ -2,6 +2,7 @@ package com.gymmick.smartgym.services.checkin.impl;
 
 import java.time.*;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,9 @@ import com.gymmick.smartgym.entity.Checkin;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.CheckinMethod;
 import com.gymmick.smartgym.entity.enums.CheckinStatus;
+import com.gymmick.smartgym.entity.enums.UserRole;
 import com.gymmick.smartgym.exceptions.BadRequestException;
+import com.gymmick.smartgym.exceptions.ResourceNotFoundException;
 import com.gymmick.smartgym.repositories.CheckinRepository;
 import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.checkin.CheckinService;
@@ -97,9 +100,13 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Override
     @Transactional
-    public CheckinResponse checkOut(User member) {
-        User lockedMember = userRepository.findByIdForUpdate(member.getId())
-                .orElseThrow(() -> new BadRequestException("Data member tidak ditemukan."));
+    public CheckinResponse checkOut(UUID memberId) {
+        User lockedMember = userRepository.findByIdForUpdate(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member tidak ditemukan."));
+        if (lockedMember.getRole() != UserRole.MEMBER) {
+            throw new ResourceNotFoundException("Member tidak ditemukan.");
+        }
+
         Checkin checkin = checkinRepository
                 .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
                         lockedMember, CheckinStatus.GRANTED)

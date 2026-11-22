@@ -1,11 +1,13 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,5 +42,11 @@ public class AdminCheckinController {
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<CheckinSummaryResponse>> getSummary() {
         return ApiResponse.success(HttpStatus.OK, checkinService.getSummary());
+    }
+
+    @PostMapping("/{memberId}/checkout")
+    public ResponseEntity<ApiResponse<CheckinResponse>> checkOutMember(@PathVariable UUID memberId) {
+        CheckinResponse response = checkinService.checkOut(memberId);
+        return ApiResponse.success(HttpStatus.OK, "Check-out member berhasil.", response);
     }
 }

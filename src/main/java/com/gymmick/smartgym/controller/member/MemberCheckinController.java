@@ -39,7 +39,7 @@ public class MemberCheckinController {
 
     @PostMapping("/checkout")
     public ResponseEntity<ApiResponse<CheckinResponse>> checkOut(@AuthenticationPrincipal User member) {
-        CheckinResponse response = checkinService.checkOut(member);
+        CheckinResponse response = checkinService.checkOut(member.getId());
         return ApiResponse.success(HttpStatus.OK, "Check-out berhasil.", response);
     }
 }
