@@ -13,11 +13,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CheckinRepository extends JpaRepository<Checkin, UUID>, JpaSpecificationExecutor<Checkin> {
-    Optional<Checkin> findByMemberAndCheckOutAtIsNull(User member);
+    Optional<Checkin> findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
+            User member, CheckinStatus status);
+
+    Optional<Checkin> findFirstByMemberOrderByCheckInAtDesc(User member);
 
     List<Checkin> findAllByOrderByCheckInAtDesc(Pageable pageable);
 
-    long countByCheckInAtGreaterThanEqual(Instant since);
+    long countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(Instant since, Instant before);
 
     long countByStatusAndCheckOutAtIsNull(CheckinStatus status);
 }

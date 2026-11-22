@@ -9,14 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gymmick.smartgym.dto.checkin.*;
 import com.gymmick.smartgym.entity.Checkin;
-import com.gymmick.smartgym.entity.Membership;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.CheckinMethod;
 import com.gymmick.smartgym.entity.enums.CheckinStatus;
-import com.gymmick.smartgym.entity.enums.TransactionStatus;
 import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.repositories.CheckinRepository;
-import com.gymmick.smartgym.repositories.MembershipRepository;
+import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.checkin.CheckinService;
 import com.gymmick.smartgym.utils.JwtToken;
 
@@ -29,9 +27,11 @@ public class CheckinServiceImpl implements CheckinService {
 
     private static final Duration QR_TOKEN_LIFETIME = Duration.ofHours(1);
     private static final int MAX_RECENT_CHECKINS = 100;
+    private static final ZoneId GYM_TIME_ZONE = ZoneId.of("Asia/Jakarta");
+    private static final String INACTIVE_MEMBERSHIP_REASON = "Membership Anda tidak aktif atau telah kedaluwarsa.";
 
     private final CheckinRepository checkinRepository;
-    private final MembershipRepository membershipRepository;
+    private final UserRepository userRepository;
     private final JwtToken jwtToken;
 
     @Override
@@ -54,20 +54,59 @@ public class CheckinServiceImpl implements CheckinService {
             throw new BadRequestException("QR check-in tidak valid!");
         }
 
+        User lockedMember = userRepository.findByIdForUpdate(member.getId())
+                .orElseThrow(() -> new BadRequestException("Data member tidak ditemukan."));
         Instant now = Instant.now();
 
-        if (member.getMembershipExpiredAt() == null || member.getMembershipExpiredAt().isBefore(now)) {
-            throw new BadRequestException("Membership Anda tidak aktif atau telah kedaluwarsa.");
+        var activeCheckin = checkinRepository.findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
+                lockedMember, CheckinStatus.GRANTED);
+        if (activeCheckin.isPresent()) {
+            return toResponse(activeCheckin.get(), true);
+        }
+
+        boolean membershipActive = lockedMember.getMembershipExpiredAt() != null
+                && lockedMember.getMembershipExpiredAt().isAfter(now);
+        if (!membershipActive) {
+            var lastCheckin = checkinRepository.findFirstByMemberOrderByCheckInAtDesc(lockedMember);
+            if (lastCheckin.isPresent()
+                    && lastCheckin.get().getStatus() == CheckinStatus.DENIED
+                    && INACTIVE_MEMBERSHIP_REASON.equals(lastCheckin.get().getDenialReason())) {
+                return toResponse(lastCheckin.get(), true);
+            }
+
+            Checkin deniedCheckin = Checkin.builder()
+                    .member(lockedMember)
+                    .method(CheckinMethod.QR)
+                    .status(CheckinStatus.DENIED)
+                    .checkInAt(now)
+                    .denialReason(INACTIVE_MEMBERSHIP_REASON)
+                    .build();
+
+            return toResponse(checkinRepository.save(deniedCheckin), false);
         }
 
         Checkin checkin = Checkin.builder()
-                .member(member)
+                .member(lockedMember)
                 .method(CheckinMethod.QR)
                 .status(CheckinStatus.GRANTED)
                 .checkInAt(now)
                 .build();
 
-        return toResponse(checkinRepository.save(checkin));
+        return toResponse(checkinRepository.save(checkin), false);
+    }
+
+    @Override
+    @Transactional
+    public CheckinResponse checkOut(User member) {
+        User lockedMember = userRepository.findByIdForUpdate(member.getId())
+                .orElseThrow(() -> new BadRequestException("Data member tidak ditemukan."));
+        Checkin checkin = checkinRepository
+                .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
+                        lockedMember, CheckinStatus.GRANTED)
+                .orElseThrow(() -> new BadRequestException("Anda belum check-in di gym."));
+
+        checkin.setCheckOutAt(Instant.now());
+        return toResponse(checkinRepository.save(checkin), false);
     }
 
     @Override
@@ -84,18 +123,23 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Override
     public CheckinSummaryResponse getSummary() {
-        Instant startOfToday = LocalDate.now(ZoneId.systemDefault())
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
+        LocalDate today = LocalDate.now(GYM_TIME_ZONE);
+        Instant startOfToday = today.atStartOfDay(GYM_TIME_ZONE).toInstant();
+        Instant startOfTomorrow = today.plusDays(1).atStartOfDay(GYM_TIME_ZONE).toInstant();
 
         return CheckinSummaryResponse.builder()
                 .historyCount(checkinRepository.count())
-                .checkinsToday(checkinRepository.countByCheckInAtGreaterThanEqual(startOfToday))
+                .checkinsToday(checkinRepository.countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(
+                        startOfToday, startOfTomorrow))
                 .onFloor(checkinRepository.countByStatusAndCheckOutAtIsNull(CheckinStatus.GRANTED))
                 .build();
     }
 
     private CheckinResponse toResponse(Checkin checkin) {
+        return toResponse(checkin, false);
+    }
+
+    private CheckinResponse toResponse(Checkin checkin, boolean duplicate) {
         User member = checkin.getMember();
 
         return CheckinResponse.builder()
@@ -106,7 +150,9 @@ public class CheckinServiceImpl implements CheckinService {
                 .method(checkin.getMethod())
                 .status(checkin.getStatus())
                 .checkInAt(checkin.getCheckInAt())
+                .checkOutAt(checkin.getCheckOutAt())
                 .denialReason(checkin.getDenialReason())
+                .duplicate(duplicate)
                 .build();
     }
 }

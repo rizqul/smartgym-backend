@@ -19,5 +19,7 @@ public class CheckinResponse {
     private CheckinMethod method;
     private CheckinStatus status;
     private Instant checkInAt;
+    private Instant checkOutAt;
     private String denialReason;
+    private boolean duplicate;
 }

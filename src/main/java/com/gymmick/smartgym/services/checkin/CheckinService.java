@@ -10,6 +10,7 @@ import com.gymmick.smartgym.entity.User;
 public interface CheckinService {
     CheckinTokenResponse generateQrToken();
     CheckinResponse checkIn(String token, User member);
+    CheckinResponse checkOut(User member);
     List<CheckinResponse> findRecentCheckins(int limit);
     CheckinSummaryResponse getSummary();
 }
