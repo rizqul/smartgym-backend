@@ -8,17 +8,19 @@ import com.gymmick.smartgym.entity.enums.MembershipType;
 
 public interface MembershipService {
 
-    Map<MembershipType, List<MembershipPackageResponse>> findAllPackage();
+  Map<MembershipType, List<MembershipPackageResponse>> findAllPackage();
 
-    void createPackage(MembershipPackageCreateRequest request);
+  void createPackage(MembershipPackageCreateRequest request);
 
-    void updatePackage(String id, MembershipPackageUpdateRequest request);
+  void updatePackage(String id, MembershipPackageUpdateRequest request);
 
-    void deletePackage(String id);
+  void deletePackage(String id);
 
-    String buyMembership(User user, MembershipTransactionCreateRequest request);
+  String buyMembership(User user, MembershipTransactionCreateRequest request);
 
-    void activationMembership(Transaction transaction);
+  void activationMembership(Transaction transaction);
 
-    MembershipPackage findById(String id);
+  MembershipPackage findById(String id);
+
+  Long countMembershipPackage();
 }

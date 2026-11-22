@@ -1,11 +1,10 @@
 {
   "info": {
-    "_postman_id": "1cabc36e-6efe-490f-8b13-1e35f373dcc0",
+    "_postman_id": "4144b585-2068-4552-894e-7e6787b23ed5",
     "name": "SmartGym",
     "description": "Postman Collection for SmartGym API generated from repository postman folder.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "11429476",
-    "_collection_link": "https://go.postman.co/collection/11429476-1cabc36e-6efe-490f-8b13-1e35f373dcc0?source=collection_link"
+    "_exporter_id": "13751418"
   },
   "item": [
     {
@@ -369,6 +368,26 @@
                     }
                   },
                   "response": []
+                },
+                {
+                  "name": "Count Member Stats",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             },
@@ -490,6 +509,26 @@
                     }
                   },
                   "response": []
+                },
+                {
+                  "name": "Count Staff",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             },
@@ -501,17 +540,6 @@
                   "item": [
                     {
                       "name": "List Slot Trainer",
-                      "event": [
-                        {
-                          "listen": "test",
-                          "script": {
-                            "type": "text/javascript",
-                            "exec": [
-                              "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id)"
-                            ]
-                          }
-                        }
-                      ],
                       "request": {
                         "method": "GET",
                         "header": [
@@ -521,7 +549,7 @@
                           }
                         ],
                         "url": {
-                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date=2026-11-22",
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date=2026-11-21",
                           "host": [
                             "{{apiUrl}}"
                           ],
@@ -535,7 +563,7 @@
                           "query": [
                             {
                               "key": "date",
-                              "value": "2026-11-22"
+                              "value": "2026-11-21"
                             }
                           ]
                         }
@@ -554,7 +582,7 @@
                         ],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula\",\r\n    \"slotDate\": \"2026-11-23\",\r\n    \"startTime\": \"2026-11-23T10:30\",\r\n    \"endTime\": \"2026-11-23T11:30\"\r\n}",
+                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula Sesi 1\",\r\n    \"slotDate\": \"2026-11-21\",\r\n    \"startTime\": \"2026-11-21T10:30\",\r\n    \"endTime\": \"2026-11-21T11:30\",\r\n    \"quota\": \"5\"\r\n}",
                           "options": {
                             "raw": {
                               "language": "json"
@@ -623,7 +651,7 @@
                     "header": [],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"phoneNumber\": \"081212341234\",\r\n    \"specialization\": \"{{trainerSpecialization}}\",\r\n    \"experience\": \"{{trainerExperience}}\",\r\n    \"rate\": \"{{trainerRate}}\",\r\n    \"email\": \"{{$randomEmail}}\"\r\n}",
+                      "raw": "{\r\n    \"name\": \"{{trainerName}}\",\r\n    \"phoneNumber\": \"081212341234\",\r\n    \"specialization\": \"{{trainerSpecialization}}\",\r\n    \"experience\": \"{{trainerExperience}}\",\r\n    \"rate\": \"{{trainerRate}}\",\r\n    \"email\": \"{{trainerEmail}}\"\r\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -640,6 +668,26 @@
                         "dashboard",
                         "trainers",
                         "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Count Trainer",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers",
+                        "count"
                       ]
                     }
                   },
@@ -668,76 +716,33 @@
                     }
                   },
                   "response": []
-                }
-              ]
-            },
-            {
-              "name": "Check-ins",
-              "item": [
+                },
                 {
-                  "name": "Generate QR Token",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json();\npm.environment.set(\"checkinQrToken\", response.data.token);"
-                        ]
+                  "name": "Count Transaction",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"year\": 2026\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
                       }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "transactions",
+                        "count"
+                      ]
                     }
-                  ],
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": "{{apiUrl}}/admin/dashboard/checkins/qr-token"
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Check-in Summary",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": "{{apiUrl}}/admin/dashboard/checkins/summary"
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Recent Check-ins",
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": "{{apiUrl}}/admin/dashboard/checkins?limit=10"
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Check Out Member",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": "{{apiUrl}}/admin/dashboard/checkins/{{memberId}}/checkout"
                   },
                   "response": []
                 }
@@ -895,6 +900,26 @@
                     }
                   },
                   "response": []
+                },
+                {
+                  "name": "Count Membership",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/memberships/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "memberships",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             }
@@ -992,87 +1017,6 @@
                     "password"
                   ]
                 }
-              },
-              "response": []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Staff",
-      "item": [
-        {
-          "name": "Authentication",
-          "item": [
-            {
-              "name": "Login",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"email\": \"{{staffEmail}}\",\n    \"password\": \"{{staffPassword}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": "{{apiUrl}}/auth/login"
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Check-ins",
-          "item": [
-            {
-              "name": "Generate QR Token",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const response = pm.response.json();\npm.environment.set(\"checkinQrToken\", response.data.token);"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{apiUrl}}/staff/dashboard/checkins/qr-token"
-              },
-              "response": []
-            },
-            {
-              "name": "Check Out Member",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{apiUrl}}/staff/dashboard/checkins/{{memberId}}/checkout"
               },
               "response": []
             }
@@ -1354,116 +1298,6 @@
           ]
         },
         {
-          "name": "Trainer",
-          "item": [
-            {
-              "name": "Trainer Slot",
-              "item": [
-                {
-                  "name": "List Trainer Slot",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id)"
-                        ]
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date=2026-11-22",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "member",
-                        "trainers",
-                        "slot",
-                        "{{trainerId}}"
-                      ],
-                      "query": [
-                        {
-                          "key": "date",
-                          "value": "2026-11-22"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Booking Slot",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"slotId\": \"{{trainerSlotId}}\",\n    \"paymentType\": \"other_qris\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/member/trainers/booking",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "member",
-                        "trainers",
-                        "booking"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            },
-            {
-              "name": "List Trainer",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "type": "text/javascript",
-                    "exec": [
-                      "const response = pm.response.json()\r\npm.environment.set(\"trainerId\", response.data[0].id)"
-                    ]
-                  }
-                }
-              ],
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{apiUrl}}/member/trainers?size=10",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "member",
-                    "trainers"
-                  ],
-                  "query": [
-                    {
-                      "key": "size",
-                      "value": "10"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
           "name": "Transactions",
           "item": [
             {
@@ -1485,25 +1319,6 @@
               "response": []
             },
             {
-              "name": "Check Transaction",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{apiUrl}}/member/transactions/{{orderId}}",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "member",
-                    "transactions",
-                    "{{orderId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
               "name": "Cancel Transaction",
               "request": {
                 "method": "DELETE",
@@ -1519,52 +1334,6 @@
                     "{{orderId}}"
                   ]
                 }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Check-ins",
-          "item": [
-            {
-              "name": "Scan QR and Check In",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"token\": \"{{checkinQrToken}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": "{{apiUrl}}/member/checkins"
-              },
-              "response": []
-            },
-            {
-              "name": "Check Out",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{apiUrl}}/member/checkins/checkout"
               },
               "response": []
             }
@@ -1666,6 +1435,60 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "Get All Slot",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date=2026-11-21",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "member",
+                "trainers",
+                "slot",
+                "{{trainerId}}"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-11-21"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "orderSlot",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"slotId\":\"{{slotId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiUrl}}/member/trainers/order",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "member",
+                "trainers",
+                "order"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
