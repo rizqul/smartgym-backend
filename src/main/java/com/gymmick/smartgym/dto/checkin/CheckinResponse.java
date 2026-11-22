@@ -15,10 +15,11 @@ public class CheckinResponse {
     private UUID id;
     private String memberName;
     private UUID memberId;
-    private String membershipName;
     private Instant membershipExpiresAt;
     private CheckinMethod method;
     private CheckinStatus status;
     private Instant checkInAt;
+    private Instant checkOutAt;
     private String denialReason;
+    private boolean duplicate;
 }

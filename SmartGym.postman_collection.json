@@ -670,6 +670,78 @@
                   "response": []
                 }
               ]
+            },
+            {
+              "name": "Check-ins",
+              "item": [
+                {
+                  "name": "Generate QR Token",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json();\npm.environment.set(\"checkinQrToken\", response.data.token);"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": "{{apiUrl}}/admin/dashboard/checkins/qr-token"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Check-in Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": "{{apiUrl}}/admin/dashboard/checkins/summary"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Recent Check-ins",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": "{{apiUrl}}/admin/dashboard/checkins?limit=10"
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Check Out Member",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": "{{apiUrl}}/admin/dashboard/checkins/{{memberId}}/checkout"
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
@@ -920,6 +992,87 @@
                     "password"
                   ]
                 }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Staff",
+      "item": [
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "Login",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"{{staffEmail}}\",\n    \"password\": \"{{staffPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{apiUrl}}/auth/login"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Check-ins",
+          "item": [
+            {
+              "name": "Generate QR Token",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json();\npm.environment.set(\"checkinQrToken\", response.data.token);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{apiUrl}}/staff/dashboard/checkins/qr-token"
+              },
+              "response": []
+            },
+            {
+              "name": "Check Out Member",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{apiUrl}}/staff/dashboard/checkins/{{memberId}}/checkout"
               },
               "response": []
             }
@@ -1366,6 +1519,52 @@
                     "{{orderId}}"
                   ]
                 }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Check-ins",
+          "item": [
+            {
+              "name": "Scan QR and Check In",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"token\": \"{{checkinQrToken}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{apiUrl}}/member/checkins"
+              },
+              "response": []
+            },
+            {
+              "name": "Check Out",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{apiUrl}}/member/checkins/checkout"
               },
               "response": []
             }

@@ -30,9 +30,9 @@ public class Checkin extends TimeStamp {
     @JoinColumn(name = "member_id", nullable = false)
     private User member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "membership_id", nullable = false)
-    private Membership membership;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "membership_id", nullable = false)
+//    private Membership membership;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

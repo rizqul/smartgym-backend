@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gymmick.smartgym.dto.checkin.CheckinRequest;
 import com.gymmick.smartgym.dto.checkin.CheckinResponse;
 import com.gymmick.smartgym.entity.User;
+import com.gymmick.smartgym.entity.enums.CheckinStatus;
 import com.gymmick.smartgym.services.checkin.CheckinService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
@@ -29,6 +30,16 @@ public class MemberCheckinController {
             @Valid @RequestBody CheckinRequest request,
             @AuthenticationPrincipal User member) {
         CheckinResponse response = checkinService.checkIn(request.getToken(), member);
-        return ApiResponse.success(HttpStatus.CREATED, "Check-in berhasil.", response);
+        HttpStatus status = response.isDuplicate() ? HttpStatus.OK : HttpStatus.CREATED;
+        String message = response.getStatus() == CheckinStatus.DENIED
+                ? response.getDenialReason()
+                : response.isDuplicate() ? "Anda sudah berada di gym." : "Check-in berhasil.";
+        return ApiResponse.success(status, message, response);
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<ApiResponse<CheckinResponse>> checkOut(@AuthenticationPrincipal User member) {
+        CheckinResponse response = checkinService.checkOut(member.getId());
+        return ApiResponse.success(HttpStatus.OK, "Check-out berhasil.", response);
     }
 }
