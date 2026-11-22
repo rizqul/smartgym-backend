@@ -55,14 +55,16 @@ public class CheckinServiceImpl implements CheckinService {
         }
 
         Instant now = Instant.now();
-        Membership membership = membershipRepository.findCurrentMemberships(
-                member.getId(), now, TransactionStatus.SUCCESS).stream()
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException("Membership Anda tidak aktif atau telah kedaluwarsa."));
+//        Membership membership = membershipRepository.findCurrentMemberships(
+//                member.getId(), now, TransactionStatus.SUCCESS).stream()
+//                .findFirst()
+//                .orElseThrow(() -> new BadRequestException("Membership Anda tidak aktif atau telah kedaluwarsa."));
+
+//        if(member.)
 
         Checkin checkin = Checkin.builder()
                 .member(member)
-                .membership(membership)
+//                .membership(membership)
                 .method(CheckinMethod.QR)
                 .status(CheckinStatus.GRANTED)
                 .checkInAt(now)
