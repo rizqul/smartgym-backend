@@ -180,6 +180,16 @@
               "name": "Check-in Summary",
               "request": {"method": "GET", "url": "{{apiUrl}}/admin/dashboard/checkins/summary"},
               "response": []
+            },
+            {
+              "name": "Check Out Member",
+              "request": {
+                "method": "POST",
+                "description": "Admin closes the active check-in for the member ID in {{memberId}}.",
+                "header": [{"key": "Accept", "value": "application/json"}],
+                "url": "{{apiUrl}}/admin/dashboard/checkins/{{memberId}}/checkout"
+              },
+              "response": []
             }
           ]
         },
@@ -288,6 +298,16 @@
                 "method": "POST",
                 "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": ["const response = pm.response.json();\npm.environment.set(\"checkinQrToken\", response.data.token);"]}}],
                 "url": "{{apiUrl}}/staff/dashboard/checkins/qr-token"
+              },
+              "response": []
+            },
+            {
+              "name": "Check Out Member",
+              "request": {
+                "method": "POST",
+                "description": "Staff closes the active check-in for the member ID in {{memberId}}.",
+                "header": [{"key": "Accept", "value": "application/json"}],
+                "url": "{{apiUrl}}/staff/dashboard/checkins/{{memberId}}/checkout"
               },
               "response": []
             }
