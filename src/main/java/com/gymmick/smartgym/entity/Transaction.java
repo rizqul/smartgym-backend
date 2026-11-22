@@ -5,8 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.gymmick.smartgym.entity.enums.TransactionStatus;
-import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.entity.shared.TimeStamp;
 
 import jakarta.persistence.*;
@@ -33,10 +32,14 @@ public class Transaction extends TimeStamp {
     private String orderId;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String paymentUrl;
 
     @Column(nullable = true)
-    private String paymentType;
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false)
@@ -55,4 +58,6 @@ public class Transaction extends TimeStamp {
     private TransactionStatus status = TransactionStatus.PENDING;
 
     private Instant paidAt;
+
+    private Instant expiredAt;
 }
