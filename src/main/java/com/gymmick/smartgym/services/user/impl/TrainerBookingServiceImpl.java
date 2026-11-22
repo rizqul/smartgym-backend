@@ -1,5 +1,6 @@
 package com.gymmick.smartgym.services.user.impl;
 
+import java.time.Instant;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,10 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
             TrainerSlot trainerSlot = trainerSlotRepository.findByIdForUpdate(trainerSlotId)
                     .orElseThrow(() -> new ResourceNotFoundException());
+
+            if (Instant.now().isAfter(trainerSlot.getStartTime())) {
+                throw new BadRequestException("Tidak dapat melakukan booking, waktu slot sudah terlewati!");
+            }
 
             int updatedStatus = trainerSlotRepository.updateStatusIfMatch(
                     trainerSlotId, SlotStatus.AVAILABLE, SlotStatus.BOOKED);
