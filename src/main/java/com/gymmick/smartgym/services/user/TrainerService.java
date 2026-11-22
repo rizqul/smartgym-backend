@@ -1,5 +1,6 @@
 package com.gymmick.smartgym.services.user;
 
+import java.time.Instant;
 import java.util.List;
 
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
@@ -15,4 +16,9 @@ public interface TrainerService {
 
   List<TrainerSlotResponse> findSlotByTrainerIdAndDate(String id, TrainerSlotFilterRequest request);
 
+  Long countAllTrainer();
+
+  Long countAllTrainerThatHasSlotDaily(Instant startOfDay, Instant endOfDay);
+
+  Long countAllSlotDaily(Instant startOfDay, Instant endOfDay);
 }

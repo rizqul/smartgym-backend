@@ -32,117 +32,123 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class StaffServiceImpl implements StaffService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    private final UserService userService;
-    private final StorageService storageService;
+  private final UserService userService;
+  private final StorageService storageService;
 
-    private final UserMapping userMapping;
+  private final UserMapping userMapping;
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.config.aws.s3.public-url}")
-    private String awsPublicUrl;
+  @Value("${app.config.aws.s3.public-url}")
+  private String awsPublicUrl;
 
-    @Override
-    public PaginationResponse<UserResponse> findAllStaff(UserFilterRequest request) {
+  @Override
+  public PaginationResponse<UserResponse> findAllStaff(UserFilterRequest request) {
 
-        Integer page = request.getPage();
-        Integer size = request.getSize();
+    Integer page = request.getPage();
+    Integer size = request.getSize();
 
-        Specification<User> specification = UserSpecification.getUserByRoleSpecification(request, UserRole.STAFF);
+    Specification<User> specification = UserSpecification.getUserByRoleSpecification(request, UserRole.STAFF);
 
-        Sort sortBy = Sort.by(User::getCreatedAt).descending();
-        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+    Sort sortBy = Sort.by(User::getCreatedAt).descending();
+    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
-        Page<User> userPage = userRepository.findAll(specification, pageRequest);
+    Page<User> userPage = userRepository.findAll(specification, pageRequest);
 
-        List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
+    List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
 
-        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
-                userPage.getTotalElements(),
-                p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
+    PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
+        userPage.getTotalElements(),
+        p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
 
-        PaginationResponse<UserResponse> paginationResponse = PaginationResponse.<UserResponse>builder()
-                .data(userResponse)
-                .pagination(paginationMeta)
-                .build();
+    PaginationResponse<UserResponse> paginationResponse = PaginationResponse.<UserResponse>builder()
+        .data(userResponse)
+        .pagination(paginationMeta)
+        .build();
 
-        return paginationResponse;
+    return paginationResponse;
+  }
+
+  @Override
+  @Transactional
+  public void createStaff(UserStaffCreateRequest request) {
+
+    String profileUrl = String
+        .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
+            request.getName().toLowerCase().replaceAll("\s+", "+"));
+
+    User user = User.builder()
+        .name(request.getName())
+        .email(request.getEmail())
+        .profileUrl(profileUrl)
+        .phoneNumber(request.getPhoneNumber())
+        .password(passwordEncoder.encode(request.getPassword()))
+        .role(UserRole.STAFF)
+        .build();
+
+    userService.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void updateStaff(String id, UserStaffUpdateRequest request) {
+
+    UUID staffId = UUID.fromString(id);
+    User staff = userRepository.findById(staffId).orElseThrow(() -> new ResourceNotFoundException());
+
+    if (request.getPhoto() != null) {
+      UriComponents uriComponents = UriComponentsBuilder.fromUriString(staff.getProfileUrl()).build();
+      String fileKey = uriComponents.getPath().replaceFirst("/", "");
+
+      if (fileKey.startsWith(String.format("staff/%s", staff.getId()))) {
+        storageService.remove(fileKey);
+      }
+
+      String fileLocation = String.format("staff/%s/profile", staff.getId());
+      fileKey = storageService.store((MultipartFile) request.getPhoto(), fileLocation);
+
+      staff.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
     }
 
-    @Override
-    @Transactional
-    public void createStaff(UserStaffCreateRequest request) {
+    String name = (request.getName() != null && !request.getName().isBlank()) ? request.getName() : staff.getName();
 
-        String profileUrl = String
-                .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
-                        request.getName().toLowerCase().replaceAll("\s+", "+"));
+    String email = (request.getEmail() != null && !request.getEmail().isBlank()) ? request.getEmail()
+        : staff.getEmail();
 
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .profileUrl(profileUrl)
-                .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(UserRole.STAFF)
-                .build();
+    String phoneNumber = (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank())
+        ? request.getPhoneNumber()
+        : staff.getPhoneNumber();
 
-        userService.save(user);
+    String password = (request.getPassword() != null && !request.getPassword().isBlank()) ? request.getPassword()
+        : staff.getPassword();
+
+    if (!Objects.equals(request.getEmail(), staff.getEmail())) {
+      staff.setEmail(email);
     }
 
-    @Override
-    @Transactional
-    public void updateStaff(String id, UserStaffUpdateRequest request) {
+    staff.setName(name);
+    staff.setPhoneNumber(phoneNumber);
+    staff.setPassword(password);
 
-        UUID staffId = UUID.fromString(id);
-        User staff = userRepository.findById(staffId).orElseThrow(() -> new ResourceNotFoundException());
+    userRepository.save(staff);
+  }
 
-        if (request.getPhoto() != null) {
-            UriComponents uriComponents = UriComponentsBuilder.fromUriString(staff.getProfileUrl()).build();
-            String fileKey = uriComponents.getPath().replaceFirst("/", "");
+  @Override
+  @Transactional
+  public void deleteStaff(String id) {
 
-            if (fileKey.startsWith(String.format("staff/%s", staff.getId()))) {
-                storageService.remove(fileKey);
-            }
+    UUID userId = UUID.fromString(id);
+    User user = userService.findById(userId);
 
-            String fileLocation = String.format("staff/%s/profile", staff.getId());
-            fileKey = storageService.store((MultipartFile) request.getPhoto(), fileLocation);
+    user.setDeletedAt(Instant.now());
+    userService.save(user);
+  }
 
-            staff.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
-        }
+  @Override
+  public Long countStaff() {
 
-        String name = (request.getName() != null && !request.getName().isBlank()) ? request.getName() : staff.getName();
-
-        String email = (request.getEmail() != null && !request.getEmail().isBlank()) ? request.getEmail()
-                : staff.getEmail();
-
-        String phoneNumber = (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank())
-                ? request.getPhoneNumber()
-                : staff.getPhoneNumber();
-
-        String password = (request.getPassword() != null && !request.getPassword().isBlank()) ? request.getPassword()
-                : staff.getPassword();
-
-        if (!Objects.equals(request.getEmail(), staff.getEmail())) {
-            staff.setEmail(email);
-        }
-
-        staff.setName(name);
-        staff.setPhoneNumber(phoneNumber);
-        staff.setPassword(password);
-
-        userRepository.save(staff);
-    }
-
-    @Override
-    @Transactional
-    public void deleteStaff(String id) {
-
-        UUID userId = UUID.fromString(id);
-        User user = userService.findById(userId);
-
-        user.setDeletedAt(Instant.now());
-        userService.save(user);
-    }
+    return userRepository.countByRole(UserRole.STAFF);
+  }
 }

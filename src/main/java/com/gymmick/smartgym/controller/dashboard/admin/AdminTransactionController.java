@@ -1,12 +1,16 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
+import com.gymmick.smartgym.dto.statistic.TransactionCountRequest;
+import com.gymmick.smartgym.dto.statistic.TransactionCountResponse;
 import com.gymmick.smartgym.dto.transaction.*;
+import com.gymmick.smartgym.entity.enums.TransactionStatus;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
@@ -17,12 +21,32 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminTransactionController {
 
-    private final TransactionService transactionService;
+  private final TransactionService transactionService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<TransactionResponse>>> findAll(TransactionFilterRequest request) {
-        PaginationResponse<TransactionResponse> response = transactionService.findAllTransaction(request);
+  @GetMapping
+  public ResponseEntity<ApiResponse<List<TransactionResponse>>> findAll(TransactionFilterRequest request) {
+    PaginationResponse<TransactionResponse> response = transactionService.findAllTransaction(request);
 
-        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
-    }
+    return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+  }
+
+  @GetMapping(path = "/count")
+  public ResponseEntity<ApiResponse<TransactionCountResponse>> countTransactionStats(
+      @RequestBody TransactionCountRequest request) {
+
+    Long incomeYearly = transactionService.sumTotalIncomeYearly(request.getYear(), ZoneId.systemDefault());
+    Long countTransactionSuccess = transactionService.countTransactionByStatus(TransactionStatus.SUCCESS);
+    Long countTransactionFailed = transactionService.countTransactionByStatus(TransactionStatus.FAILURE)
+        + transactionService.countTransactionByStatus(TransactionStatus.CANCELLED);
+    Long countTransactionProcess = transactionService.countTransactionByStatus(TransactionStatus.PROCESS);
+
+    TransactionCountResponse response = TransactionCountResponse.builder()
+        .sumTransactionYearly(incomeYearly)
+        .transactionSuccess(countTransactionSuccess)
+        .transactionFailed(countTransactionFailed)
+        .transactionProcess(countTransactionProcess)
+        .build();
+
+    return ApiResponse.success(HttpStatus.OK, response);
+  }
 }
