@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gymmick.smartgym.entity.Transaction;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.BadRequestException;
+import com.gymmick.smartgym.repositories.TrainerSlotRepository;
 import com.gymmick.smartgym.repositories.TransactionRespository;
 import com.gymmick.smartgym.services.membership.MembershipService;
 import com.gymmick.smartgym.services.transaction.*;
@@ -28,6 +29,7 @@ public class MidtransServiceImpl implements MidtransService {
     private final MidtransCoreApi midtransCoreApi;
     private final TransactionService transactionService;
 
+    private final TrainerSlotRepository trainerSlotRepository;
     private final TransactionRespository transactionRespository;
 
     private final MembershipService membershipService;
@@ -92,6 +94,12 @@ public class MidtransServiceImpl implements MidtransService {
     public void cancelTransaction(String orderId) throws MidtransError {
         Transaction transaction = transactionService.findByOrderId(orderId);
         midtransCoreApi.cancelTransaction(orderId);
+
+        if (transaction.getType().equals(TransactionType.PT_BOOKING)) {
+            trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
+                    SlotStatus.BOOKED,
+                    SlotStatus.AVAILABLE);
+        }
 
         transaction.setStatus(TransactionStatus.CANCELLED);
         transactionRespository.save(transaction);
