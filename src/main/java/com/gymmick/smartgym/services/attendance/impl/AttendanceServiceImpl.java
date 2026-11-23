@@ -121,7 +121,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return AttendanceTokenResponse.builder()
                 .token(token)
                 .expiresAt(expiresAt)
-                .expiresInSeconds(expiresAt.getEpochSecond())
+                .expiresInSeconds(expiresAt.getEpochSecond() - Instant.now().getEpochSecond())
                 .build();
     }
 
