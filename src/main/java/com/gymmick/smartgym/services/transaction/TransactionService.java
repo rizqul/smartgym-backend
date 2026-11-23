@@ -5,25 +5,26 @@ import java.time.ZoneId;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
-import com.gymmick.smartgym.entity.enums.TransactionStatus;
-import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.entity.enums.*;
 import com.midtrans.httpclient.error.MidtransError;
 
 public interface TransactionService {
 
-  PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
+    PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
 
-  PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request);
+    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request);
 
-  Transaction findByOrderId(String orderId);
+    Transaction findByOrderId(String orderId);
 
-  String createTransaction(User user, TransactionData data) throws MidtransError;
+    TransactionCreate createTransaction(User user, TransactionData data) throws MidtransError;
 
-  Transaction updateTransaction(String orderId, String status, String paymentType);
+    Transaction detailTransaction(String orderId);
 
-  Long countTotalIncomeByType(TransactionType type);
+    Transaction updateTransaction(String orderId, String status, String paymentType);
 
-  Long countTransactionByStatus(TransactionStatus status);
+    Long countTotalIncomeByType(TransactionType type);
 
-  Long sumTotalIncomeYearly(int year, ZoneId zone);
+    Long countTransactionByStatus(TransactionStatus status);
+
+    Long sumTotalIncomeYearly(int year, ZoneId zone);
 }

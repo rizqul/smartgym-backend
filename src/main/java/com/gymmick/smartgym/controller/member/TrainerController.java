@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.trainer.*;
+import com.gymmick.smartgym.dto.transaction.TransactionCreate;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.services.user.*;
 import com.gymmick.smartgym.utils.ApiResponse;
@@ -40,11 +41,11 @@ public class TrainerController {
     }
 
     @PostMapping(path = "/booking")
-    public ResponseEntity<ApiResponse<String>> bookedTrainer(@AuthenticationPrincipal User user,
+    public ResponseEntity<ApiResponse<TransactionCreate>> bookedTrainer(@AuthenticationPrincipal User user,
             @Valid @RequestBody TrainerTransactionCreateRequest request) {
 
-        String paymentUrl = trainerBookingService.createBookedTrainer(user, request);
+        TransactionCreate response = trainerBookingService.createBookedTrainer(user, request);
 
-        return ApiResponse.success(HttpStatus.OK, "OK", paymentUrl);
+        return ApiResponse.success(HttpStatus.OK, response);
     }
 }

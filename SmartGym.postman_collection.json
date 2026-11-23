@@ -1,17 +1,18 @@
 {
   "info": {
-    "_postman_id": "4144b585-2068-4552-894e-7e6787b23ed5",
+    "_postman_id": "980b93be-753c-4e01-9061-65cd3a5a85fc",
     "name": "SmartGym",
-    "description": "Postman Collection for SmartGym API generated from repository postman folder.",
+    "description": "Complete SmartGym API collection. Select the existing SmartGym environment to use {{apiUrl}}. Login requests use role-specific email/password variables; authenticated requests use the cookies returned by login.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "13751418"
+    "_exporter_id": "11429476",
+    "_collection_link": "https://go.postman.co/collection/11429476-980b93be-753c-4e01-9061-65cd3a5a85fc?source=collection_link"
   },
   "item": [
     {
-      "name": "Admin",
+      "name": "Authentication",
       "item": [
         {
-          "name": "Authentication",
+          "name": "Admin",
           "item": [
             {
               "name": "Login",
@@ -158,849 +159,29 @@
                 }
               },
               "response": []
-            },
+            }
+          ]
+        },
+        {
+          "name": "Staff",
+          "item": [
             {
-              "name": "Logout",
+              "name": "Login",
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Accept",
                     "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{apiUrl}}/auth/logout",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "auth",
-                    "logout"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Refresh Token",
-              "request": {
-                "method": "POST",
-                "header": [
+                  },
                   {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{apiUrl}}/auth/refresh",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "auth",
-                    "refresh"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Dashboard",
-          "item": [
-            {
-              "name": "Members",
-              "item": [
-                {
-                  "name": "List Member",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"memberId\", response.data[0].id)"
-                        ]
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members?size=10",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "members"
-                      ],
-                      "query": [
-                        {
-                          "key": "size",
-                          "value": "10"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Send Member OTP",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"email\": \"{{memberEmail}}\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members/otp",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "members",
-                        "otp"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Create Member",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"081212341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members/create",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "members",
-                        "create"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Delete Member",
-                  "request": {
-                    "method": "DELETE",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      },
-                      {
-                        "key": "Content-Type",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{memberPassword}}\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members/delete/{{memberId}}",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "members",
-                        "delete",
-                        "{{memberId}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Count Member Stats",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members/count",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "members",
-                        "count"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            },
-            {
-              "name": "Staff",
-              "item": [
-                {
-                  "name": "Staff List",
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/staff?size=10",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "staff"
-                      ],
-                      "query": [
-                        {
-                          "key": "size",
-                          "value": "10"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Create Staff",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"name\": \"{{staffName}}\",\n    \"email\": \"{{staffEmail}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{staffPassword}}\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/staff/create",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "staff",
-                        "create"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Update Staff",
-                  "request": {
-                    "method": "PUT",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"name\": \"{{staffName}}\",\n    \"email\": \"{{staffEmail}}\",\n    \"phoneNumber\": \"62812341234\",\n    \"password\": \"{{staffPassword}}\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/staff/create",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "staff",
-                        "create"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Delete Staff",
-                  "request": {
-                    "method": "DELETE",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/staff/delete/{{staffId}}",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "staff",
-                        "delete",
-                        "{{staffId}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Count Staff",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/staff/count",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "staff",
-                        "count"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            },
-            {
-              "name": "Trainer",
-              "item": [
-                {
-                  "name": "Trainer Slot",
-                  "item": [
-                    {
-                      "name": "List Slot Trainer",
-                      "request": {
-                        "method": "GET",
-                        "header": [
-                          {
-                            "key": "Accept",
-                            "value": "application/json"
-                          }
-                        ],
-                        "url": {
-                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date=2026-11-21",
-                          "host": [
-                            "{{apiUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "dashboard",
-                            "trainers",
-                            "slot",
-                            "{{trainerId}}"
-                          ],
-                          "query": [
-                            {
-                              "key": "date",
-                              "value": "2026-11-21"
-                            }
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "Create Slot",
-                      "request": {
-                        "method": "POST",
-                        "header": [
-                          {
-                            "key": "Accept",
-                            "value": "application/json"
-                          }
-                        ],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{\r\n    \"description\": \"Latihan Gym Dasar Untuk Pemula Sesi 1\",\r\n    \"slotDate\": \"2026-11-21\",\r\n    \"startTime\": \"2026-11-21T10:30\",\r\n    \"endTime\": \"2026-11-21T11:30\",\r\n    \"quota\": \"5\"\r\n}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/create/{{trainerId}}",
-                          "host": [
-                            "{{apiUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "dashboard",
-                            "trainers",
-                            "slot",
-                            "create",
-                            "{{trainerId}}"
-                          ]
-                        }
-                      },
-                      "response": []
-                    }
-                  ]
-                },
-                {
-                  "name": "List Trainer",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"trainerId\", response.data[0].id)"
-                        ]
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/trainers?size=10",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "trainers"
-                      ],
-                      "query": [
-                        {
-                          "key": "size",
-                          "value": "10"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Create Trainer",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\r\n    \"name\": \"{{trainerName}}\",\r\n    \"phoneNumber\": \"081212341234\",\r\n    \"specialization\": \"{{trainerSpecialization}}\",\r\n    \"experience\": \"{{trainerExperience}}\",\r\n    \"rate\": \"{{trainerRate}}\",\r\n    \"email\": \"{{trainerEmail}}\"\r\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/trainers/create",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "trainers",
-                        "create"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Count Trainer",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/trainers/count",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "trainers",
-                        "count"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            },
-            {
-              "name": "Transactions",
-              "item": [
-                {
-                  "name": "List Transactions",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/transactions",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "transactions"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Count Transaction",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"year\": 2026\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/transactions/count",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "transactions",
-                        "count"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "Memberships",
-          "item": [
-            {
-              "name": "Packages",
-              "item": [
-                {
-                  "name": "List Package",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data.MONTHLY[0].id)"
-                        ]
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "GET",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "memberships",
-                        "packages"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Create Package",
-                  "request": {
-                    "method": "POST",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\r\n    \"type\": \"monthly\", // weekly | monthly | yearly\r\n    \"name\": \"30 Hari\",\r\n    \"description\": \"Akses Gym Selama 30 Hari!\",\r\n    \"duration\": 30,\r\n    \"price\": 300000\r\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/create",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "memberships",
-                        "packages",
-                        "create"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Update Package",
-                  "request": {
-                    "method": "PATCH",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\r\n    \"type\": \"monthly\", // weekly | monthly | yearly\r\n    \"name\": \"28 Hari\",\r\n    \"description\": \"Akses Gym Selama 28 Hari!\",\r\n    \"duration\": 28\r\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/update/{{membershipPackageId}}",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "memberships",
-                        "packages",
-                        "update",
-                        "{{membershipPackageId}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Delete Package",
-                  "event": [
-                    {
-                      "listen": "test",
-                      "script": {
-                        "type": "text/javascript",
-                        "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data[0].id)"
-                        ]
-                      }
-                    }
-                  ],
-                  "request": {
-                    "method": "DELETE",
-                    "header": [
-                      {
-                        "key": "Accept",
-                        "value": "application/json"
-                      }
-                    ],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/delete/{{membershipPackageId}}",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "memberships",
-                        "packages",
-                        "delete",
-                        "{{membershipPackageId}}"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Count Membership",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/memberships/count",
-                      "host": [
-                        "{{apiUrl}}"
-                      ],
-                      "path": [
-                        "admin",
-                        "dashboard",
-                        "memberships",
-                        "count"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "Profile",
-          "item": [
-            {
-              "name": "My Profile",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{apiUrl}}/user",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "user"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Update Profile",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "name",
-                      "value": "{{memberName}}",
-                      "type": "text"
-                    },
-                    {
-                      "key": "photo",
-                      "type": "file",
-                      "value": null
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{apiUrl}}/user/profile",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "user",
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Update Password",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Accept",
+                    "key": "Content-Type",
                     "value": "application/json"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"oldPassword\": \"{{memberPassword}}\",\r\n    \"newPassword\": \"{{memberNewPassword}}\"\r\n}",
+                  "raw": "{\n    \"email\": \"{{staffEmail}}\",\n    \"password\": \"{{staffPassword}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1008,27 +189,130 @@
                   }
                 },
                 "url": {
-                  "raw": "{{apiUrl}}/user/password",
+                  "raw": "{{apiUrl}}/auth/login",
                   "host": [
                     "{{apiUrl}}"
                   ],
                   "path": [
-                    "user",
-                    "password"
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Forgot Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"{{staffEmail}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/auth/forgot-password",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "forgot-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reset OTP Verify",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"code\": \"{{staffResetOtp}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/auth/reset-verify",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-verify"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reset Password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"{{staffPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/auth/reset-password",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
                   ]
                 }
               },
               "response": []
             }
           ]
-        }
-      ]
-    },
-    {
-      "name": "Member",
-      "item": [
+        },
         {
-          "name": "Authentication",
+          "name": "Member",
           "item": [
             {
               "name": "Login",
@@ -1073,13 +357,11 @@
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   },
                   {
                     "key": "Content-Type",
-                    "value": "application/json",
-                    "type": "text"
+                    "value": "application/json"
                   }
                 ],
                 "body": {
@@ -1175,61 +457,1201 @@
                 }
               },
               "response": []
-            },
-            {
-              "name": "Logout",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{apiUrl}}/auth/logout",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "auth",
-                    "logout"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Refresh Token",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{apiUrl}}/auth/refresh",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "auth",
-                    "refresh"
-                  ]
-                }
-              },
-              "response": []
             }
           ]
         },
         {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/auth/logout",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/auth/refresh",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiUrl}}/user",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "{{memberName}}",
+                  "type": "text"
+                },
+                {
+                  "key": "phoneNumber",
+                  "value": "081234567890",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [
+                    ""
+                  ],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{apiUrl}}/user/profile",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"oldPassword\": \"{{memberPassword}}\",\n    \"newPassword\": \"{{memberNewPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiUrl}}/user/password",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "user",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Members",
+              "item": [
+                {
+                  "name": "List Members",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members?page=1&size=10",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "10"
+                        },
+                        {
+                          "key": "name",
+                          "value": "",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Request Member OTP",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"email\": \"{{memberEmail}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/otp",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "otp"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Member",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"{{memberName}}\",\n    \"email\": \"{{memberEmail}}\",\n    \"code\": \"{{memberCreateOtp}}\",\n    \"phoneNumber\": \"081234567890\",\n    \"password\": \"{{memberPassword}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Member",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/delete/{{memberId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "delete",
+                        "{{memberId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Trainers",
+              "item": [
+                {
+                  "name": "Slots",
+                  "item": [
+                    {
+                      "name": "List Trainer Slots",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                              "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id)"
+                            ]
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date={{trainerSlotDate}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "trainers",
+                            "slot",
+                            "{{trainerId}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "date",
+                              "value": "{{trainerSlotDate}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Create Trainer Slot",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"description\": \"Sesi Personal Training\",\n    \"slotDate\": \"{{trainingSlotDate}}\", //2026-12-31\n    \"startTime\": \"{{trainingSlotStartTime}}\", //2026-12-31T10:00\n    \"endTime\": \"{{trainerSlotEndTime}}\" //2026-12-31T10:30\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/create/{{trainerId}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "trainers",
+                            "slot",
+                            "create",
+                            "{{trainerId}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "List Trainers",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"trainerId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers?page=1&size=10",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "10"
+                        },
+                        {
+                          "key": "name",
+                          "value": "",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Trainer",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"phoneNumber\": \"081212341234\",\n    \"specialization\": \"{{trainerSpecialization}}\",\n    \"experience\": \"{{trainerExperience}}\",\n    \"rate\": \"{{trainerRate}}\",\n    \"email\": \"{{$randomEmail}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Staffs",
+              "item": [
+                {
+                  "name": "List Staff",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/staff?page=1&size=50&name=",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "50"
+                        },
+                        {
+                          "key": "name",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Staff",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"{{staffName}}\",\n  \"email\": \"{{staffEmail}}\",\n  \"phoneNumber\": \"081234567890\",\n  \"password\": \"{{staffPassword}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update Staff",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"Updated Staff\",\n  \"email\": \"{{staffEmail}}\",\n  \"phoneNumber\": \"081234567890\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/update/{{staffId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff",
+                        "update",
+                        "{{staffId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Staff",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/delete/{{staffId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff",
+                        "delete",
+                        "{{staffId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Membership",
+              "item": [
+                {
+                  "name": "Packages",
+                  "item": [
+                    {
+                      "name": "List Packages",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/memberships/packages",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "memberships",
+                            "packages"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Create Package",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"type\": \"MONTHLY\",\n    \"name\": \"Monthly Membership\",\n    \"description\": \"30-day gym membership\",\n    \"duration\": 30,\n    \"price\": 300000\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/create",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "memberships",
+                            "packages",
+                            "create"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Update Package",
+                      "request": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"type\": \"MONTHLY\",\n  \"name\": \"Updated Monthly Membership\",\n  \"description\": \"Updated package description\",\n  \"duration\": 30\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/update/{{membershipPackageId}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "memberships",
+                            "packages",
+                            "update",
+                            "{{membershipPackageId}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Delete Package",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/memberships/packages/delete/{{membershipPackageId}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "memberships",
+                            "packages",
+                            "delete",
+                            "{{membershipPackageId}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Check-Ins",
+              "item": [
+                {
+                  "name": "List Recent Check-In",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/checkins?limit=10",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "checkins"
+                      ],
+                      "query": [
+                        {
+                          "key": "limit",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Check-In Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/checkins/summary",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "checkins",
+                        "summary"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Generate QR Token",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/checkins/qr-token",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "checkins",
+                        "qr-token"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Check-Out Member",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/checkins/{{memberId}}/checkout",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "checkins",
+                        "{{memberId}}",
+                        "checkout"
+                      ]
+                    },
+                    "description": "Admin closes the active check-in for the member ID in {{memberId}}."
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Transactions",
+              "item": [
+                {
+                  "name": "List All Transactions",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions?page=1&size=50",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "transactions"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "50"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ],
+              "variable": [
+                {
+                  "key": "staffName",
+                  "value": "",
+                  "type": "string",
+                  "description": "Set before creating a staff account."
+                },
+                {
+                  "key": "trainerId",
+                  "value": "",
+                  "type": "string",
+                  "description": "Trainer ID used by trainer slot requests."
+                },
+                {
+                  "key": "slotDate",
+                  "value": "",
+                  "type": "string",
+                  "description": "Future date in YYYY-MM-DD format."
+                },
+                {
+                  "key": "slotStartTime",
+                  "value": "",
+                  "type": "string",
+                  "description": "Future local date-time in YYYY-MM-DDTHH:mm format."
+                },
+                {
+                  "key": "slotEndTime",
+                  "value": "",
+                  "type": "string",
+                  "description": "Future local date-time in YYYY-MM-DDTHH:mm format."
+                },
+                {
+                  "key": "trainerSlotId",
+                  "value": "",
+                  "type": "string",
+                  "description": "Trainer slot ID used when booking a trainer."
+                },
+                {
+                  "key": "memberNewPassword",
+                  "value": "",
+                  "type": "string",
+                  "description": "New password used by password update/reset requests."
+                },
+                {
+                  "key": "transactionId",
+                  "value": "",
+                  "type": "string",
+                  "description": "Transaction/order ID used by transaction and payment requests."
+                },
+                {
+                  "key": "midtransSignatureKey",
+                  "value": "",
+                  "type": "string",
+                  "description": "Valid Midtrans webhook signature for notification testing."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Staff",
+          "item": [
+            {
+              "name": "Members",
+              "item": [
+                {
+                  "name": "List Members",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/member?page=1&size=50",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "member"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "50"
+                        },
+                        {
+                          "key": "name",
+                          "value": "",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Request Member OTP",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"email\": \"{{memberEmail}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/member/otp",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "member",
+                        "otp"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Member",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"{{memberName}}\",\n  \"email\": \"{{memberEmail}}\",\n  \"code\": \"{{memberCreateOtp}}\",\n  \"phoneNumber\": \"081234567890\",\n  \"password\": \"{{memberPassword}}\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/member/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "member",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Member",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/member/delete/{{memberId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "member",
+                        "delete",
+                        "{{memberId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Membership",
+              "item": [
+                {
+                  "name": "Packages",
+                  "item": [
+                    {
+                      "name": "List Package",
+                      "event": [
+                        {
+                          "listen": "test",
+                          "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                              "const response = pm.response.json()\r\npm.environment.set(\"membershipPackageId\", response.data.MONTHLY[0].id)"
+                            ]
+                          }
+                        }
+                      ],
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{apiUrl}}/staff/dashboard/memberships/packages",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "staff",
+                            "dashboard",
+                            "memberships",
+                            "packages"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Trainers",
+              "item": [
+                {
+                  "name": "Slots",
+                  "item": [
+                    {
+                      "name": "List Trainer Slots",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{apiUrl}}/staff/dashboard/trainers/slot/{{trainerId}}?date={{trainerSlotDate}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "staff",
+                            "dashboard",
+                            "trainers",
+                            "slot",
+                            "{{trainerId}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "date",
+                              "value": "{{trainerSlotDate}}"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "List Trainers",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/trainers?page=1&size=10",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "trainers"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "name",
+                          "value": "",
+                          "disabled": true
+                        },
+                        {
+                          "key": "size",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Check-Ins",
+              "item": [
+                {
+                  "name": "Generate QR Token",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/checkins/qr-token",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "checkins",
+                        "qr-token"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Check Out Member",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/checkins/{{memberId}}/checkout",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "checkins",
+                        "{{memberId}}",
+                        "checkout"
+                      ]
+                    },
+                    "description": "Staff closes the active check-in for the member ID in {{memberId}}."
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Member",
+      "item": [
+        {
           "name": "Membership",
           "item": [
             {
-              "name": "List Membership",
+              "name": "List Membership Package",
               "event": [
                 {
                   "listen": "test",
@@ -1243,12 +1665,7 @@
               ],
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
+                "header": [],
                 "url": {
                   "raw": "{{apiUrl}}/member/membership",
                   "host": [
@@ -1263,18 +1680,29 @@
               "response": []
             },
             {
-              "name": "Buy Membership",
+              "name": "Order Membership",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const response = pm.response.json()\r\npm.environment.set(\"orderId\", response.data.orderId)\r\npm.environment.set(\"orderToken\", response.data.token)"
+                    ]
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [
                   {
-                    "key": "Accept",
+                    "key": "Content-Type",
                     "value": "application/json"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"packageId\": \"{{membershipPackageId}}\"\r\n}",
+                  "raw": "{\n    \"packageId\": \"{{membershipPackageId}}\",\n    \"paymentType\": \"OTHER_QRIS\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1298,30 +1726,220 @@
           ]
         },
         {
-          "name": "Transactions",
+          "name": "Trainers",
           "item": [
             {
-              "name": "List Transaction",
+              "name": "Slots",
+              "item": [
+                {
+                  "name": "List Trainer Slot",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id) "
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date={{trainerSlotDate}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "member",
+                        "trainers",
+                        "slot",
+                        "{{trainerId}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "date",
+                          "value": "{{trainerSlotDate}}"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Booking Slot",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"orderId\", response.data.orderId)\r\npm.environment.set(\"orderToken\", response.data.token)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"slotId\": \"{{trainerSlotId}}\",\n    \"paymentType\": \"OTHER_QRIS\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/member/trainers/booking",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "member",
+                        "trainers",
+                        "booking"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "List Trainer",
               "request": {
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{apiUrl}}/member/transactions",
+                  "raw": "{{apiUrl}}/member/trainers?page=1&size=10",
                   "host": [
                     "{{apiUrl}}"
                   ],
                   "path": [
                     "member",
-                    "transactions"
+                    "trainers"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    },
+                    {
+                      "key": "name",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Check-Ins",
+          "item": [
+            {
+              "name": "Check-In",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"{{checkinQrToken}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/member/checkins",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "checkins"
                   ]
                 }
               },
               "response": []
             },
             {
-              "name": "Cancel Transaction",
+              "name": "Check-Out",
               "request": {
-                "method": "DELETE",
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/checkins/checkout",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "checkins",
+                    "checkout"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Transactions",
+          "item": [
+            {
+              "name": "List My Transactions",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/transactions?page=1&size=10",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Detail Transaction",
+              "request": {
+                "method": "GET",
                 "header": [],
                 "url": {
                   "raw": "{{apiUrl}}/member/transactions/{{orderId}}",
@@ -1336,159 +1954,54 @@
                 }
               },
               "response": []
-            }
-          ]
-        },
-        {
-          "name": "Profile",
-          "item": [
+            },
             {
-              "name": "My Profile",
+              "name": "Check Transaction",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
+                "header": [],
                 "url": {
-                  "raw": "{{apiUrl}}/user",
+                  "raw": "{{apiUrl}}/member/transactions/check/{{orderId}}",
                   "host": [
                     "{{apiUrl}}"
                   ],
                   "path": [
-                    "user"
+                    "member",
+                    "transactions",
+                    "check",
+                    "{{orderId}}"
                   ]
                 }
               },
               "response": []
             },
             {
-              "name": "Update Profile",
+              "name": "Cancel Transaction",
               "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "name",
-                      "value": "{{memberName}}",
-                      "type": "text"
-                    },
-                    {
-                      "key": "photo",
-                      "type": "file",
-                      "value": null
-                    }
-                  ]
-                },
+                "method": "POST",
+                "header": [],
                 "url": {
-                  "raw": "{{apiUrl}}/user/profile",
+                  "raw": "{{apiUrl}}/member/transactions/cancel/{{orderId}}?token={{orderToken}}",
                   "host": [
                     "{{apiUrl}}"
                   ],
                   "path": [
-                    "user",
-                    "profile"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Update Password",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"oldPassword\": \"{{memberPassword}}\",\r\n    \"newPassword\": \"{{memberNewPassword}}\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{apiUrl}}/user/password",
-                  "host": [
-                    "{{apiUrl}}"
+                    "member",
+                    "transactions",
+                    "cancel",
+                    "{{orderId}}"
                   ],
-                  "path": [
-                    "user",
-                    "password"
+                  "query": [
+                    {
+                      "key": "token",
+                      "value": "{{orderToken}}"
+                    }
                   ]
                 }
               },
               "response": []
             }
           ]
-        },
-        {
-          "name": "Get All Slot",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date=2026-11-21",
-              "host": [
-                "{{apiUrl}}"
-              ],
-              "path": [
-                "member",
-                "trainers",
-                "slot",
-                "{{trainerId}}"
-              ],
-              "query": [
-                {
-                  "key": "date",
-                  "value": "2026-11-21"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "orderSlot",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"slotId\":\"{{slotId}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{apiUrl}}/member/trainers/order",
-              "host": [
-                "{{apiUrl}}"
-              ],
-              "path": [
-                "member",
-                "trainers",
-                "order"
-              ]
-            }
-          },
-          "response": []
         }
       ]
     }
