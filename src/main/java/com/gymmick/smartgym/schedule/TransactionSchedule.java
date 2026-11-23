@@ -26,8 +26,7 @@ public class TransactionSchedule {
                 .forEach(transaction -> {
                     if (transaction.getExpiredAt() != null
                             && Instant.now().isAfter(transaction.getExpiredAt())
-                            && !transaction.getStatus().equals(TransactionStatus.SUCCESS)
-                            && !transaction.getStatus().equals(TransactionStatus.EXPIRED)) {
+                            && transaction.getStatus().equals(TransactionStatus.PENDING)) {
 
                         trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
                                 SlotStatus.BOOKED,
