@@ -2,13 +2,21 @@ package com.gymmick.smartgym.services.checkin.impl;
 
 import java.time.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.gymmick.smartgym.builder.PaginationLinkBuilder;
 import com.gymmick.smartgym.dto.checkin.*;
+import com.gymmick.smartgym.dto.pagination.PaginationMeta;
+import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.entity.Checkin;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.CheckinMethod;
@@ -19,6 +27,7 @@ import com.gymmick.smartgym.exceptions.ResourceNotFoundException;
 import com.gymmick.smartgym.repositories.CheckinRepository;
 import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.checkin.CheckinService;
+import com.gymmick.smartgym.specification.CheckinSpecification;
 import com.gymmick.smartgym.utils.JwtToken;
 
 import lombok.RequiredArgsConstructor;
@@ -114,6 +123,40 @@ public class CheckinServiceImpl implements CheckinService {
 
         checkin.setCheckOutAt(Instant.now());
         return toResponse(checkinRepository.save(checkin), false);
+    }
+
+    @Override
+    public Optional<CheckinResponse> findActiveCheckin(User member) {
+        return checkinRepository
+                .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(member, CheckinStatus.GRANTED)
+                .map(this::toResponse);
+    }
+
+    @Override
+    public PaginationResponse<CheckinResponse> findMyCheckins(User member, CheckinFilterRequest request) {
+        int page = request.getPage();
+        int size = request.getSize();
+        Specification<Checkin> specification = CheckinSpecification.getMyCheckins(member, request);
+        Sort sortBy = Sort.by(Checkin::getCheckInAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+        Page<Checkin> checkinPage = checkinRepository.findAll(specification, pageRequest);
+
+        List<CheckinResponse> checkins = checkinPage.getContent().stream()
+                .map(this::toResponse)
+                .toList();
+        PaginationMeta pagination = PaginationLinkBuilder.build(
+                page,
+                checkinPage.getTotalPages(),
+                size,
+                checkinPage.getTotalElements(),
+                nextPage -> ServletUriComponentsBuilder.fromCurrentRequest()
+                        .replaceQueryParam("page", nextPage)
+                        .toUriString());
+
+        return PaginationResponse.<CheckinResponse>builder()
+                .data(checkins)
+                .pagination(pagination)
+                .build();
     }
 
     @Override
