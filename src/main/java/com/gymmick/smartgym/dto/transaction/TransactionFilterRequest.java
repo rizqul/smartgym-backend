@@ -1,6 +1,10 @@
 
 package com.gymmick.smartgym.dto.transaction;
 
+import org.springframework.transaction.TransactionStatus;
+
+import com.gymmick.smartgym.entity.enums.TransactionType;
+
 import lombok.*;
 
 @Getter
@@ -10,6 +14,10 @@ public class TransactionFilterRequest {
   private String page;
 
   private String size;
+
+  private TransactionType type;
+
+  private TransactionStatus status;
 
   public Integer getPage() {
     try {
