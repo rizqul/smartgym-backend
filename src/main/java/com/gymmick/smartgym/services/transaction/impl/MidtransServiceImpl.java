@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.*;
 
+import com.gymmick.smartgym.dto.transaction.TransactionCancelRequest;
 import com.gymmick.smartgym.entity.Transaction;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.BadRequestException;
@@ -93,7 +94,7 @@ public class MidtransServiceImpl implements MidtransService {
 
     @Override
     @Transactional
-    public void cancelTransaction(String orderId, String token) {
+    public void cancelTransaction(String orderId, TransactionCancelRequest request) {
         Transaction transaction = transactionService.findByOrderId(orderId);
         TransactionStatus transactionStatus = transaction.getStatus();
 
@@ -105,7 +106,7 @@ public class MidtransServiceImpl implements MidtransService {
 
         try {
             String response = midtransRestClient.post()
-                    .uri("/snap/v1/transactions/{token}/cancel", token)
+                    .uri("/snap/v1/transactions/{token}/cancel", request.getToken())
                     .body(Map.of())
                     .retrieve()
                     .body(String.class);

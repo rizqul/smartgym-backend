@@ -54,7 +54,7 @@ public class TransactionController {
     public ResponseEntity<ApiResponse<String>> cancelTransaction(@PathVariable("id") String orderId,
             @RequestBody TransactionCancelRequest request) {
 
-        midtransService.cancelTransaction(orderId, request.getToken());
+        midtransService.cancelTransaction(orderId, request);
 
         String message = "Berhasil Membatalkan Transaksi!";
         return ApiResponse.success(HttpStatus.OK, message);
