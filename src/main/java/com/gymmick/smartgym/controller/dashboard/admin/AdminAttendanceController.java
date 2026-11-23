@@ -1,5 +1,7 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
+import java.util.List;
+
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,13 @@ import lombok.RequiredArgsConstructor;
 public class AdminAttendanceController {
 
     private final AttendanceService attendanceService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<AttendingResponse>>> findRecentAttending(@RequestParam String limit) {
+
+        List<AttendingResponse> responses = attendanceService.findRecentAttending(limit);
+        return ApiResponse.success(HttpStatus.OK, responses);
+    }
 
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<AttendanceSummaryResponse>> getSummary() {

@@ -3,6 +3,7 @@ package com.gymmick.smartgym.services.attendance.impl;
 import java.time.*;
 import java.util.*;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -111,6 +112,16 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .data(attendances)
                 .pagination(pagination)
                 .build();
+    }
+
+    @Override
+    public List<AttendingResponse> findRecentAttending(String limit) {
+
+        Integer sizeLimit = NumberUtils.toInt(limit, 10);
+
+        List<Attendance> attendances = attendanceRepository
+                .findAllByOrderByCheckInAtDesc(PageRequest.of(0, sizeLimit > 100 ? 100 : sizeLimit));
+        return attendanceMapping.toListResponses(attendances);
     }
 
     @Override
