@@ -1,0 +1,57 @@
+package com.gymmick.smartgym.controller.dashboard.admin;
+
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import com.gymmick.smartgym.dto.attendance.*;
+import com.gymmick.smartgym.services.attendance.AttendanceService;
+import com.gymmick.smartgym.utils.ApiResponse;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/admin/dashboard/attendances")
+@RequiredArgsConstructor
+public class AdminAttendanceController {
+
+    private final AttendanceService attendanceService;
+
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<AttendanceSummaryResponse>> getSummary() {
+        AttendanceSummaryResponse response = attendanceService.getSummary();
+
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
+
+    @GetMapping("/summary/chart")
+    public ResponseEntity<ApiResponse<AttendanceHourlyChartResponse>> getHourlyChart() {
+        AttendanceHourlyChartResponse response = attendanceService.getHourlyChart();
+
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
+
+    @PostMapping("/qr-token")
+    public ResponseEntity<ApiResponse<AttendanceTokenResponse>> generateQrToken() {
+
+        AttendanceTokenResponse response = attendanceService.generateQrToken();
+
+        String message = "Berhasil membuat token check-in!";
+        return ApiResponse.success(HttpStatus.CREATED, message, response);
+    }
+
+    // @GetMapping
+    // public ResponseEntity<ApiResponse<List<AttendingResponse>>>
+    // findRecentCheckins(
+    // @RequestParam(defaultValue = "10") int limit) {
+    // return ApiResponse.success(HttpStatus.OK,
+    // checkinService.findRecentCheckins(limit));
+    // }
+
+    // @PostMapping("/{memberId}/checkout")
+    // public ResponseEntity<ApiResponse<AttendingResponse>>
+    // checkOutMember(@PathVariable UUID memberId) {
+    // AttendingResponse response = checkinService.checkOut(memberId);
+    // return ApiResponse.success(HttpStatus.OK, "Check-out member berhasil.",
+    // response);
+    // }
+}

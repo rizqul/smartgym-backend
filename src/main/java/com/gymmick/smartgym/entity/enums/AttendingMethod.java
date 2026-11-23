@@ -1,5 +1,5 @@
 package com.gymmick.smartgym.entity.enums;
 
-public enum CheckinMethod {
+public enum AttendingMethod {
     RFID, QR
 }

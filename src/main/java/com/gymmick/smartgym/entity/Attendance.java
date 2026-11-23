@@ -5,8 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.gymmick.smartgym.entity.enums.CheckinMethod;
-import com.gymmick.smartgym.entity.enums.CheckinStatus;
+import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.entity.shared.TimeStamp;
 
 import jakarta.persistence.*;
@@ -18,9 +17,9 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "checkins")
+@Table(name = "attendances")
 @EntityListeners(AuditingEntityListener.class)
-public class Checkin extends TimeStamp {
+public class Attendance extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,27 +29,23 @@ public class Checkin extends TimeStamp {
     @JoinColumn(name = "member_id", nullable = false)
     private User member;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "membership_id", nullable = false)
-//    private Membership membership;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AttendingMethod method;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CheckinMethod method;
+    private AttendingStatus status;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CheckinStatus status;
-
-    @Column(name = "check_in_at", nullable = false)
     private Instant checkInAt;
 
-    @Column(name = "check_out_at")
+    @Column(nullable = true)
     private Instant checkOutAt;
 
-    @Column(name = "denial_reason")
+    @Column(nullable = true)
     private String denialReason;
 
-    @Column(name = "device_id")
+    @Column(nullable = true)
     private String deviceId;
 }

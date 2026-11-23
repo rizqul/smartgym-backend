@@ -53,7 +53,6 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    @Cacheable(value = "token", key = "#id")
     public Token findById(UUID id) {
         return tokenRepository.findById(id)
                 .orElseThrow(() -> new AuthenticationDeniedException());

@@ -1,4 +1,4 @@
-package com.gymmick.smartgym.dto.checkin;
+package com.gymmick.smartgym.dto.attendance;
 
 import java.time.Instant;
 
@@ -7,8 +7,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CheckinTokenResponse {
+public class AttendanceTokenResponse {
+
     private String token;
+    
     private Instant expiresAt;
+    
     private Long expiresInSeconds;
 }

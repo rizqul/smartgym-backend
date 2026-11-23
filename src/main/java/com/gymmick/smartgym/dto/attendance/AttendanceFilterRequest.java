@@ -1,19 +1,16 @@
-package com.gymmick.smartgym.dto.checkin;
+package com.gymmick.smartgym.dto.attendance;
 
-import com.gymmick.smartgym.entity.enums.CheckinStatus;
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-public class CheckinFilterRequest {
+public class AttendanceFilterRequest {
 
     private String page;
 
     private String size;
 
-    private CheckinStatus status;
+    private String status;
 
     public Integer getPage() {
         try {

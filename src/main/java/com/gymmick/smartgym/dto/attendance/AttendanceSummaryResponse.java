@@ -1,12 +1,15 @@
-package com.gymmick.smartgym.dto.checkin;
+package com.gymmick.smartgym.dto.attendance;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class CheckinSummaryResponse {
+public class AttendanceSummaryResponse {
+
     private long historyCount;
+
     private long checkinsToday;
-    private long onFloor;
+
+    private long activeNow;
 }

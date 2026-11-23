@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.*;
 import jakarta.annotation.PostConstruct;
 
 @EnableAsync
-@EnableCaching
+// @EnableCaching
 @EnableJpaAuditing
 @EnableScheduling
 @SpringBootApplication
