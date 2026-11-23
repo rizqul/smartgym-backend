@@ -1,7 +1,9 @@
 package com.gymmick.smartgym.dto.trainer;
 
 import java.time.*;
+
 import com.gymmick.smartgym.validation.annotation.*;
+
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -17,12 +19,12 @@ public class TrainerSlotRequest {
     private String slotDate;
 
     @NotNull(message = "The start time field is required.")
-    @DateTime(message = "The start time field must be a valid date time.")
+    @Time(message = "The start time field must be a valid date time.")
     @FutureOrPresentDateTime(message = "The start time field must be in the future.")
     private String startTime;
 
     @NotNull(message = "The end time field is required.")
-    @DateTime(message = "The end time field must be a valid date time.")
+    @Time(message = "The end time field must be a valid date time.")
     @FutureOrPresentDateTime(message = "The end time field must be in the future.")
     private String endTime;
 
@@ -31,10 +33,12 @@ public class TrainerSlotRequest {
     }
 
     public Instant getStartTime() {
-        return LocalDateTime.parse(this.startTime).atZone(ZoneId.systemDefault()).toInstant();
+        return LocalDate.parse(this.slotDate).atTime(LocalTime.parse(this.startTime))
+                .toInstant(ZoneOffset.UTC).minus(Duration.ofHours(7));
     }
 
     public Instant getEndTime() {
-        return LocalDateTime.parse(this.endTime).atZone(ZoneId.systemDefault()).toInstant();
+        return LocalDate.parse(this.slotDate).atTime(LocalTime.parse(this.endTime))
+                .toInstant(ZoneOffset.UTC).minus(Duration.ofHours(7));
     }
 }

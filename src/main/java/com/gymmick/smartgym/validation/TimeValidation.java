@@ -1,11 +1,11 @@
 package com.gymmick.smartgym.validation;
 
-import com.gymmick.smartgym.validation.annotation.DateTime;
+import com.gymmick.smartgym.validation.annotation.Time;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class DateTimeValidation implements ConstraintValidator<DateTime, String> {
+public class TimeValidation implements ConstraintValidator<Time, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
@@ -13,6 +13,6 @@ public class DateTimeValidation implements ConstraintValidator<DateTime, String>
             return true;
         }
 
-        return value.matches("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])T([01]\\d|2[0-3]):[0-5]\\d$");
+        return value.matches("^([01]\\d|2[0-3]):[0-5]\\d$");
     }
 }
