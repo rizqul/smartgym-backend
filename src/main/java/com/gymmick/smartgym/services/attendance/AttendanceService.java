@@ -14,6 +14,8 @@ public interface AttendanceService {
 
     PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request);
 
+    List<AttendingResponse> findRecentAttending(String limit);
+
     AttendanceTokenResponse generateQrToken();
 
     AttendingResponse checkIn(String token, User member);
