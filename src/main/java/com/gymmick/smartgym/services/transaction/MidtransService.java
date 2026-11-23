@@ -2,6 +2,7 @@ package com.gymmick.smartgym.services.transaction;
 
 import java.util.Map;
 
+import com.gymmick.smartgym.dto.transaction.TransactionCancelRequest;
 import com.gymmick.smartgym.entity.Transaction;
 import com.midtrans.httpclient.error.MidtransError;
 
@@ -14,5 +15,5 @@ public interface MidtransService {
 
     Transaction checkTransaction(String orderId) throws MidtransError;
 
-    void cancelTransaction(String orderId, String token);
+    void cancelTransaction(String orderId, TransactionCancelRequest request);
 }
