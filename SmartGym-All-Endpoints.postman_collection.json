@@ -581,62 +581,6 @@
               },
               "response": []
             }
-          ],
-          "variable": [
-            {
-              "key": "staffName",
-              "value": "",
-              "type": "string",
-              "description": "Set before creating a staff account."
-            },
-            {
-              "key": "trainerId",
-              "value": "",
-              "type": "string",
-              "description": "Trainer ID used by trainer slot requests."
-            },
-            {
-              "key": "slotDate",
-              "value": "",
-              "type": "string",
-              "description": "Future date in YYYY-MM-DD format."
-            },
-            {
-              "key": "slotStartTime",
-              "value": "",
-              "type": "string",
-              "description": "Future local date-time in YYYY-MM-DDTHH:mm format."
-            },
-            {
-              "key": "slotEndTime",
-              "value": "",
-              "type": "string",
-              "description": "Future local date-time in YYYY-MM-DDTHH:mm format."
-            },
-            {
-              "key": "trainerSlotId",
-              "value": "",
-              "type": "string",
-              "description": "Trainer slot ID used when booking a trainer."
-            },
-            {
-              "key": "memberNewPassword",
-              "value": "",
-              "type": "string",
-              "description": "New password used by password update/reset requests."
-            },
-            {
-              "key": "transactionId",
-              "value": "",
-              "type": "string",
-              "description": "Transaction/order ID used by transaction and payment requests."
-            },
-            {
-              "key": "midtransSignatureKey",
-              "value": "",
-              "type": "string",
-              "description": "Valid Midtrans webhook signature for notification testing."
-            }
           ]
         }
       ]
@@ -1200,7 +1144,7 @@
               "response": []
             },
             {
-              "name": "Get Transaction Status",
+              "name": "Get Transaction Details",
               "request": {
                 "header": [
                   {
@@ -1208,9 +1152,24 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "### Get Transaction Status\n\nRefresh and return the payment status for the transaction identified by `transactionId`.\n\n**Authentication: requires a logged-in member. Postman automatically attaches the `access-token` and `refresh-token` cookies from its cookie jar when the API host/domain matches. Log in using the matching role request first; do not add Bearer tokens or copy cookie values into this request.**\n\nSuccess: standard `ApiResponse` envelope; paginated endpoints also return pagination metadata.",
+                "description": "### Get Transaction Details\n\nReturn the transaction record identified by `transactionId`.\n\n**Authentication: requires a logged-in member. Postman automatically attaches the `access-token` and `refresh-token` cookies from its cookie jar when the API host/domain matches.**\n\nSuccess: standard `ApiResponse` envelope.",
                 "method": "GET",
                 "url": "{{apiUrl}}/member/transactions/{{transactionId}}"
+              },
+              "response": []
+            },
+            {
+              "name": "Check Transaction Payment Status",
+              "request": {
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Check the payment provider for the latest status of `transactionId`. Requires member login; Postman sends the HttpOnly cookies automatically.",
+                "method": "GET",
+                "url": "{{apiUrl}}/member/transactions/check/{{transactionId}}"
               },
               "response": []
             },
@@ -1223,9 +1182,18 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "### Cancel Transaction\n\nCancel the transaction identified by `transactionId`.\n\n**Authentication: requires a logged-in member. Postman automatically attaches the `access-token` and `refresh-token` cookies from its cookie jar when the API host/domain matches. Log in using the matching role request first; do not add Bearer tokens or copy cookie values into this request.**\n\nSuccess: standard `ApiResponse` envelope; paginated endpoints also return pagination metadata.",
-                "method": "DELETE",
-                "url": "{{apiUrl}}/member/transactions/{{transactionId}}"
+                "description": "### Cancel Transaction\n\nCancel the transaction identified by `transactionId`. Supply the Snap token returned with the payment URL as `token`.\n\n**Authentication: requires a logged-in member. Postman automatically attaches the HttpOnly cookies from its cookie jar when the API host/domain matches.**\n\nSuccess: standard `ApiResponse` envelope.",
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"{{transactionToken}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{apiUrl}}/member/transactions/cancel/{{transactionId}}"
               },
               "response": []
             }
@@ -1410,6 +1378,68 @@
           "response": []
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "staffName",
+      "value": "",
+      "type": "string",
+      "description": "Set before creating a staff account."
+    },
+    {
+      "key": "trainerId",
+      "value": "",
+      "type": "string",
+      "description": "Trainer ID used by trainer slot requests."
+    },
+    {
+      "key": "slotDate",
+      "value": "",
+      "type": "string",
+      "description": "Future date in YYYY-MM-DD format."
+    },
+    {
+      "key": "slotStartTime",
+      "value": "",
+      "type": "string",
+      "description": "Future local date-time in YYYY-MM-DDTHH:mm format."
+    },
+    {
+      "key": "slotEndTime",
+      "value": "",
+      "type": "string",
+      "description": "Future local date-time in YYYY-MM-DDTHH:mm format."
+    },
+    {
+      "key": "trainerSlotId",
+      "value": "",
+      "type": "string",
+      "description": "Trainer slot ID used when booking a trainer."
+    },
+    {
+      "key": "memberNewPassword",
+      "value": "",
+      "type": "string",
+      "description": "New password used by password update/reset requests."
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "string",
+      "description": "Transaction/order ID used by transaction and payment requests."
+    },
+    {
+      "key": "transactionToken",
+      "value": "",
+      "type": "string",
+      "description": "Snap token returned with the payment URL; required to cancel a transaction."
+    },
+    {
+      "key": "midtransSignatureKey",
+      "value": "",
+      "type": "string",
+      "description": "Valid Midtrans webhook signature for notification testing."
     }
   ]
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.dto.membership.MembershipPackageResponse;
 import com.gymmick.smartgym.dto.membership.MembershipTransactionCreateRequest;
+import com.gymmick.smartgym.dto.transaction.TransactionCreate;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.MembershipType;
 import com.gymmick.smartgym.services.membership.MembershipService;
@@ -31,11 +32,11 @@ public class MembershipController {
     }
 
     @PostMapping(path = "/order")
-    public ResponseEntity<ApiResponse<String>> buyMembership(
+    public ResponseEntity<ApiResponse<TransactionCreate>> buyMembership(
             @Valid @RequestBody MembershipTransactionCreateRequest request, @AuthenticationPrincipal User user) {
 
-        String paymentUrl = membershipService.buyMembership(user, request);
+        TransactionCreate response = membershipService.buyMembership(user, request);
 
-        return ApiResponse.success(HttpStatus.OK, "OK", paymentUrl);
+        return ApiResponse.success(HttpStatus.OK, response);
     }
 }
