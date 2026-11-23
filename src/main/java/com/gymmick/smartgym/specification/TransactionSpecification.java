@@ -10,23 +10,31 @@ import com.gymmick.smartgym.entity.*;
 import jakarta.persistence.criteria.Predicate;
 
 public class TransactionSpecification {
-    public static Specification<Transaction> getTransaction(TransactionFilterRequest request) {
-        return ((root, query, criteriaBuilder) -> {
+  public static Specification<Transaction> getTransaction(TransactionFilterRequest request) {
+    return ((root, query, criteriaBuilder) -> {
 
-            List<Predicate> predicates = new ArrayList<>();
+      List<Predicate> predicates = new ArrayList<>();
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
-    }
+      if (request.getType() != null) {
+        predicates.add(criteriaBuilder.equal(root.get("type"), request.getType()));
+      }
 
-    public static Specification<Transaction> getMyTransaction(User user, TransactionFilterRequest request) {
-        return ((root, query, criteriaBuilder) -> {
+      if (request.getStatus() != null) {
+        predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+      }
 
-            List<Predicate> predicates = new ArrayList<>();
+      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+    });
+  }
 
-            predicates.add(criteriaBuilder.equal(root.get("member"), user));
+  public static Specification<Transaction> getMyTransaction(User user, TransactionFilterRequest request) {
+    return ((root, query, criteriaBuilder) -> {
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
-    }
+      List<Predicate> predicates = new ArrayList<>();
+
+      predicates.add(criteriaBuilder.equal(root.get("member"), user));
+
+      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+    });
+  }
 }

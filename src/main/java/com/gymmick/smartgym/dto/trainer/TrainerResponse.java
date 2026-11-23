@@ -11,21 +11,23 @@ import lombok.*;
 @Builder
 public class TrainerResponse {
 
-    private UUID id;
+  private UUID id;
 
-    private String name;
+  private String name;
 
-    private String profileUrl;
+  private String profileUrl;
 
-    private String phoneNumber;
+  private String phoneNumber;
 
-    private TrainerSpecialization specialization;
+  private TrainerSpecialization specialization;
 
-    private Integer experience;
+  private String email;
 
-    private Long rate;
+  private Integer experience;
 
-    private Instant createdAt;
+  private Long rate;
 
-    private Instant updatedAt;
+  private Instant createdAt;
+
+  private Instant updatedAt;
 }

@@ -33,22 +33,22 @@ public class AdminTransactionController {
 
   @GetMapping(path = "/count")
   public ResponseEntity<ApiResponse<TransactionCountResponse>> countTransactionStats(
-          @RequestParam(required = false) Integer year) {
+      @RequestParam(required = false) Integer year) {
 
     int targetYear = (year != null) ? year : LocalDate.now(ZoneId.systemDefault()).getYear();
 
     Long incomeYearly = transactionService.sumTotalIncomeYearly(targetYear, ZoneId.systemDefault());
     Long countTransactionSuccess = transactionService.countTransactionByStatus(TransactionStatus.SUCCESS);
     Long countTransactionFailed = transactionService.countTransactionByStatus(TransactionStatus.FAILURE)
-            + transactionService.countTransactionByStatus(TransactionStatus.CANCELLED);
-    Long countTransactionProcess = transactionService.countTransactionByStatus(TransactionStatus.PROCESS);
+        + transactionService.countTransactionByStatus(TransactionStatus.CANCELLED);
+    Long countTransactionProcess = transactionService.countTransactionByStatus(TransactionStatus.PENDING);
 
     TransactionCountResponse response = TransactionCountResponse.builder()
-            .sumTransactionYearly(incomeYearly)
-            .transactionSuccess(countTransactionSuccess)
-            .transactionFailed(countTransactionFailed)
-            .transactionProcess(countTransactionProcess)
-            .build();
+        .sumTransactionYearly(incomeYearly)
+        .transactionSuccess(countTransactionSuccess)
+        .transactionFailed(countTransactionFailed)
+        .transactionProcess(countTransactionProcess)
+        .build();
 
     return ApiResponse.success(HttpStatus.OK, response);
   }
