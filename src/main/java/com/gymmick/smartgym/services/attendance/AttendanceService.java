@@ -10,6 +10,8 @@ public interface AttendanceService {
 
     AttendanceSummaryResponse getSummary();
 
+    AttendanceHourlyChartResponse getHourlyChart();
+
     PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request);
 
     AttendanceTokenResponse generateQrToken();

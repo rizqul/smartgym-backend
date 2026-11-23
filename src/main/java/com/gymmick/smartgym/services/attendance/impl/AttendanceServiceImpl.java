@@ -51,6 +51,45 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    public AttendanceHourlyChartResponse getHourlyChart() {
+        ZoneId zone = ZoneId.systemDefault();
+        ZonedDateTime now = ZonedDateTime.now(zone);
+
+        int currentSlotHour = (now.getHour() / 2) * 2;
+        ZonedDateTime currentSlotStart = now.toLocalDate()
+                .atTime(currentSlotHour, 0)
+                .atZone(zone);
+
+        List<AttendanceHourlySlot> slots = new ArrayList<>();
+
+        for (int i = 11; i >= 0; i--) {
+            ZonedDateTime slotZdt = currentSlotStart.minusHours(i * 2L);
+            Instant slotStart = slotZdt.toInstant();
+            Instant slotEnd = slotStart.plus(Duration.ofHours(2));
+
+            long todayCount = attendanceRepository
+                    .countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(slotStart, slotEnd);
+
+            Instant historyRangeStart = slotZdt.minusWeeks(1).toInstant();
+            Instant historyRangeEnd = historyRangeStart.plus(Duration.ofHours(2));
+
+            long lastWeekCount = attendanceRepository
+                    .countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(historyRangeStart, historyRangeEnd);
+
+            slots.add(AttendanceHourlySlot.builder()
+                    .label(String.format("%02d:00", slotZdt.getHour()))
+                    .todayCount(todayCount)
+                    .lastWeekCount(lastWeekCount)
+                    .build());
+        }
+
+        return AttendanceHourlyChartResponse.builder()
+                .date(now.toLocalDate().toString())
+                .slots(slots)
+                .build();
+    }
+
+    @Override
     public PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request) {
         Integer page = request.getPage();
         Integer size = request.getSize();

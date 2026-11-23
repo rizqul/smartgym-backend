@@ -17,6 +17,9 @@ public interface AttendanceRepository extends JpaRepository<Attendance, UUID>, J
 
     List<Attendance> findAllByOrderByCheckInAtDesc(Pageable pageable);
 
+    List<Attendance> findAllByCheckInAtGreaterThanEqualAndCheckInAtLessThan(
+            Instant rangeStart, Instant rangeEnd);
+
     long countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(Instant since, Instant before);
 
     long countByStatusAndCheckOutAtIsNull(AttendingStatus status);

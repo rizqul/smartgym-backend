@@ -38,20 +38,4 @@ public class AdminAttendanceController {
         String message = "Berhasil membuat token check-in!";
         return ApiResponse.success(HttpStatus.CREATED, message, response);
     }
-
-    // @GetMapping
-    // public ResponseEntity<ApiResponse<List<AttendingResponse>>>
-    // findRecentCheckins(
-    // @RequestParam(defaultValue = "10") int limit) {
-    // return ApiResponse.success(HttpStatus.OK,
-    // checkinService.findRecentCheckins(limit));
-    // }
-
-    // @PostMapping("/{memberId}/checkout")
-    // public ResponseEntity<ApiResponse<AttendingResponse>>
-    // checkOutMember(@PathVariable UUID memberId) {
-    // AttendingResponse response = checkinService.checkOut(memberId);
-    // return ApiResponse.success(HttpStatus.OK, "Check-out member berhasil.",
-    // response);
-    // }
 }
