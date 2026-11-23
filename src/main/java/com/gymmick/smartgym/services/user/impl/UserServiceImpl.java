@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     private String awsPublicUrl;
 
     @Override
-    @Cacheable(value = "user", key = "#id", condition = "#id != null")
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Alamat Email atau Kata Sandi Salah!"));
