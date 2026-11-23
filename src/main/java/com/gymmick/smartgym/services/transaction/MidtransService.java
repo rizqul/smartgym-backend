@@ -14,5 +14,5 @@ public interface MidtransService {
 
     Transaction checkTransaction(String orderId) throws MidtransError;
 
-    void cancelTransaction(String orderId) throws MidtransError;
+    void cancelTransaction(String orderId, String token);
 }

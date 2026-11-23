@@ -3,24 +3,25 @@ package com.gymmick.smartgym.services.membership;
 import java.util.*;
 
 import com.gymmick.smartgym.dto.membership.*;
+import com.gymmick.smartgym.dto.transaction.TransactionCreate;
 import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.MembershipType;
 
 public interface MembershipService {
 
-  Map<MembershipType, List<MembershipPackageResponse>> findAllPackage();
+    Map<MembershipType, List<MembershipPackageResponse>> findAllPackage();
 
-  void createPackage(MembershipPackageCreateRequest request);
+    void createPackage(MembershipPackageCreateRequest request);
 
-  void updatePackage(String id, MembershipPackageUpdateRequest request);
+    void updatePackage(String id, MembershipPackageUpdateRequest request);
 
-  void deletePackage(String id);
+    void deletePackage(String id);
 
-  String buyMembership(User user, MembershipTransactionCreateRequest request);
+    TransactionCreate buyMembership(User user, MembershipTransactionCreateRequest request);
 
-  void activationMembership(Transaction transaction);
+    void activationMembership(Transaction transaction);
 
-  MembershipPackage findById(String id);
+    MembershipPackage findById(String id);
 
-  Long countMembershipPackage();
+    Long countMembershipPackage();
 }
