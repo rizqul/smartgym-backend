@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gymmick.smartgym.dto.trainer.TrainerTransactionCreateRequest;
-import com.gymmick.smartgym.dto.transaction.TransactionData;
+import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
@@ -34,7 +34,7 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
     @Override
     @Transactional
-    public String createBookedTrainer(User member, TrainerTransactionCreateRequest request) {
+    public TransactionCreate createBookedTrainer(User member, TrainerTransactionCreateRequest request) {
         try {
             Optional<Transaction> transaction = transactionRespository
                     .findFirstByMemberIdAndStatusEqualsOrderByCreatedAtAsc(member.getId(),

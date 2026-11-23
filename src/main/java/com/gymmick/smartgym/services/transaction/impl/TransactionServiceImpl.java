@@ -32,161 +32,176 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class TransactionServiceImpl implements TransactionService {
 
-  private final MidtransSnapApi midtransSnapApi;
+    private final MidtransSnapApi midtransSnapApi;
 
-  private final TransactionRespository transactionRespository;
+    private final TransactionRespository transactionRespository;
 
-  private final TransactionMapping transactionMapping;
+    private final TransactionMapping transactionMapping;
 
-  @Override
-  public PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request) {
+    @Override
+    public PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request) {
 
-    Integer page = request.getPage();
-    Integer size = request.getSize();
+        Integer page = request.getPage();
+        Integer size = request.getSize();
 
-    Specification<Transaction> specification = TransactionSpecification.getTransaction(request);
+        Specification<Transaction> specification = TransactionSpecification.getTransaction(request);
 
-    Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
-    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+        Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
-    Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
+        Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
 
-    List<TransactionResponse> transactionResponse = transactionMapping
-        .toListResponses(transactionPage.getContent());
+        List<TransactionResponse> transactionResponse = transactionMapping
+                .toListResponses(transactionPage.getContent());
 
-    PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, transactionPage.getTotalPages(), size,
-        transactionPage.getTotalElements(),
-        p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
+        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, transactionPage.getTotalPages(), size,
+                transactionPage.getTotalElements(),
+                p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
 
-    PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
-        .data(transactionResponse)
-        .pagination(paginationMeta)
-        .build();
+        PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
+                .data(transactionResponse)
+                .pagination(paginationMeta)
+                .build();
 
-    return paginationResponse;
-  }
-
-  @Override
-  public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request) {
-
-    Integer page = request.getPage();
-    Integer size = request.getSize();
-
-    Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
-
-    Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
-    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
-
-    Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
-
-    List<TransactionResponse> transactionResponse = transactionMapping
-        .toListResponses(transactionPage.getContent());
-
-    PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, transactionPage.getTotalPages(), size,
-        transactionPage.getTotalElements(),
-        p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
-
-    PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
-        .data(transactionResponse)
-        .pagination(paginationMeta)
-        .build();
-
-    return paginationResponse;
-  }
-
-  @Override
-  public Transaction findByOrderId(String orderId) {
-    return transactionRespository.findByOrderId(orderId)
-        .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
-  }
-
-  @Override
-  @Transactional
-  public String createTransaction(User user, TransactionData data) throws MidtransError {
-
-    String orderId = UUID.randomUUID().toString();
-    Map<String, Object> params = new HashMap<>();
-
-    Map<String, String> transactionDetails = new HashMap<>();
-    transactionDetails.put("order_id", orderId);
-    transactionDetails.put("gross_amount", data.getGrossAmount().toString());
-
-    List<String> payments = new ArrayList<>();
-    payments.add(data.getPaymentType().toString());
-
-    Map<String, String> callbacks = new HashMap<>();
-    callbacks.put("finish", data.getCallbackUrl());
-    callbacks.put("error", data.getCallbackUrl());
-
-    params.put("transaction_details", transactionDetails);
-    params.put("item_details", data.getItemDetails());
-    params.put("enabled_payments", payments);
-    params.put("callbacks", callbacks);
-
-    Map<String, Object> response = midtransSnapApi.createTransaction(params).toMap();
-    Transaction transaction = Transaction.builder()
-        .member(user)
-        .orderId(orderId)
-        .packageId(data.getPackageId())
-        .name(data.getPackageName())
-        .paymentUrl(response.get("redirect_url").toString())
-        .paymentType(data.getPaymentType())
-        .amount(data.getGrossAmount())
-        .type(data.getType())
-        .build();
-
-    transactionRespository.save(transaction);
-
-    return response.get("redirect_url").toString();
-  }
-
-  @Override
-  @Transactional
-  public Transaction updateTransaction(String orderId, String status, String paymentType) {
-    Transaction transaction = this.findByOrderId(orderId);
-    transaction.setExpiredAt(Instant.now().plus(Duration.ofMinutes(15)));
-
-    if (status.equals("cancel")) {
-      transaction.setStatus(TransactionStatus.CANCELLED);
+        return paginationResponse;
     }
 
-    if (status.equals("expire")) {
-      transaction.setStatus(TransactionStatus.EXPIRED);
+    @Override
+    public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request) {
+
+        Integer page = request.getPage();
+        Integer size = request.getSize();
+
+        Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
+
+        Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+
+        Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
+
+        List<TransactionResponse> transactionResponse = transactionMapping
+                .toListResponses(transactionPage.getContent());
+
+        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, transactionPage.getTotalPages(), size,
+                transactionPage.getTotalElements(),
+                p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
+
+        PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
+                .data(transactionResponse)
+                .pagination(paginationMeta)
+                .build();
+
+        return paginationResponse;
     }
 
-    if (status.equals("settlement")) {
-      transaction.setPaidAt(Instant.now());
-      transaction.setStatus(TransactionStatus.PROCESS);
+    @Override
+    public Transaction findByOrderId(String orderId) {
+        return transactionRespository.findByOrderId(orderId)
+                .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
     }
 
-    return transactionRespository.save(transaction);
-  }
+    @Override
+    @Transactional
+    public TransactionCreate createTransaction(User user, TransactionData data) throws MidtransError {
 
-  @Override
-  public Long countTotalIncomeByType(TransactionType type) {
+        String orderId = UUID.randomUUID().toString();
+        Map<String, Object> params = new HashMap<>();
 
-    Long total = transactionRespository.sumAmountByTypeAndStatus(type, TransactionStatus.SUCCESS);
+        Map<String, String> transactionDetails = new HashMap<>();
+        transactionDetails.put("order_id", orderId);
+        transactionDetails.put("gross_amount", data.getGrossAmount().toString());
 
-    return total;
-  }
+        List<String> payments = new ArrayList<>();
+        payments.add(data.getPaymentType().toString());
 
-  @Override
-  public Long countTransactionByStatus(TransactionStatus status) {
-    return transactionRespository.countByStatus(status);
-  }
+        Map<String, String> callbacks = new HashMap<>();
+        callbacks.put("finish", data.getCallbackUrl());
+        callbacks.put("error", data.getCallbackUrl());
 
-  @Override
-  public Long sumTotalIncomeYearly(int year, ZoneId zone) {
+        params.put("transaction_details", transactionDetails);
+        params.put("item_details", data.getItemDetails());
+        params.put("enabled_payments", payments);
+        params.put("callbacks", callbacks);
 
-    Instant startOfYear = LocalDate.of(year, 1, 1)
-        .atStartOfDay(zone)
-        .toInstant();
+        Map<String, Object> response = midtransSnapApi.createTransaction(params).toMap();
+        TransactionCreate transactionCreate = TransactionCreate.builder()
+                .orderId(orderId)
+                .redirectUrl(response.get("redirect_url").toString())
+                .token(response.get("token").toString())
+                .build();
 
-    Instant endOfYear = LocalDate.of(year + 1, 1, 1)
-        .atStartOfDay(zone)
-        .toInstant();
+        Transaction transaction = Transaction.builder()
+                .member(user)
+                .orderId(orderId)
+                .packageId(data.getPackageId())
+                .name(data.getPackageName())
+                .paymentUrl(transactionCreate.getRedirectUrl())
+                .paymentType(data.getPaymentType())
+                .token(transactionCreate.getToken())
+                .amount(data.getGrossAmount())
+                .type(data.getType())
+                .build();
 
-    return transactionRespository.sumAmountByStatusAndInRange(TransactionStatus.SUCCESS, startOfYear, endOfYear);
-  }
+        transactionRespository.save(transaction);
+
+        return transactionCreate;
+    }
+
+    @Override
+    @Transactional
+    public Transaction detailTransaction(String orderId) {
+        Transaction transaction = this.findByOrderId(orderId);
+
+        return transaction;
+    }
+
+    @Override
+    @Transactional
+    public Transaction updateTransaction(String orderId, String status, String paymentType) {
+        Transaction transaction = this.findByOrderId(orderId);
+        transaction.setExpiredAt(Instant.now().plus(Duration.ofMinutes(15)));
+
+        if (status.equals("cancel")) {
+            transaction.setStatus(TransactionStatus.CANCELLED);
+        }
+
+        if (status.equals("expire")) {
+            transaction.setStatus(TransactionStatus.EXPIRED);
+        }
+
+        if (status.equals("settlement")) {
+            transaction.setPaidAt(Instant.now());
+            transaction.setStatus(TransactionStatus.PROCESS);
+        }
+
+        return transactionRespository.save(transaction);
+    }
+
+    @Override
+    public Long countTotalIncomeByType(TransactionType type) {
+
+        Long total = transactionRespository.sumAmountByTypeAndStatus(type, TransactionStatus.SUCCESS);
+
+        return total;
+    }
+
+    @Override
+    public Long countTransactionByStatus(TransactionStatus status) {
+        return transactionRespository.countByStatus(status);
+    }
+
+    @Override
+    public Long sumTotalIncomeYearly(int year, ZoneId zone) {
+
+        Instant startOfYear = LocalDate.of(year, 1, 1)
+                .atStartOfDay(zone)
+                .toInstant();
+
+        Instant endOfYear = LocalDate.of(year + 1, 1, 1)
+                .atStartOfDay(zone)
+                .toInstant();
+
+        return transactionRespository.sumAmountByStatusAndInRange(TransactionStatus.SUCCESS, startOfYear, endOfYear);
+    }
 
 }

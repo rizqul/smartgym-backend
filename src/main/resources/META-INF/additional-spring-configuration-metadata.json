@@ -83,5 +83,10 @@
     "name": "app.config.midtrans.signature-key",
     "type": "java.lang.String",
     "description": "A description for 'app.config.midtrans.signature-key'"
+  },
+  {
+    "name": "app.config.midtrans.base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.midtrans.base-url'"
   }
 ]}

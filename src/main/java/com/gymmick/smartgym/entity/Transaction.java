@@ -38,6 +38,9 @@ public class Transaction extends TimeStamp {
     private String paymentUrl;
 
     @Column(nullable = true)
+    private String token;
+
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
@@ -57,7 +60,9 @@ public class Transaction extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status = TransactionStatus.PENDING;
 
+    @Column(nullable = true)
     private Instant paidAt;
 
+    @Column(nullable = true)
     private Instant expiredAt;
 }

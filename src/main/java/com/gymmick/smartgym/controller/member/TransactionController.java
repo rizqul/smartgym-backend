@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
-import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.services.transaction.MidtransService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.utils.ApiResponse;
+import com.midtrans.httpclient.error.MidtransError;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,27 +34,29 @@ public class TransactionController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<Transaction>> checkTransaction(@PathVariable("id") String orderId) {
+    public ResponseEntity<ApiResponse<Transaction>> detailTransaction(@PathVariable("id") String orderId) {
 
-        try {
-            Transaction transaction = midtransService.checkTransaction(orderId);
+        Transaction transaction = transactionService.detailTransaction(orderId);
 
-            return ApiResponse.success(HttpStatus.OK, transaction);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        return ApiResponse.success(HttpStatus.OK, transaction);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse<String>> cancelTransaction(@PathVariable("id") String orderId) {
+    @GetMapping(path = "/check/{id}")
+    public ResponseEntity<ApiResponse<Transaction>> checkTransaction(@PathVariable("id") String orderId)
+            throws MidtransError {
 
-        try {
-            midtransService.cancelTransaction(orderId);
+        Transaction transaction = midtransService.checkTransaction(orderId);
 
-            String message = "Berhasil Membatalkan Transaksi!";
-            return ApiResponse.success(HttpStatus.OK, message);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        return ApiResponse.success(HttpStatus.OK, transaction);
+    }
+
+    @PostMapping(path = "/cancel/{id}")
+    public ResponseEntity<ApiResponse<String>> cancelTransaction(@PathVariable("id") String orderId,
+            @RequestBody String token) {
+
+        midtransService.cancelTransaction(orderId, token);
+
+        String message = "Berhasil Membatalkan Transaksi!";
+        return ApiResponse.success(HttpStatus.OK, message);
     }
 }

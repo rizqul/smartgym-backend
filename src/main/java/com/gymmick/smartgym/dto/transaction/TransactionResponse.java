@@ -28,6 +28,8 @@ public class TransactionResponse {
 
     private PaymentType paymentType;
 
+    private String token;
+
     private Long amount;
 
     private TransactionStatus status;

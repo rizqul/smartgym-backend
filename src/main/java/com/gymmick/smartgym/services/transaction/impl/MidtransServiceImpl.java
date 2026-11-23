@@ -4,16 +4,16 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.core.token.Sha512DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.*;
 
 import com.gymmick.smartgym.entity.Transaction;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.BadRequestException;
-import com.gymmick.smartgym.repositories.TrainerSlotRepository;
-import com.gymmick.smartgym.repositories.TransactionRespository;
+import com.gymmick.smartgym.repositories.*;
 import com.gymmick.smartgym.services.membership.MembershipService;
 import com.gymmick.smartgym.services.transaction.*;
 import com.gymmick.smartgym.services.user.TrainerBookingService;
@@ -35,14 +35,17 @@ public class MidtransServiceImpl implements MidtransService {
     private final MembershipService membershipService;
     private final TrainerBookingService trainerBookingService;
 
+    @Qualifier("midtrans")
+    private final RestClient midtransRestClient;
+
     @Value("${app.config.midtrans.signature-key}")
-    private String serverKey;
+    private String midtransServerKey;
 
     @Override
     public Map<String, Object> validateNotification(String orderId, String statusCode, String grossAmount,
             String signatureKey) throws MidtransError {
 
-        String calculatedSignature = Sha512DigestUtils.shaHex(orderId + statusCode + grossAmount + serverKey);
+        String calculatedSignature = Sha512DigestUtils.shaHex(orderId + statusCode + grossAmount + midtransServerKey);
 
         if (!MessageDigest.isEqual(calculatedSignature.getBytes(), signatureKey.getBytes())) {
             throw new BadRequestException("Gagal Memverifikasi Transaksi!");
@@ -83,7 +86,6 @@ public class MidtransServiceImpl implements MidtransService {
 
             transaction.setPaidAt(Instant.now());
             transaction.setStatus(TransactionStatus.SUCCESS);
-
         }
 
         return transactionRespository.save(transaction);
@@ -91,9 +93,31 @@ public class MidtransServiceImpl implements MidtransService {
 
     @Override
     @Transactional
-    public void cancelTransaction(String orderId) throws MidtransError {
+    public void cancelTransaction(String orderId, String token) {
         Transaction transaction = transactionService.findByOrderId(orderId);
-        midtransCoreApi.cancelTransaction(orderId);
+        TransactionStatus transactionStatus = transaction.getStatus();
+
+        if (transactionStatus.equals(TransactionStatus.CANCELLED)
+                || transactionStatus.equals(TransactionStatus.EXPIRED)) {
+
+            throw new BadRequestException("Transaksi ini telah dibatalkan atau kedaluwarsa!");
+        }
+
+        try {
+            String response = midtransRestClient.post()
+                    .uri("/snap/v1/transactions/{token}/cancel", token)
+                    .body(Map.of())
+                    .retrieve()
+                    .body(String.class);
+
+            System.out.println(response);
+        } catch (RestClientException restClientException) {
+            try {
+                midtransCoreApi.cancelTransaction(orderId);
+            } catch (MidtransError e) {
+                throw new BadRequestException("Gagal membatalkan transaksi!");
+            }
+        }
 
         if (transaction.getType().equals(TransactionType.PT_BOOKING)) {
             trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
