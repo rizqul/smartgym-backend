@@ -9,54 +9,53 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GroqConfig {
 
-    @Value("${spring.ai.openai.chat.model}")
-    private String model;
+  @Value("${spring.ai.openai.chat.model}")
+  private String model;
 
-    @Bean
-    public ChatClient chatClient(ChatClient.Builder builder) {
-        OpenAiChatOptions.Builder optionsBuilder = OpenAiChatOptions.builder()
-                .model(model)
-                .temperature(0.4)
-                .maxCompletionTokens(4096);
+  @Bean
+  public ChatClient chatClient(ChatClient.Builder builder) {
+    OpenAiChatOptions.Builder optionsBuilder = OpenAiChatOptions.builder()
+        .model(model)
+        .temperature(0.4)
+        .maxCompletionTokens(4096);
 
-        return builder
-                .defaultSystem(
-                        """
-                                Anda adalah Pelatih Pribadi yang berpengalaman dan ahli untuk gym.
-                                Buatlah rencana latihan berdasarkan konfigurasi pengguna dan peralatan gym yang tersedia.
-                                Anda WAJIB memberikan HANYA objek JSON yang valid dan sesuai dengan antarmuka TypeScript tersebut. Jangan sertakan format markdown atau teks tambahan apa pun.
+    return builder
+        .defaultSystem(
+            """
+                You are an experienced and expert Personal Trainer for a gym.
+                Create a workout plan based on the user's configuration and the available gym equipment.
+                You MUST provide ONLY a valid JSON object that conforms to the specified TypeScript interface. Do not include any markdown formatting or additional text..
 
-                                                The JSON Schema must be:
-                                                {
-                                                  "title": "String ,
-                                                  "goal": "String",
-                                                  "schedule": [
-                                                    {
-                                                      "dayName": "String between [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]",
-                                                      "splitType": "String between [PULL, PUSH, UPPER, LOWER, FULL_BODY]"
-                                                      "focus": "String (e.g., Chest & Triceps)",
-                                                      "estimatedDurationMin": Number,
-                                                      "exercises": [
-                                                        {
-                                                          "name": "String",
-                                                          "equipment": "String",
-                                                          "sets": Number,
-                                                          "reps": "String",
-                                                          "restTimeSec": Number,
-                                                          "notes": "String"
-                                                        }
-                                                      ]
-                                                    }
-                                                  ],
-                                                }
+                            The JSON Schema must be:
+                            {
+                              "title": "String ,
+                              "goal": "String",
+                              "schedule": [
+                                {
+                                  "dayName": "String between [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]",
+                                  "splitType": "String between [PULL, PUSH, UPPER, LOWER, FULL_BODY]"
+                                  "focus": "String (e.g., Chest & Triceps)",
+                                  "estimatedDurationMin": Number,
+                                  "exercises": [
+                                    {
+                                      "name": "String",
+                                      "equipment": "String",
+                                      "sets": Number,
+                                      "reps": "String",
+                                      "restTimeSec": Number,
+                                      "notes": "String"
+                                    }
+                                  ]
+                                }
+                              ],
+                            }
 
-                                                KETENTUAN:
-                                                1. HANYA gunakan peralatan yang tercantum dalam Daftar Peralatan Tersedia (Available Equipment List).
-                                                2. Jika suatu peralatan berstatus "MAINTENANCE" (dalam perbaikan) dan pengguna memilih opsi "Avoid Maintenance Equipment" (hindari peralatan yang sedang dalam perbaikan), JANGAN gunakan peralatan tersebut.
-                                                3. Sesuaikan latihan dengan fokus anatomi tubuh pengguna dan tingkat pengalaman latihan (training age) pengguna..
-                                                4. Gunakan bahasa Indonesia untuk nilai (value) dalam JSON yang Anda buat, namun tetap gunakan bahasa Inggris untuk nama kunci (key).
-                                            """)
-                .defaultOptions(optionsBuilder)
-                .build();
-    }
+                PROVISIONS:
+                1. Use ONLY the equipment listed in the "Available Equipment List."
+                2. If a piece of equipment is marked as "MAINTENANCE" (under repair) and the user has selected the "Avoid Maintenance Equipment" option, DO NOT use that equipment.
+                3. Tailor the workout based on the user's anatomical focus and their level of exercise experience ("training age").
+                                                            """)
+        .defaultOptions(optionsBuilder)
+        .build();
+  }
 }
