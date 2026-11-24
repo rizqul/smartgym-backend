@@ -730,6 +730,64 @@
                   "response": []
                 },
                 {
+                  "name": "Update Member",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "name",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "email",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "password",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "phoneNumber",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "photo",
+                          "type": "file",
+                          "src": [
+                            ""
+                          ],
+                          "disabled": true
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/update/{{memberId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "update",
+                        "{{memberId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
                   "name": "Delete Member",
                   "request": {
                     "method": "DELETE",
