@@ -3,12 +3,15 @@ package com.gymmick.smartgym.services.user.impl;
 import java.time.*;
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.*;
 
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
 import com.gymmick.smartgym.dto.member.*;
@@ -20,9 +23,8 @@ import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.auth.OtpService;
-import com.gymmick.smartgym.services.user.MemberService;
-import com.gymmick.smartgym.services.user.UserService;
-import com.gymmick.smartgym.services.utils.EmailService;
+import com.gymmick.smartgym.services.user.*;
+import com.gymmick.smartgym.services.utils.*;
 import com.gymmick.smartgym.specification.UserSpecification;
 import com.gymmick.smartgym.utils.OtpToken;
 
@@ -36,12 +38,17 @@ public class MemberServiceImpl implements MemberService {
     private final UserRepository userRepository;
 
     private final UserService userService;
+
     private final OtpService otpService;
     private final EmailService emailService;
+    private final StorageService storageService;
 
     private final UserMapping userMapping;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.config.aws.s3.public-url}")
+    private String awsPublicUrl;
 
     @Override
     public PaginationResponse<UserResponse> findAllMember(UserFilterRequest request) {
@@ -112,6 +119,46 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         userService.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateMember(String id, MemberUpdateRequest request) {
+
+        UUID memberId = UUID.fromString(id);
+        User member = userService.findById(memberId);
+
+        if (request.getName() != null && !request.getName().trim().isBlank()) {
+            member.setName(request.getName());
+        }
+
+        if (request.getEmail() != null && !request.getEmail().trim().isBlank()) {
+            member.setEmail(request.getEmail());
+        }
+
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().trim().isBlank()) {
+            member.setPhoneNumber(request.getPhoneNumber());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().trim().isBlank()) {
+            member.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        if (request.getPhoto() != null) {
+            UriComponents uriComponents = UriComponentsBuilder.fromUriString(member.getProfileUrl()).build();
+            String fileKey = uriComponents.getPath().replaceFirst("/", "");
+
+            if (fileKey.startsWith(String.format("user/%s", member.getId()))) {
+                storageService.remove(fileKey);
+            }
+
+            String fileLocation = String.format("user/%s/profile", member.getId());
+            fileKey = storageService.store((MultipartFile) request.getPhoto(), fileLocation);
+
+            member.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
+        }
+
+        userRepository.save(member);
     }
 
     @Override
