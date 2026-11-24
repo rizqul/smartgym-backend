@@ -37,9 +37,9 @@ public class AdminStaffController {
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
-    @PutMapping(path = "/update/{id}")
+    @PutMapping(path = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> updateStaff(@PathVariable String id,
-            @Valid @RequestBody UserStaffUpdateRequest request) {
+            @Valid @ModelAttribute UserStaffUpdateRequest request) {
 
         staffService.updateStaff(id, request);
 

@@ -98,6 +98,22 @@ public class StaffServiceImpl implements StaffService {
         UUID staffId = UUID.fromString(id);
         User staff = userRepository.findById(staffId).orElseThrow(() -> new ResourceNotFoundException());
 
+        if (request.getName() != null && !request.getName().trim().isBlank()) {
+            staff.setName(request.getName());
+        }
+
+        if (request.getEmail() != null && !request.getEmail().trim().isBlank()) {
+            staff.setEmail(request.getEmail());
+        }
+
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().trim().isBlank()) {
+            staff.setPhoneNumber(request.getPhoneNumber());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().trim().isBlank()) {
+            staff.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
         if (request.getPhoto() != null) {
             UriComponents uriComponents = UriComponentsBuilder.fromUriString(staff.getProfileUrl()).build();
             String fileKey = uriComponents.getPath().replaceFirst("/", "");
@@ -111,26 +127,6 @@ public class StaffServiceImpl implements StaffService {
 
             staff.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
         }
-
-        String name = (request.getName() != null && !request.getName().isBlank()) ? request.getName() : staff.getName();
-
-        String email = (request.getEmail() != null && !request.getEmail().isBlank()) ? request.getEmail()
-                : staff.getEmail();
-
-        String phoneNumber = (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank())
-                ? request.getPhoneNumber()
-                : staff.getPhoneNumber();
-
-        String password = (request.getPassword() != null && !request.getPassword().isBlank()) ? request.getPassword()
-                : staff.getPassword();
-
-        if (!Objects.equals(request.getEmail(), staff.getEmail())) {
-            staff.setEmail(email);
-        }
-
-        staff.setName(name);
-        staff.setPhoneNumber(phoneNumber);
-        staff.setPassword(password);
 
         userRepository.save(staff);
     }
