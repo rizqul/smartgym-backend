@@ -35,181 +35,171 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    private final UserService userService;
+  private final UserService userService;
 
-    private final OtpService otpService;
-    private final EmailService emailService;
-    private final StorageService storageService;
+  private final OtpService otpService;
+  private final EmailService emailService;
+  private final StorageService storageService;
 
-    private final UserMapping userMapping;
+  private final UserMapping userMapping;
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.config.aws.s3.public-url}")
-    private String awsPublicUrl;
+  @Value("${app.config.aws.s3.public-url}")
+  private String awsPublicUrl;
 
-    @Override
-    public PaginationResponse<UserResponse> findAllMember(UserSearchRequest request) {
-        Integer page = request.getPage();
-        Integer size = request.getSize();
+  @Override
+  public PaginationResponse<UserResponse> findAllMember(UserSearchRequest request) {
+    Integer page = request.getPage();
+    Integer size = request.getSize();
 
-        Specification<User> specification = UserSpecification.getUserByRoleSpecification(request, UserRole.MEMBER);
+    Specification<User> specification = UserSpecification.getUserByRoleSpecification(request, UserRole.MEMBER);
 
-        Sort sortBy = Sort.by(User::getCreatedAt).descending();
-        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+    Sort sortBy = Sort.by(User::getCreatedAt).descending();
+    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
-        Page<User> userPage = userRepository.findAll(specification, pageRequest);
-        List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
+    Page<User> userPage = userRepository.findAll(specification, pageRequest);
+    List<UserResponse> userResponse = userMapping.toListResponses(userPage.getContent());
 
-        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
-                userPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
-                        .replaceQueryParam("page", p)
-                        .toUriString());
+    PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, userPage.getTotalPages(), size,
+        userPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
+            .replaceQueryParam("page", p)
+            .toUriString());
 
-        return PaginationResponse.<UserResponse>builder()
-                .data(userResponse)
-                .pagination(paginationMeta)
-                .build();
+    return PaginationResponse.<UserResponse>builder()
+        .data(userResponse)
+        .pagination(paginationMeta)
+        .build();
+  }
+
+  @Override
+  @Transactional
+  public void requestOtp(MemberOtpRequest request)
+      throws EmailSenderException {
+
+    String otpCode = OtpToken.generateOtp();
+
+    otpService.store(request.getEmail(), otpCode, OtpType.EMAIL_VERIFICATION, Duration.ofMinutes(10));
+
+    String emailTemplate = "email/auth/reset-password";
+    String emailSubject = "Verifikasi Email";
+
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("email", request.getEmail());
+    variables.put("code", otpCode);
+
+    emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
+  }
+
+  @Override
+  @Transactional
+  public void createMember(MemberCreateRequest request) {
+
+    Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+
+    if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
+      throw new BadRequestException("Kode Otp Tidak Valid!");
     }
 
-    @Override
-    @Transactional
-    public void requestOtp(MemberOtpRequest request)
-            throws EmailSenderException {
+    otp.setExpiredAt(Instant.now());
+    otpService.save(otp);
 
-        String otpCode = OtpToken.generateOtp();
+    String profileUrl = String
+        .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
+            request.getName().toLowerCase().replaceAll("\s+", "+"));
 
-        otpService.store(request.getEmail(), otpCode, OtpType.EMAIL_VERIFICATION, Duration.ofMinutes(10));
+    User user = User.builder()
+        .name(request.getName())
+        .email(request.getEmail())
+        .profileUrl(profileUrl)
+        .phoneNumber(request.getPhoneNumber())
+        .password(passwordEncoder.encode(request.getPassword()))
+        .build();
 
-        String emailTemplate = "email/auth/reset-password";
-        String emailSubject = "Verifikasi Email";
+    userService.save(user);
+  }
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("email", request.getEmail());
-        variables.put("code", otpCode);
+  @Override
+  @Transactional
+  public void updateMember(String id, MemberUpdateRequest request) {
 
-        emailService.sendHtmlEmail(emailTemplate, emailSubject, request.getEmail(), variables);
+    UUID memberId = UUID.fromString(id);
+    User member = userService.findById(memberId);
+
+    if (request.getName() != null && !request.getName().trim().isBlank()) {
+      member.setName(request.getName());
     }
 
-    @Override
-    @Transactional
-    public void createMember(MemberCreateRequest request) {
-
-        Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
-
-        if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
-            throw new BadRequestException("Kode Otp Tidak Valid!");
-        }
-
-        otp.setExpiredAt(Instant.now());
-        otpService.save(otp);
-
-        String profileUrl = String
-                .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
-                        request.getName().toLowerCase().replaceAll("\s+", "+"));
-
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .profileUrl(profileUrl)
-                .phoneNumber(request.getPhoneNumber())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
-
-        userService.save(user);
+    if (request.getEmail() != null && !request.getEmail().trim().isBlank()) {
+      member.setEmail(request.getEmail());
     }
 
-    @Override
-    @Transactional
-    public void updateMember(String id, MemberUpdateRequest request) {
-
-        UUID memberId = UUID.fromString(id);
-        User member = userService.findById(memberId);
-
-        if (request.getName() != null && !request.getName().trim().isBlank()) {
-            member.setName(request.getName());
-        }
-
-        if (request.getEmail() != null && !request.getEmail().trim().isBlank()) {
-            member.setEmail(request.getEmail());
-        }
-
-        if (request.getPhoneNumber() != null && !request.getPhoneNumber().trim().isBlank()) {
-            member.setPhoneNumber(request.getPhoneNumber());
-        }
-
-        if (request.getPassword() != null && !request.getPassword().trim().isBlank()) {
-            member.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
-
-        if (request.getPhoto() != null) {
-            UriComponents uriComponents = UriComponentsBuilder.fromUriString(member.getProfileUrl()).build();
-            String fileKey = uriComponents.getPath().replaceFirst("/", "");
-
-            if (fileKey.startsWith(String.format("user/%s", member.getId()))) {
-                storageService.remove(fileKey);
-            }
-
-            String fileLocation = String.format("user/%s/profile", member.getId());
-            fileKey = storageService.store((MultipartFile) request.getPhoto(), fileLocation);
-
-            member.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
-        }
-
-        userRepository.save(member);
+    if (request.getPhoneNumber() != null && !request.getPhoneNumber().trim().isBlank()) {
+      member.setPhoneNumber(request.getPhoneNumber());
     }
 
-    @Override
-    @Transactional
-    public void deleteMember(String id) {
-
-        UUID userId = UUID.fromString(id);
-        User user = userService.findById(userId);
-
-        user.setMembershipExpiredAt(null);
-        user.setDeletedAt(Instant.now());
-
-        userService.save(user);
+    if (request.getPassword() != null && !request.getPassword().trim().isBlank()) {
+      member.setPassword(passwordEncoder.encode(request.getPassword()));
     }
 
-    @Override
-    public long countAllActiveMember() {
+    if (request.getPhoto() != null) {
+      UriComponents uriComponents = UriComponentsBuilder.fromUriString(member.getProfileUrl()).build();
+      String fileKey = uriComponents.getPath().replaceFirst("/", "");
 
-        return userRepository.countByRoleAndMembershipExpiredAtAfter(UserRole.MEMBER, Instant.now());
+      if (fileKey.startsWith(String.format("user/%s", member.getId()))) {
+        storageService.remove(fileKey);
+      }
+
+      String fileLocation = String.format("user/%s/profile", member.getId());
+      fileKey = storageService.store((MultipartFile) request.getPhoto(), fileLocation);
+
+      member.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
     }
 
-    @Override
-    public long countAllInactiveMember() {
+    userRepository.save(member);
+  }
 
-        return userRepository.countByRoleAndMembershipExpiredAtBefore(UserRole.MEMBER, Instant.now());
-    }
+  @Override
+  @Transactional
+  public void deleteMember(String id) {
 
-    public long countNewMemberAccount() {
+    UUID userId = UUID.fromString(id);
+    User user = userService.findById(userId);
 
-        Instant now = Instant.now();
-        Instant oneMonthAgoLocal = ZonedDateTime.now()
-                .minusMonths(1)
-                .toInstant();
+    user.setMembershipExpiredAt(null);
+    user.setDeletedAt(Instant.now());
 
-        return userRepository.countByRoleAndCreatedAtBetween(UserRole.MEMBER, now, oneMonthAgoLocal);
-    }
+    userService.save(user);
+  }
 
-    @Override
-    public long countAllMember() {
+  @Override
+  public long countAllActiveMember() {
 
-        return userRepository.countByRole(UserRole.MEMBER);
-    }
+    return userRepository.countByRoleAndMembershipExpiredAtAfter(UserRole.MEMBER, Instant.now());
+  }
 
-    @Override
-    public long countNewMember() {
+  @Override
+  public long countAllInactiveMember() {
 
-        Instant now = Instant.now();
-        Instant oneMonthAgoLocal = ZonedDateTime.now()
-                .minusMonths(1)
-                .toInstant();
+    return userRepository.countByRoleAndMembershipExpiredAtBefore(UserRole.MEMBER, Instant.now());
+  }
 
-        return userRepository.countByRoleAndCreatedAtBetween(UserRole.MEMBER, now, oneMonthAgoLocal);
-    }
+  @Override
+  public long countAllMember() {
+
+    return userRepository.countByRole(UserRole.MEMBER);
+  }
+
+  @Override
+  public long countNewMember() {
+
+    Instant now = Instant.now();
+    Instant oneMonthAgoLocal = ZonedDateTime.now()
+        .minusMonths(1)
+        .toInstant();
+
+    return userRepository.countByRoleAndCreatedAtBetween(UserRole.MEMBER, oneMonthAgoLocal, now);
+  }
 }
