@@ -16,10 +16,14 @@ public class TrainerSpecification {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (request.getName() != null && !request.getName().trim().isEmpty()) {
+            if (request.getQuery() != null && !request.getQuery().trim().isEmpty()) {
 
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
-                        "%" + request.getName() + "%"));
+                predicates.add(
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
+                                        "%" + request.getQuery().toLowerCase() + "%"),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("specialization")),
+                                        "%" + request.getQuery().toLowerCase() + "%")));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
