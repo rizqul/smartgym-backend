@@ -1,6 +1,7 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +47,14 @@ public class AdminAttendanceController {
 
         String message = "Berhasil membuat token check-in!";
         return ApiResponse.success(HttpStatus.CREATED, message, response);
+    }
+
+    @PostMapping("/check-out/{id}")
+    public ResponseEntity<ApiResponse<AttendingResponse>> checkOutMember(@PathVariable("id") UUID memberId) {
+
+        AttendingResponse response = attendanceService.checkOut(memberId);
+
+        String message = "Berhasil melakukan check-out!";
+        return ApiResponse.success(HttpStatus.OK, message, response);
     }
 }

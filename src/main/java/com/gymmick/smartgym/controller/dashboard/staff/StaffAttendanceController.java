@@ -16,12 +16,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StaffAttendanceController {
 
-    private final AttendanceService checkinService;
+    private final AttendanceService attendanceService;
+
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<AttendanceSummaryResponse>> getSummary() {
+        AttendanceSummaryResponse response = attendanceService.getSummary();
+
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
+
+    @GetMapping("/summary/chart")
+    public ResponseEntity<ApiResponse<AttendanceHourlyChartResponse>> getHourlyChart() {
+        AttendanceHourlyChartResponse response = attendanceService.getHourlyChart();
+
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
 
     @PostMapping("/qr-token")
     public ResponseEntity<ApiResponse<AttendanceTokenResponse>> generateQrToken() {
 
-        AttendanceTokenResponse response = checkinService.generateQrToken();
+        AttendanceTokenResponse response = attendanceService.generateQrToken();
 
         String message = "QR check-in berhasil dibuat!";
         return ApiResponse.success(HttpStatus.CREATED, message, response);
@@ -30,7 +44,7 @@ public class StaffAttendanceController {
     @PostMapping("/check-out/{id}")
     public ResponseEntity<ApiResponse<AttendingResponse>> checkOutMember(@PathVariable("id") UUID memberId) {
 
-        AttendingResponse response = checkinService.checkOut(memberId);
+        AttendingResponse response = attendanceService.checkOut(memberId);
 
         String message = "Berhasil melakukan check-out!";
         return ApiResponse.success(HttpStatus.OK, message, response);
