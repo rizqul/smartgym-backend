@@ -639,7 +639,7 @@
                       ],
                       "query": [
                         {
-                          "key": "query",
+                          "key": "search",
                           "value": "",
                           "disabled": true
                         },
@@ -921,7 +921,7 @@
                       ],
                       "query": [
                         {
-                          "key": "query",
+                          "key": "search",
                           "value": "",
                           "disabled": true
                         },
@@ -1379,7 +1379,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/transactions?query=&type=&status=&page=1&size=10",
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions?page=1&size=10",
                       "host": [
                         "{{apiUrl}}"
                       ],
@@ -1390,16 +1390,19 @@
                       ],
                       "query": [
                         {
-                          "key": "query",
-                          "value": ""
+                          "key": "search",
+                          "value": "",
+                          "disabled": true
                         },
                         {
                           "key": "type",
-                          "value": ""
+                          "value": "",
+                          "disabled": true
                         },
                         {
                           "key": "status",
-                          "value": ""
+                          "value": "",
+                          "disabled": true
                         },
                         {
                           "key": "page",
@@ -1976,17 +1979,22 @@
                   ],
                   "query": [
                     {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "specialization",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
                       "key": "page",
                       "value": "1"
                     },
                     {
                       "key": "size",
                       "value": "10"
-                    },
-                    {
-                      "key": "name",
-                      "value": "",
-                      "disabled": true
                     }
                   ]
                 }
