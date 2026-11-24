@@ -10,9 +10,9 @@ import com.midtrans.httpclient.error.MidtransError;
 
 public interface TransactionService {
 
-    PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
+    PaginationResponse<TransactionResponse> findAllTransaction(TransactionSearchRequest request);
 
-    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request);
+    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request);
 
     Transaction findByOrderId(String orderId);
 

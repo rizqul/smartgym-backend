@@ -8,9 +8,9 @@ import lombok.*;
 
 @Getter
 @Setter
-public class TransactionFilterRequest {
+public class TransactionSearchRequest {
 
-    private String query;
+    private String search;
 
     private String type;
 

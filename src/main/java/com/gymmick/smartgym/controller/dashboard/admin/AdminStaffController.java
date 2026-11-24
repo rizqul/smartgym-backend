@@ -22,7 +22,7 @@ public class AdminStaffController {
     private final StaffService staffService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserFilterRequest request) {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserSearchRequest request) {
         PaginationResponse<UserResponse> response = staffService.findAllStaff(request);
 
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());

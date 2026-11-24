@@ -39,7 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapping transactionMapping;
 
     @Override
-    public PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request) {
+    public PaginationResponse<TransactionResponse> findAllTransaction(TransactionSearchRequest request) {
 
         Integer page = request.getPage();
         Integer size = request.getSize();
@@ -67,7 +67,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request) {
+    public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request) {
 
         Integer page = request.getPage();
         Integer size = request.getSize();

@@ -5,25 +5,25 @@ import java.util.*;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gymmick.smartgym.dto.user.UserFilterRequest;
+import com.gymmick.smartgym.dto.user.UserSearchRequest;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.UserRole;
 
 import jakarta.persistence.criteria.Predicate;
 
 public class UserSpecification {
-    public static Specification<User> getUserByRoleSpecification(UserFilterRequest request, UserRole role) {
+    public static Specification<User> getUserByRoleSpecification(UserSearchRequest request, UserRole role) {
         return ((root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (request.getQuery() != null && !request.getQuery().trim().isEmpty()) {
+            if (request.getSearch() != null && !request.getSearch().trim().isEmpty()) {
 
                 predicates.add(criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
-                                "%" + request.getQuery().toLowerCase() + "%"),
+                                "%" + request.getSearch().toLowerCase() + "%"),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
-                                "%" + request.getQuery().toLowerCase() + "%")));
+                                "%" + request.getSearch().toLowerCase() + "%")));
             }
 
             if (request.getMembership() != null) {

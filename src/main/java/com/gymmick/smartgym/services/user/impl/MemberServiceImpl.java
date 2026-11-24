@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
     private String awsPublicUrl;
 
     @Override
-    public PaginationResponse<UserResponse> findAllMember(UserFilterRequest request) {
+    public PaginationResponse<UserResponse> findAllMember(UserSearchRequest request) {
         Integer page = request.getPage();
         Integer size = request.getSize();
 

@@ -7,15 +7,15 @@ import lombok.*;
 
 @Getter
 @Setter
-public class UserFilterRequest {
+public class UserSearchRequest {
+
+    private String search;
+
+    private String membership;
 
     private String page;
 
     private String size;
-
-    private String query;
-
-    private String membership;
 
     public Integer getPage() {
 
