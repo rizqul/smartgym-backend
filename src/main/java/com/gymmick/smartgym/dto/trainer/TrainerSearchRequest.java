@@ -18,7 +18,7 @@ public class TrainerSearchRequest {
 
         Integer page = NumberUtils.toInt(this.page, 0);
 
-        return page > 1 ? page : 0;
+        return page > 1 ? page - 1 : 0;
     }
 
     public Integer getSize() {
