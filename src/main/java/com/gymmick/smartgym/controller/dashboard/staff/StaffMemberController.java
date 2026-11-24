@@ -20,7 +20,7 @@ import com.gymmick.smartgym.dto.member.MemberOtpRequest;
 import com.gymmick.smartgym.dto.member.MemberUpdateRequest;
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.statistic.MemberCountResponse;
-import com.gymmick.smartgym.dto.user.UserFilterRequest;
+import com.gymmick.smartgym.dto.user.UserSearchRequest;
 import com.gymmick.smartgym.dto.user.UserResponse;
 import com.gymmick.smartgym.services.user.MemberService;
 import com.gymmick.smartgym.utils.ApiResponse;
@@ -36,7 +36,7 @@ public class StaffMemberController {
     private final MemberService memberService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserFilterRequest request) {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserSearchRequest request) {
         PaginationResponse<UserResponse> response = memberService.findAllMember(request);
 
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());

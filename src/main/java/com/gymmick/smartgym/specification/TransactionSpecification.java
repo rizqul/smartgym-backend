@@ -4,26 +4,26 @@ import java.util.*;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gymmick.smartgym.dto.transaction.TransactionFilterRequest;
+import com.gymmick.smartgym.dto.transaction.TransactionSearchRequest;
 import com.gymmick.smartgym.entity.*;
 
 import jakarta.persistence.criteria.Predicate;
 
 public class TransactionSpecification {
-    public static Specification<Transaction> getTransaction(TransactionFilterRequest request) {
+    public static Specification<Transaction> getTransaction(TransactionSearchRequest request) {
         return ((root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            if (request.getQuery() != null && !request.getQuery().trim().isBlank()) {
+            if (request.getSearch() != null && !request.getSearch().trim().isBlank()) {
                 predicates.add(
                         criteriaBuilder.or(
                                 criteriaBuilder.like(criteriaBuilder.lower(root.get("orderId")),
-                                        "%" + request.getQuery().toLowerCase() + "%"),
+                                        "%" + request.getSearch().toLowerCase() + "%"),
                                 criteriaBuilder.like(criteriaBuilder.lower(root.get("member").get("name")),
-                                        "%" + request.getQuery().toLowerCase() + "%"),
+                                        "%" + request.getSearch().toLowerCase() + "%"),
                                 criteriaBuilder.like(criteriaBuilder.lower(root.get("member").get("email")),
-                                        "%" + request.getQuery().toLowerCase() + "%")));
+                                        "%" + request.getSearch().toLowerCase() + "%")));
             }
 
             if (request.getType() != null) {
@@ -38,7 +38,7 @@ public class TransactionSpecification {
         });
     }
 
-    public static Specification<Transaction> getMyTransaction(User user, TransactionFilterRequest request) {
+    public static Specification<Transaction> getMyTransaction(User user, TransactionSearchRequest request) {
         return ((root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();

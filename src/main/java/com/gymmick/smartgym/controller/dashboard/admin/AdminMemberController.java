@@ -23,7 +23,7 @@ public class AdminMemberController {
     private final MemberService memberService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserFilterRequest request) {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserSearchRequest request) {
         PaginationResponse<UserResponse> response = memberService.findAllMember(request);
 
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());

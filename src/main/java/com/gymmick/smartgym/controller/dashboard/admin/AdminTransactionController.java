@@ -25,7 +25,7 @@ public class AdminTransactionController {
   private final TransactionService transactionService;
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<TransactionResponse>>> findAll(TransactionFilterRequest request) {
+  public ResponseEntity<ApiResponse<List<TransactionResponse>>> findAll(TransactionSearchRequest request) {
     PaginationResponse<TransactionResponse> response = transactionService.findAllTransaction(request);
 
     return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());

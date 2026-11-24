@@ -45,7 +45,7 @@ public class StaffServiceImpl implements StaffService {
   private String awsPublicUrl;
 
   @Override
-  public PaginationResponse<UserResponse> findAllStaff(UserFilterRequest request) {
+  public PaginationResponse<UserResponse> findAllStaff(UserSearchRequest request) {
 
     Integer page = request.getPage();
     Integer size = request.getSize();

@@ -5,7 +5,7 @@ import com.gymmick.smartgym.dto.user.*;
 
 public interface StaffService {
 
-  PaginationResponse<UserResponse> findAllStaff(UserFilterRequest request);
+  PaginationResponse<UserResponse> findAllStaff(UserSearchRequest request);
 
   void createStaff(UserStaffCreateRequest request);
 

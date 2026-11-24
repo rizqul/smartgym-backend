@@ -8,11 +8,11 @@ import lombok.*;
 @Setter
 public class TrainerSearchRequest {
 
+    private String search;
+
     private String page;
 
     private String size;
-
-    private String query;
 
     public Integer getPage() {
 
