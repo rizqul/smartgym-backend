@@ -10,9 +10,7 @@ import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.trainer.*;
 import com.gymmick.smartgym.dto.transaction.TransactionCreate;
 import com.gymmick.smartgym.entity.User;
-import com.gymmick.smartgym.services.trainer.TrainerBookingService;
-import com.gymmick.smartgym.services.trainer.TrainerService;
-import com.gymmick.smartgym.services.user.*;
+import com.gymmick.smartgym.services.trainer.*;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import jakarta.validation.Valid;
