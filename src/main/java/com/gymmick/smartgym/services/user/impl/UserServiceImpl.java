@@ -3,7 +3,6 @@ package com.gymmick.smartgym.services.user.impl;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +42,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User updateProfile(User user, UserProfileUpdateRequest request) {
 
+        if (request.getName() != null && !request.getName().trim().isBlank()) {
+            user.setName(request.getName());
+        }
+
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().trim().isBlank()) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+
         if (request.getPhoto() != null) {
             UriComponents uriComponents = UriComponentsBuilder.fromUriString(user.getProfileUrl()).build();
             String fileKey = uriComponents.getPath().replaceFirst("/", "");
@@ -56,15 +63,6 @@ public class UserServiceImpl implements UserService {
 
             user.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
         }
-
-        String name = (request.getName() != null && !request.getName().isBlank()) ? request.getName() : user.getName();
-
-        String phoneNumber = (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank())
-                ? request.getPhoneNumber()
-                : user.getPhoneNumber();
-
-        user.setName(name);
-        user.setPhoneNumber(phoneNumber);
 
         return userRepository.save(user);
     }

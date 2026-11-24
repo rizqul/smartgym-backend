@@ -16,8 +16,8 @@ import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.repositories.*;
 import com.gymmick.smartgym.services.membership.MembershipService;
+import com.gymmick.smartgym.services.trainer.TrainerBookingService;
 import com.gymmick.smartgym.services.transaction.*;
-import com.gymmick.smartgym.services.user.TrainerBookingService;
 import com.midtrans.httpclient.error.MidtransError;
 import com.midtrans.service.MidtransCoreApi;
 

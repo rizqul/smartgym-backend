@@ -1,4 +1,4 @@
-package com.gymmick.smartgym.services.user.impl;
+package com.gymmick.smartgym.services.trainer.impl;
 
 import java.time.Instant;
 import java.util.*;
@@ -13,8 +13,8 @@ import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.repositories.*;
+import com.gymmick.smartgym.services.trainer.TrainerBookingService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
-import com.gymmick.smartgym.services.user.TrainerBookingService;
 
 import lombok.RequiredArgsConstructor;
 

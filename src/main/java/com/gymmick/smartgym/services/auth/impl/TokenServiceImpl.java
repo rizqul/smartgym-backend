@@ -2,7 +2,6 @@ package com.gymmick.smartgym.services.auth.impl;
 
 import java.util.UUID;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

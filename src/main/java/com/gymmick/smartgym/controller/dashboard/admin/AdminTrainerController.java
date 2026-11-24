@@ -13,8 +13,8 @@ import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.statistic.TrainerCountResponse;
 import com.gymmick.smartgym.dto.trainer.*;
 import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.services.trainer.TrainerService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
-import com.gymmick.smartgym.services.user.TrainerService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import jakarta.validation.Valid;
