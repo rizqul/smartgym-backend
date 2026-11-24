@@ -2,7 +2,7 @@ package com.gymmick.smartgym.dto.member;
 
 import com.gymmick.smartgym.validation.annotation.*;
 
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
@@ -11,6 +11,7 @@ public class MemberUpdateRequest {
 
     private String name;
 
+    @Email(message = "The email field must be a valid email address.")
     private String email;
 
     @IdPhoneNumber
