@@ -1,46 +1,41 @@
 package com.gymmick.smartgym.dto.user;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import lombok.*;
 
 @Getter
 @Setter
 public class UserFilterRequest {
 
-  private String page;
+    private String page;
 
-  private String size;
+    private String size;
 
-  private String name;
+    private String query;
 
-  private Boolean isMembershipActive;
+    private String membership;
 
-  public Integer getPage() {
-    try {
-      Integer page = Integer.parseInt(this.page);
+    public Integer getPage() {
 
-      if (page <= 1) {
-        return 0;
-      }
+        Integer page = NumberUtils.toInt(this.page, 0);
 
-      return page - 1;
-    } catch (Exception e) {
-      return 0;
+        return page > 1 ? page : 0;
     }
-  }
 
-  public Integer getSize() {
-    Integer limit = 50;
+    public Integer getSize() {
 
-    try {
-      Integer size = Integer.parseInt(this.size);
+        Integer size = NumberUtils.toInt(this.size, 10);
 
-      if (size > 0 && size <= limit) {
-        return size;
-      }
-
-      return limit;
-    } catch (Exception e) {
-      return limit;
+        return size <= 50 ? size : 50;
     }
-  }
+
+    public Boolean getMembership() {
+        if (this.membership == null) {
+            return null;
+        }
+
+        return BooleanUtils.toBoolean(this.membership);
+    }
 }

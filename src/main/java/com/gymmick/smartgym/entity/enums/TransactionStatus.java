@@ -7,5 +7,19 @@ public enum TransactionStatus {
     FAILURE,
     EXPIRED,
     CANCELLED,
-    CHALLENGE
+    CHALLENGE;
+
+    public static boolean isValid(String value) {
+        if (value == null) {
+            return false;
+        }
+
+        for (TransactionStatus transactionStatus : TransactionStatus.values()) {
+            if (transactionStatus.name().equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

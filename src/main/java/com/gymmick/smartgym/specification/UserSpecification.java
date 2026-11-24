@@ -1,8 +1,7 @@
 package com.gymmick.smartgym.specification;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.data.jpa.domain.Specification;
 
@@ -13,28 +12,36 @@ import com.gymmick.smartgym.entity.enums.UserRole;
 import jakarta.persistence.criteria.Predicate;
 
 public class UserSpecification {
-  public static Specification<User> getUserByRoleSpecification(UserFilterRequest request, UserRole role) {
-    return ((root, query, criteriaBuilder) -> {
+    public static Specification<User> getUserByRoleSpecification(UserFilterRequest request, UserRole role) {
+        return ((root, query, criteriaBuilder) -> {
 
-      List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
 
-      if (request.getName() != null && !request.getName().trim().isEmpty()) {
+            if (request.getQuery() != null && !request.getQuery().trim().isEmpty()) {
 
-        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
-            "%" + request.getName() + "%"));
-      }
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
+                                "%" + request.getQuery().toLowerCase() + "%"),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
+                                "%" + request.getQuery().toLowerCase() + "%")));
+            }
 
-      if (request.getIsMembershipActive() != null) {
-        if (request.getIsMembershipActive()) {
-          predicates.add(criteriaBuilder.greaterThan(root.get("expiredAt"), Instant.now()));
-        } else {
-          predicates.add(criteriaBuilder.lessThan(root.get("expiredAt"), Instant.now()));
-        }
-      }
+            if (request.getMembership() != null) {
 
-      predicates.add(criteriaBuilder.equal(root.get("role"), role.toString()));
+                if (request.getMembership()) {
+                    predicates.add(criteriaBuilder.greaterThan(root.get("membershipExpiredAt"),
+                            Instant.now()));
+                } else {
+                    predicates.add(criteriaBuilder.or(
+                            criteriaBuilder.lessThan(root.get("membershipExpiredAt"),
+                                    Instant.now()),
+                            criteriaBuilder.isNull(root.get("membershipExpiredAt"))));
+                }
+            }
 
-      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-    });
-  }
+            predicates.add(criteriaBuilder.equal(root.get("role"), role.toString()));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+    }
 }

@@ -1,9 +1,8 @@
-
 package com.gymmick.smartgym.dto.transaction;
 
-import org.springframework.transaction.TransactionStatus;
+import org.apache.commons.lang3.math.NumberUtils;
 
-import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.entity.enums.*;
 
 import lombok.*;
 
@@ -11,41 +10,55 @@ import lombok.*;
 @Setter
 public class TransactionFilterRequest {
 
-  private String page;
+    private String query;
 
-  private String size;
+    private String type;
 
-  private TransactionType type;
+    private String status;
 
-  private TransactionStatus status;
+    private String page;
 
-  public Integer getPage() {
-    try {
-      Integer page = Integer.parseInt(this.page);
+    private String size;
 
-      if (page <= 1) {
-        return 0;
-      }
+    public TransactionType getType() {
+        if (this.type == null) {
+            return null;
+        }
 
-      return page - 1;
-    } catch (Exception e) {
-      return 0;
+        String type = this.type.toUpperCase();
+
+        if (TransactionType.isValid(type)) {
+            return TransactionType.valueOf(type);
+        }
+
+        return null;
     }
-  }
 
-  public Integer getSize() {
-    Integer limit = 50;
+    public TransactionStatus getStatus() {
+        if (this.status == null) {
+            return null;
+        }
 
-    try {
-      Integer size = Integer.parseInt(this.size);
+        String status = this.status.toUpperCase();
 
-      if (size > 0 && size <= limit) {
-        return size;
-      }
+        if (TransactionStatus.isValid(status)) {
+            return TransactionStatus.valueOf(status);
+        }
 
-      return limit;
-    } catch (Exception e) {
-      return limit;
+        return null;
     }
-  }
+
+    public Integer getPage() {
+
+        Integer page = NumberUtils.toInt(this.page, 0);
+
+        return page > 1 ? page : 0;
+    }
+
+    public Integer getSize() {
+
+        Integer size = NumberUtils.toInt(this.size, 10);
+
+        return size <= 50 ? size : 50;
+    }
 }

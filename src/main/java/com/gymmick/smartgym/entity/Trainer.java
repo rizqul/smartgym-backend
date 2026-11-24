@@ -37,6 +37,7 @@ public class Trainer extends TimeStamp {
     private String phoneNumber;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TrainerSpecialization specialization;
 
     @Column(nullable = false)

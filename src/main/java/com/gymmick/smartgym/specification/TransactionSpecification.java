@@ -10,31 +10,42 @@ import com.gymmick.smartgym.entity.*;
 import jakarta.persistence.criteria.Predicate;
 
 public class TransactionSpecification {
-  public static Specification<Transaction> getTransaction(TransactionFilterRequest request) {
-    return ((root, query, criteriaBuilder) -> {
+    public static Specification<Transaction> getTransaction(TransactionFilterRequest request) {
+        return ((root, query, criteriaBuilder) -> {
 
-      List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
 
-      if (request.getType() != null) {
-        predicates.add(criteriaBuilder.equal(root.get("type"), request.getType()));
-      }
+            if (request.getQuery() != null && !request.getQuery().trim().isBlank()) {
+                predicates.add(
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("orderId")),
+                                        "%" + request.getQuery().toLowerCase() + "%"),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("member").get("name")),
+                                        "%" + request.getQuery().toLowerCase() + "%"),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("member").get("email")),
+                                        "%" + request.getQuery().toLowerCase() + "%")));
+            }
 
-      if (request.getStatus() != null) {
-        predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
-      }
+            if (request.getType() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("type"), request.getType()));
+            }
 
-      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-    });
-  }
+            if (request.getStatus() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+            }
 
-  public static Specification<Transaction> getMyTransaction(User user, TransactionFilterRequest request) {
-    return ((root, query, criteriaBuilder) -> {
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+    }
 
-      List<Predicate> predicates = new ArrayList<>();
+    public static Specification<Transaction> getMyTransaction(User user, TransactionFilterRequest request) {
+        return ((root, query, criteriaBuilder) -> {
 
-      predicates.add(criteriaBuilder.equal(root.get("member"), user));
+            List<Predicate> predicates = new ArrayList<>();
 
-      return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-    });
-  }
+            predicates.add(criteriaBuilder.equal(root.get("member"), user));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
+    }
 }
