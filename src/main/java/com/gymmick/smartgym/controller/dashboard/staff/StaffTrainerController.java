@@ -20,8 +20,8 @@ import com.gymmick.smartgym.dto.trainer.TrainerSearchRequest;
 import com.gymmick.smartgym.dto.trainer.TrainerSlotFilterRequest;
 import com.gymmick.smartgym.dto.trainer.TrainerSlotResponse;
 import com.gymmick.smartgym.entity.enums.TransactionType;
+import com.gymmick.smartgym.services.trainer.TrainerService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
-import com.gymmick.smartgym.services.user.TrainerService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.gymmick.smartgym.services.user.impl;
+package com.gymmick.smartgym.services.trainer.impl;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +18,7 @@ import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.TrainerMapping;
 import com.gymmick.smartgym.mappers.TrainerSlotMapping;
 import com.gymmick.smartgym.repositories.*;
-import com.gymmick.smartgym.services.user.*;
+import com.gymmick.smartgym.services.trainer.TrainerService;
 import com.gymmick.smartgym.specification.TrainerSpecification;
 
 import lombok.RequiredArgsConstructor;

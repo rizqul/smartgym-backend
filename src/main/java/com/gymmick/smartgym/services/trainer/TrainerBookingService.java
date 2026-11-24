@@ -1,4 +1,4 @@
-package com.gymmick.smartgym.services.user;
+package com.gymmick.smartgym.services.trainer;
 
 import com.gymmick.smartgym.dto.trainer.TrainerTransactionCreateRequest;
 import com.gymmick.smartgym.dto.transaction.TransactionCreate;

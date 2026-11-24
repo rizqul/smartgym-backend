@@ -9,9 +9,9 @@ import com.gymmick.smartgym.entity.Transaction;
 import com.gymmick.smartgym.entity.enums.TransactionType;
 import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.services.membership.MembershipService;
+import com.gymmick.smartgym.services.trainer.TrainerBookingService;
 import com.gymmick.smartgym.services.transaction.MidtransService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
-import com.gymmick.smartgym.services.user.TrainerBookingService;
 import com.gymmick.smartgym.utils.ApiResponse;
 import com.midtrans.httpclient.error.MidtransError;
 

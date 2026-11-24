@@ -1,4 +1,4 @@
-package com.gymmick.smartgym.services.user;
+package com.gymmick.smartgym.services.trainer;
 
 import java.time.Instant;
 import java.util.List;
