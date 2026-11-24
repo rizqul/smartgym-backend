@@ -16,6 +16,8 @@ public interface AttendanceService {
 
     List<AttendingResponse> findRecentAttending(String limit);
 
+    AttendingResponse findActiveCheckIn(User member);
+
     AttendanceTokenResponse generateQrToken();
 
     AttendingResponse checkIn(String token, User member);

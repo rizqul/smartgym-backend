@@ -125,6 +125,15 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    public AttendingResponse findActiveCheckIn(User member) {
+        Attendance attendance = attendanceRepository
+                .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(member, AttendingStatus.ACCEPTED)
+                .orElseThrow(() -> new BadRequestException("You haven't checked in today!"));
+
+        return attendanceMapping.toResponse(attendance);
+    }
+
+    @Override
     public AttendanceTokenResponse generateQrToken() {
         String token = jwtToken.createAttendanceCheckInToken(Duration.ofHours(1));
         Instant expiresAt = jwtToken.verifyToken(token).getExpiresAt();
