@@ -121,7 +121,8 @@ public class MidtransServiceImpl implements MidtransService {
         }
 
         if (transaction.getType().equals(TransactionType.PT_BOOKING)) {
-            trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
+            trainerSlotRepository.updateStatusAndMemberIfMatch(transaction.getPackageId(),
+                    null,
                     SlotStatus.BOOKED,
                     SlotStatus.AVAILABLE);
         }

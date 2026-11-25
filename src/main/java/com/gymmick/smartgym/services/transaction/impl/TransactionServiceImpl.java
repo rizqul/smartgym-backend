@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
+import com.gymmick.smartgym.dto.attendance.AttendingResponse;
 import com.gymmick.smartgym.dto.pagination.*;
 import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
@@ -97,6 +99,17 @@ public class TransactionServiceImpl implements TransactionService {
         .build();
 
     return paginationResponse;
+  }
+
+  @Override
+  public List<TransactionResponse> findRecentTransaction(String limit) {
+
+    Integer sizeLimit = NumberUtils.toInt(limit, 10);
+
+    List<Transaction> transactions = transactionRespository
+        .findAllByOrderByCreatedAtDesc(PageRequest.of(0, sizeLimit > 100 ? 100 : sizeLimit));
+
+    return transactionMapping.toListResponses(transactions);
   }
 
   @Override

@@ -1,9 +1,6 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 
 import org.springframework.http.*;
@@ -13,7 +10,7 @@ import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.statistic.TrainerCountResponse;
 import com.gymmick.smartgym.dto.trainer.*;
 import com.gymmick.smartgym.entity.enums.TransactionType;
-import com.gymmick.smartgym.services.trainer.TrainerService;
+import com.gymmick.smartgym.services.trainer.*;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.utils.ApiResponse;
 
@@ -26,11 +23,22 @@ import lombok.RequiredArgsConstructor;
 public class AdminTrainerController {
 
   private final TrainerService trainerService;
+  private final TrainerBookingService trainerBookingService;
+
   private final TransactionService transactionService;
 
   @GetMapping
   public ResponseEntity<ApiResponse<List<TrainerResponse>>> findAll(TrainerSearchRequest request) {
     PaginationResponse<TrainerResponse> response = trainerService.findAllTrainer(request);
+
+    return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+  }
+
+  @GetMapping(path = "/booking")
+  public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllBooking(
+      TrainerBookingSearchRequest request) {
+
+    PaginationResponse<TrainerBookingResponse> response = trainerBookingService.findAllBooking(request);
 
     return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
   }
@@ -85,10 +93,11 @@ public class AdminTrainerController {
         .build();
 
     return ApiResponse.success(HttpStatus.OK, response);
+
   }
 
   @PutMapping(path = "/{id}")
-  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
+  public ResponseEntity<ApiResponse<String>> updateTrainer(@PathVariable String id,
       @Valid @RequestBody TrainerUpdateRequest request) {
 
     trainerService.updateTrainer(id, request);
@@ -98,7 +107,7 @@ public class AdminTrainerController {
   }
 
   @DeleteMapping(path = "/{id}")
-  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id) {
+  public ResponseEntity<ApiResponse<String>> deleteTrainer(@PathVariable String id) {
 
     trainerService.deleteTrainerById(id);
 
