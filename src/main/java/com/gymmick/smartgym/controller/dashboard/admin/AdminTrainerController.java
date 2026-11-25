@@ -34,15 +34,6 @@ public class AdminTrainerController {
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
 
-    @GetMapping(path = "/booking")
-    public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllBooking(
-            TrainerBookingSearchRequest request) {
-
-        PaginationResponse<TrainerBookingResponse> response = trainerBookingService.findAllBooking(request);
-
-        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
-    }
-
     @PostMapping(path = "/create")
     public ResponseEntity<ApiResponse<String>> createTrainer(@Valid @RequestBody TrainerCreateRequest request) {
 
@@ -50,6 +41,34 @@ public class AdminTrainerController {
 
         String message = "Berhasil Menambahkan Trainer!";
         return ApiResponse.success(HttpStatus.CREATED, message);
+    }
+
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<ApiResponse<String>> updateTrainer(@PathVariable String id,
+            @Valid @RequestBody TrainerUpdateRequest request) {
+
+        trainerService.updateTrainer(id, request);
+
+        String message = "Berhasil mengupdate Trainer!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteTrainer(@PathVariable String id) {
+
+        trainerService.deleteTrainerById(id);
+
+        String message = "Berhasil mengupdate Trainer!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
+
+    @GetMapping(path = "/booking")
+    public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllBooking(
+            TrainerBookingSearchRequest request) {
+
+        PaginationResponse<TrainerBookingResponse> response = trainerBookingService.findAllBooking(request);
+
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
 
     @GetMapping(path = "/slot/{id}")
@@ -63,9 +82,19 @@ public class AdminTrainerController {
 
     @PostMapping(path = "/slot/create/{id}")
     public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
-            @Valid @RequestBody TrainerSlotRequest request) {
+            @Valid @RequestBody TrainerSlotCreateRequest request) {
 
         trainerService.createSlot(id, request);
+
+        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
+
+    @PatchMapping(path = "/slot/update/{id}")
+    public ResponseEntity<ApiResponse<String>> updateSlot(@PathVariable String id,
+            @Valid @RequestBody TrainerSlotUpdateRequest request) {
+
+        trainerService.updateSlot(id, request);
 
         String message = "Berhasil Menambahkan Jadwal Trainer!";
         return ApiResponse.success(HttpStatus.CREATED, message);
@@ -93,5 +122,7 @@ public class AdminTrainerController {
                 .build();
 
         return ApiResponse.success(HttpStatus.OK, response);
+
     }
+
 }

@@ -9,7 +9,7 @@ import lombok.*;
 
 @Getter
 @Setter
-public class TrainerSlotRequest {
+public class TrainerSlotCreateRequest {
 
     private String description;
 

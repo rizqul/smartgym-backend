@@ -679,6 +679,17 @@
               "item": [
                 {
                   "name": "List Members",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"memberId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
                   "protocolProfileBehavior": {
                     "disabledSystemHeaders": {
                       "accept": true
@@ -943,7 +954,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}",
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/{{trainerId}}?date={{trainingSlotDate}}",
                           "host": [
                             "{{apiUrl}}"
                           ],
@@ -957,8 +968,7 @@
                           "query": [
                             {
                               "key": "date",
-                              "value": "{{trainerSlotDate}}",
-                              "disabled": true
+                              "value": "{{trainingSlotDate}}"
                             }
                           ]
                         }
@@ -966,7 +976,7 @@
                       "response": []
                     },
                     {
-                      "name": "Create Trainer Slot",
+                      "name": "Create Slot Trainer",
                       "request": {
                         "method": "POST",
                         "header": [
@@ -996,6 +1006,42 @@
                             "slot",
                             "create",
                             "{{trainerId}}"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "Update Slot Trainer",
+                      "request": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n    \"description\": \"Sesi Personal Training\",\n    \"slotDate\": \"{{trainingSlotDate}}\", //2026-12-31\n    \"startTime\": \"{{trainingSlotStartTime}}\", //10:00\n    \"endTime\": \"{{trainerSlotEndTime}}\" //10:30\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/slot/update/{{trainerSlotId}}",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "trainers",
+                            "slot",
+                            "update",
+                            "{{trainerSlotId}}"
                           ]
                         }
                       },
@@ -2031,7 +2077,7 @@
                       "script": {
                         "type": "text/javascript",
                         "exec": [
-                          "const response = pm.response.json()\r\npm.environment.set(\"trainerSlotId\", response.data[0].id) "
+                          "const response = pm.response.json()\r\npm.environment.set(\"trainingSlotId\", response.data[0].id) "
                         ]
                       }
                     }
@@ -2040,7 +2086,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}",
+                      "raw": "{{apiUrl}}/member/trainers/slot/{{trainerId}}?date={{trainingSlotDate}}",
                       "host": [
                         "{{apiUrl}}"
                       ],
@@ -2053,8 +2099,7 @@
                       "query": [
                         {
                           "key": "date",
-                          "value": "{{trainerSlotDate}}",
-                          "disabled": true
+                          "value": "{{trainingSlotDate}}"
                         }
                       ]
                     }
@@ -2123,7 +2168,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n    \"slotId\": \"{{trainerSlotId}}\",\n    \"paymentType\": \"OTHER_QRIS\"\n}",
+                      "raw": "{\n    \"slotId\": \"{{trainingSlotId}}\",\n    \"paymentType\": \"OTHER_QRIS\"\n}",
                       "options": {
                         "raw": {
                           "language": "json"
