@@ -4,21 +4,15 @@ import java.time.Instant;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
-import com.gymmick.smartgym.dto.pagination.PaginationMeta;
-import com.gymmick.smartgym.dto.pagination.PaginationResponse;
-import com.gymmick.smartgym.dto.trainer.TrainerBookingResponse;
-import com.gymmick.smartgym.dto.trainer.TrainerBookingSearchRequest;
-import com.gymmick.smartgym.dto.trainer.TrainerResponse;
-import com.gymmick.smartgym.dto.trainer.TrainerTransactionCreateRequest;
+import com.gymmick.smartgym.dto.pagination.*;
+import com.gymmick.smartgym.dto.trainer.*;
 import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
@@ -28,7 +22,6 @@ import com.gymmick.smartgym.repositories.*;
 import com.gymmick.smartgym.services.trainer.TrainerBookingService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.specification.TrainerBookingSpecification;
-import com.gymmick.smartgym.specification.TrainerSpecification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -127,7 +120,11 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
             }
 
             if (trainerSlot.getStatus().equals(SlotStatus.BOOKED)) {
+<<<<<<< HEAD
                 throw new BadRequestException("Slot Ini Telah Di Booking!");
+=======
+                throw new BadRequestException("This slot has been booked!");
+>>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
             }
 
             trainerSlot.setStatus(SlotStatus.BOOKED);
@@ -135,6 +132,7 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
             trainerSlotRepository.save(trainerSlot);
 
+<<<<<<< HEAD
             String slotName = String.format("%s - %s",
                     trainerSlot.getTrainer().getName(),
                     trainerSlot.getDescription());
@@ -142,6 +140,16 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
             Map<String, String> bookingDetail = new HashMap<>();
             bookingDetail.put("id", request.getSlotId());
             bookingDetail.put("name", slotName);
+=======
+            String slotName = String.format("%s [%s - %s]",
+                    trainerSlot.getTrainer().getName(),
+                    trainerSlot.getStartTime().toString(),
+                    trainerSlot.getEndTime().toString());
+
+            Map<String, String> bookingDetail = new HashMap<>();
+            bookingDetail.put("id", request.getSlotId());
+            bookingDetail.put("name", String.format("Trainer Booking - %s", trainerSlot.getTrainer().getName()));
+>>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
             bookingDetail.put("price", trainerSlot.getTrainer().getRate().toString());
             bookingDetail.put("quantity", "1");
 

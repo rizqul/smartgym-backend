@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.gymmick.smartgym.builder.PaginationLinkBuilder;
-import com.gymmick.smartgym.dto.attendance.AttendingResponse;
 import com.gymmick.smartgym.dto.pagination.*;
 import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
@@ -65,6 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .pagination(paginationMeta)
                 .build();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         return paginationResponse;
 =======
@@ -174,6 +174,9 @@ public class TransactionServiceImpl implements TransactionService {
     if (status.equals("cancel")) {
       transaction.setStatus(TransactionStatus.CANCELLED);
 >>>>>>> cdbef48 ([FIX] add enpoint to update and delete trainer. add sort for transaction)
+=======
+        return paginationResponse;
+>>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
     }
 
     @Override
@@ -184,7 +187,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
 
+<<<<<<< HEAD
         Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
+=======
+        String sortByType = request.getSortBy() != null && !request.getSortBy().isBlank() ? request.getSortBy()
+                : "createdAt";
+        String sortByDirection = request.getDirection() != null && !request.getSortBy().isBlank()
+                ? request.getDirection()
+                : "desc";
+
+        Sort sortBy = Sort.by(Sort.Direction.fromString(sortByDirection), sortByType);
+>>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
         PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
         Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);

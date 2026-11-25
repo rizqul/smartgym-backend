@@ -12,7 +12,9 @@ public interface TrainerService {
 
     void createTrainer(TrainerCreateRequest request);
 
-    void createSlot(String trainerId, TrainerSlotRequest request);
+    void createSlot(String trainerId, TrainerSlotCreateRequest request);
+
+    void updateSlot(String id, TrainerSlotUpdateRequest request);
 
     List<TrainerSlotResponse> findSlotByTrainerIdAndDate(String id, TrainerSlotFilterRequest request);
 

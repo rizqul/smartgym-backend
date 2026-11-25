@@ -28,16 +28,23 @@ public class TrainerUpdateRequest {
     @EnumValue(enumClass = TrainerSpecialization.class, message = "These provided equipment status was invalid.")
     private String specialization;
 
+<<<<<<< HEAD
     @PositiveNumber(message = "The experience field must be a positive number.")
     private String experience;
 
     @PositiveNumber(message = "The rate field must be a positive number.")
     private String rate;
+=======
+    private Integer experience;
+
+    private Long rate;
+>>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
 
     @File(contentType = { "image/png", "image/jpg",
             "image/jpeg" }, message = "File photo harus berupa png, jpg, atau jpeg!", required = false)
     @FileSize(max = 2, message = "Ukuran file photo tidak boleh lebih dari 2MB!", required = false)
     private Object photo;
+<<<<<<< HEAD
 
     public TrainerSpecialization getSpecialization() {
         return TrainerSpecialization.valueOf(this.specialization.trim().toUpperCase());
@@ -49,5 +56,10 @@ public class TrainerUpdateRequest {
 
     public Long getRate() {
         return Long.parseLong(this.rate);
+=======
+
+    public TrainerSpecialization getSpecialization() {
+        return TrainerSpecialization.valueOf(this.specialization.trim().toUpperCase());
+>>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
     }
 }
