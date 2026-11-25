@@ -74,7 +74,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
 
-    Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
+    String sortByType = request.getSortBy() != null && !request.getSortBy().isBlank() ? request.getSortBy()
+        : "createdAt";
+    String sortByDirection = request.getDirection() != null && !request.getSortBy().isBlank() ? request.getDirection()
+        : "desc";
+
+    Sort sortBy = Sort.by(Sort.Direction.fromString(sortByDirection), sortByType);
     PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
     Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);

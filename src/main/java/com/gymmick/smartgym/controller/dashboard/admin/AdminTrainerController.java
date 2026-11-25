@@ -86,4 +86,23 @@ public class AdminTrainerController {
 
     return ApiResponse.success(HttpStatus.OK, response);
   }
+
+  @PutMapping(path = "/{id}")
+  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
+      @Valid @RequestBody TrainerUpdateRequest request) {
+
+    trainerService.updateTrainer(id, request);
+
+    String message = "Berhasil mengupdate Trainer!";
+    return ApiResponse.success(HttpStatus.OK, message);
+  }
+
+  @DeleteMapping(path = "/{id}")
+  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id) {
+
+    trainerService.deleteTrainerById(id);
+
+    String message = "Berhasil mengupdate Trainer!";
+    return ApiResponse.success(HttpStatus.OK, message);
+  }
 }

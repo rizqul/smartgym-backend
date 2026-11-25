@@ -10,55 +10,59 @@ import lombok.*;
 @Setter
 public class TransactionSearchRequest {
 
-    private String search;
+  private String search;
 
-    private String type;
+  private String type;
 
-    private String status;
+  private String status;
 
-    private String page;
+  private String page;
 
-    private String size;
+  private String size;
 
-    public TransactionType getType() {
-        if (this.type == null) {
-            return null;
-        }
+  private String sortBy;
 
-        String type = this.type.toUpperCase();
+  private String direction;
 
-        if (TransactionType.isValid(type)) {
-            return TransactionType.valueOf(type);
-        }
-
-        return null;
+  public TransactionType getType() {
+    if (this.type == null) {
+      return null;
     }
 
-    public TransactionStatus getStatus() {
-        if (this.status == null) {
-            return null;
-        }
+    String type = this.type.toUpperCase();
 
-        String status = this.status.toUpperCase();
-
-        if (TransactionStatus.isValid(status)) {
-            return TransactionStatus.valueOf(status);
-        }
-
-        return null;
+    if (TransactionType.isValid(type)) {
+      return TransactionType.valueOf(type);
     }
 
-    public Integer getPage() {
+    return null;
+  }
 
-        Integer page = NumberUtils.toInt(this.page, 0);
-
-        return page > 1 ? page - 1 : 0;
+  public TransactionStatus getStatus() {
+    if (this.status == null) {
+      return null;
     }
 
-    public Integer getSize() {
+    String status = this.status.toUpperCase();
 
-        Integer size = NumberUtils.toInt(this.size, 10);
-
-        return size <= 50 ? size : 50;
+    if (TransactionStatus.isValid(status)) {
+      return TransactionStatus.valueOf(status);
     }
+
+    return null;
+  }
+
+  public Integer getPage() {
+
+    Integer page = NumberUtils.toInt(this.page, 0);
+
+    return page > 1 ? page - 1 : 0;
+  }
+
+  public Integer getSize() {
+
+    Integer size = NumberUtils.toInt(this.size, 10);
+
+    return size <= 50 ? size : 50;
+  }
 }
