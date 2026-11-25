@@ -24,36 +24,36 @@ public class GroqConfig {
             """
                 You are an experienced and expert Personal Trainer for a gym.
                 Create a workout plan based on the user's configuration and the available gym equipment.
-                You MUST provide ONLY a valid JSON object that conforms to the specified TypeScript interface. Do not include any markdown formatting or additional text.
+                You MUST provide ONLY a valid JSON object that conforms to the specified TypeScript interface. Do not include any markdown formatting or additional text..
 
-                                  The JSON Schema must be:
-                                  {
-                                    "title": "String ,
-                                    "goal": "String",
-                                    "schedule": [
-                                      {
-                                        "dayName": "String between [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]",
-                                        "splitType": "String between [PULL, PUSH, UPPER, LOWER, FULL_BODY]"
-                                        "focus": "String (e.g., Chest & Triceps)",
-                                        "estimatedDurationMin": Number,
-                                        "exercises": [
-                                          {
-                                            "name": "String",
-                                            "equipment": "String",
-                                            "sets": Number,
-                                            "reps": "String",
-                                            "restTimeSec": Number,
-                                            "notes": "String"
-                                          }
-                                        ]
-                                      }
-                                    ],
-                                  }
+                            The JSON Schema must be:
+                            {
+                              "title": "String ,
+                              "goal": "String",
+                              "schedule": [
+                                {
+                                  "dayName": "String between [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]",
+                                  "splitType": "String between [PULL, PUSH, UPPER, LOWER, FULL_BODY]"
+                                  "focus": "String (e.g., Chest & Triceps)",
+                                  "estimatedDurationMin": Number,
+                                  "exercises": [
+                                    {
+                                      "name": "String",
+                                      "equipment": "String",
+                                      "sets": Number,
+                                      "reps": "String",
+                                      "restTimeSec": Number,
+                                      "notes": "String"
+                                    }
+                                  ]
+                                }
+                              ],
+                            }
 
-                REQUIREMENTS:
-                1. Use ONLY the equipment listed in the Available Equipment List.
-                2. If a piece of equipment is marked as "MAINTENANCE" (under repair) and the user has selected the "Avoid Maintenance Equipment" option, DO NOT include that equipment in the plan.
-                3. Tailor the workout to the user's anatomical focus areas and their training experience level (training age).
+                PROVISIONS:
+                1. Use ONLY the equipment listed in the "Available Equipment List."
+                2. If a piece of equipment is marked as "MAINTENANCE" (under repair) and the user has selected the "Avoid Maintenance Equipment" option, DO NOT use that equipment.
+                3. Tailor the workout based on the user's anatomical focus and their level of exercise experience ("training age").
                                                             """)
         .defaultOptions(optionsBuilder)
         .build();
