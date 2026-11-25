@@ -6,6 +6,7 @@ import com.gymmick.smartgym.entity.enums.TrainerSpecialization;
 import com.gymmick.smartgym.validation.annotation.EnumValue;
 import com.gymmick.smartgym.validation.annotation.File;
 import com.gymmick.smartgym.validation.annotation.FileSize;
+import com.gymmick.smartgym.validation.annotation.PositiveNumber;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +28,11 @@ public class TrainerUpdateRequest {
     @EnumValue(enumClass = TrainerSpecialization.class, message = "These provided equipment status was invalid.")
     private String specialization;
 
-    private Integer experience;
+    @PositiveNumber(message = "The experience field must be a positive number.")
+    private String experience;
 
-    private Long rate;
+    @PositiveNumber(message = "The rate field must be a positive number.")
+    private String rate;
 
     @File(contentType = { "image/png", "image/jpg",
             "image/jpeg" }, message = "File photo harus berupa png, jpg, atau jpeg!", required = false)
@@ -38,5 +41,13 @@ public class TrainerUpdateRequest {
 
     public TrainerSpecialization getSpecialization() {
         return TrainerSpecialization.valueOf(this.specialization.trim().toUpperCase());
+    }
+
+    public Integer getExperience() {
+        return Integer.parseInt(this.experience);
+    }
+
+    public Long getRate() {
+        return Long.parseLong(this.rate);
     }
 }
