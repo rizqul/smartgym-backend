@@ -8,21 +8,21 @@ import com.gymmick.smartgym.dto.trainer.*;
 
 public interface TrainerService {
 
-  PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request);
+    PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request);
 
-  void createTrainer(TrainerCreateRequest request);
+    void createTrainer(TrainerCreateRequest request);
 
-  void createSlot(String trainerId, TrainerSlotRequest request);
+    void createSlot(String trainerId, TrainerSlotRequest request);
 
-  List<TrainerSlotResponse> findSlotByTrainerIdAndDate(String id, TrainerSlotFilterRequest request);
+    List<TrainerSlotResponse> findSlotByTrainerIdAndDate(String id, TrainerSlotFilterRequest request);
 
-  Long countAllTrainer();
+    Long countAllTrainer();
 
-  Long countAllTrainerThatHasSlotDaily(Instant startOfDay, Instant endOfDay);
+    Long countAllTrainerThatHasSlotDaily(Instant startOfDay, Instant endOfDay);
 
-  Long countAllSlotDaily(Instant startOfDay, Instant endOfDay);
+    Long countAllSlotDaily(Instant startOfDay, Instant endOfDay);
 
-  void deleteTrainerById(String id);
+    void deleteTrainerById(String id);
 
-  void updateTrainer(String id, TrainerUpdateRequest request);
+    void updateTrainer(String id, TrainerUpdateRequest request);
 }
