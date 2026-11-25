@@ -28,7 +28,8 @@ public class TransactionSchedule {
                             && Instant.now().isAfter(transaction.getExpiredAt())
                             && transaction.getStatus().equals(TransactionStatus.PENDING)) {
 
-                        trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
+                        trainerSlotRepository.updateStatusAndMemberIfMatch(transaction.getPackageId(),
+                                null,
                                 SlotStatus.BOOKED,
                                 SlotStatus.AVAILABLE);
 
