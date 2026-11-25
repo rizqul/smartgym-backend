@@ -1,7 +1,6 @@
 package com.gymmick.smartgym.services.trainer.impl;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +17,7 @@ import com.gymmick.smartgym.builder.PaginationLinkBuilder;
 import com.gymmick.smartgym.dto.pagination.*;
 import com.gymmick.smartgym.dto.trainer.*;
 import com.gymmick.smartgym.entity.*;
+import com.gymmick.smartgym.entity.enums.SlotStatus;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.TrainerMapping;
 import com.gymmick.smartgym.mappers.TrainerSlotMapping;
@@ -98,81 +98,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .rate(request.getRate())
                 .build();
 
-        this.save(trainer);
-    }
-
-    @Override
-    @Transactional
-    public void createSlot(String id, TrainerSlotRequest request) {
-
-        Instant startTime = request.getStartTime();
-        Instant endTime = request.getEndTime();
-
-        Instant slotDate = request.getSlotDate().plus(Duration.ofHours(7));
-
-        if (!slotDate.equals(startTime.truncatedTo(ChronoUnit.DAYS))
-                && !slotDate.equals(endTime.truncatedTo(ChronoUnit.DAYS))) {
-
-            throw new BadRequestException("Tanggal jadwal harus sama dengan waktu training!");
-        }
-
-        if (!startTime.isBefore(endTime)) {
-            throw new BadRequestException("Waktu mulai harus lebih awal dari waktu selesai!");
-        }
-
-        UUID trainerId = UUID.fromString(id);
-        boolean isOverlapping = trainerSlotRepository.existsOverlappingSlot(
-                trainerId,
-                startTime,
-                endTime);
-
-        if (isOverlapping) {
-            throw new BadRequestException("Jadwal bertabrakan dengan jadwal lain yang sudah ada untuk trainer ini!");
-        }
-
-        Trainer trainer = this.findById(trainerId);
-        TrainerSlot trainerSlot = TrainerSlot.builder()
-                .trainer(trainer)
-                .description(request.getDescription())
-                .slotDate(request.getSlotDate())
-                .startTime(startTime)
-                .endTime(endTime)
-                .build();
-
-        trainerSlotRepository.save(trainerSlot);
-    }
-
-    public Trainer findById(UUID id) {
-        return trainerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
-    }
-
-    public Trainer save(Trainer trainer) {
-        return trainerRepository.save(trainer);
-    }
-
-    @Override
-    public Long countAllTrainer() {
-        return trainerRepository.count();
-    }
-
-    @Override
-    public Long countAllTrainerThatHasSlotDaily(Instant startOfDay, Instant endOfDay) {
-        return trainerSlotRepository.countDistinctTrainersWithSlotsOnDate(startOfDay, endOfDay);
-    }
-
-    @Override
-    public Long countAllSlotDaily(Instant startOfDay, Instant endOfDay) {
-        return trainerSlotRepository.countTrainerSlotOnDate(startOfDay, endOfDay);
-    }
-
-    @Override
-    @Transactional
-    public void deleteTrainerById(String id) {
-        UUID trainerId = UUID.fromString(id);
-
-        Trainer trainer = trainerRepository.findById(trainerId).orElseThrow(() -> new ResourceNotFoundException());
-        trainerRepository.delete(trainer);
+        trainerRepository.save(trainer);
     }
 
     @Override
@@ -222,4 +148,110 @@ public class TrainerServiceImpl implements TrainerService {
 
         trainerRepository.save(trainer);
     }
+
+    @Override
+    @Transactional
+    public void createSlot(String id, TrainerSlotCreateRequest request) {
+
+        Instant startTime = request.getStartTime();
+        Instant endTime = request.getEndTime();
+
+        if (!startTime.isBefore(endTime)) {
+            throw new BadRequestException("The start time must be earlier than end time!");
+        }
+
+        UUID trainerId = UUID.fromString(id);
+        boolean isOverlapping = trainerSlotRepository.existsOverlappingSlot(
+                trainerId,
+                startTime,
+                endTime);
+
+        if (isOverlapping) {
+            throw new BadRequestException("The schedule clashes with another existing schedule for this trainer!");
+        }
+
+        Trainer trainer = this.findById(trainerId);
+        System.out.println(trainer.getName());
+
+        TrainerSlot trainerSlot = TrainerSlot.builder()
+                .trainer(trainer)
+                .description(request.getDescription())
+                .slotDate(request.getSlotDate())
+                .startTime(startTime)
+                .endTime(endTime)
+                .build();
+
+        trainerSlotRepository.save(trainerSlot);
+    }
+
+    @Override
+    @Transactional
+    public void updateSlot(String id, TrainerSlotUpdateRequest request) {
+
+        UUID trainerSlotId = UUID.fromString(id);
+        TrainerSlot trainerSlot = trainerSlotRepository.findById(trainerSlotId)
+                .orElseThrow(() -> new ResourceNotFoundException());
+
+        if (trainerSlot.getStatus().equals(SlotStatus.BOOKED)) {
+            throw new BadRequestException("This slot cannot be updated because it has been booked!");
+        }
+
+        Instant startTime = request.getStartTime();
+        Instant endTime = request.getEndTime();
+
+        if (!startTime.isBefore(endTime)) {
+            throw new BadRequestException("The start time must be earlier than end time!");
+        }
+
+        boolean isOverlapping = trainerSlotRepository.existsOverlappingSlotOnAnotherSlotId(
+                trainerSlot.getId(),
+                trainerSlot.getTrainer().getId(),
+                startTime,
+                endTime);
+
+        if (isOverlapping) {
+            throw new BadRequestException("The schedule clashes with another existing schedule for this trainer!");
+        }
+
+        trainerSlot.setDescription(request.getDescription());
+        trainerSlot.setSlotDate(request.getSlotDate());
+        trainerSlot.setStartTime(request.getStartTime());
+        trainerSlot.setEndTime(request.getEndTime());
+
+        trainerSlotRepository.save(trainerSlot);
+    }
+
+    public Trainer findById(UUID id) {
+        return trainerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Trainer data couldn't be found!"));
+    }
+
+    public Trainer save(Trainer trainer) {
+        return trainerRepository.save(trainer);
+    }
+
+    @Override
+    public Long countAllTrainer() {
+        return trainerRepository.count();
+    }
+
+    @Override
+    public Long countAllTrainerThatHasSlotDaily(Instant startOfDay, Instant endOfDay) {
+        return trainerSlotRepository.countDistinctTrainersWithSlotsOnDate(startOfDay, endOfDay);
+    }
+
+    @Override
+    public Long countAllSlotDaily(Instant startOfDay, Instant endOfDay) {
+        return trainerSlotRepository.countTrainerSlotOnDate(startOfDay, endOfDay);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTrainerById(String id) {
+        UUID trainerId = UUID.fromString(id);
+
+        Trainer trainer = trainerRepository.findById(trainerId).orElseThrow(() -> new ResourceNotFoundException());
+        trainerRepository.delete(trainer);
+    }
+
 }

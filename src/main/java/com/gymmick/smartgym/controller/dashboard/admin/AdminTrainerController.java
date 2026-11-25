@@ -22,96 +22,107 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminTrainerController {
 
-  private final TrainerService trainerService;
-  private final TrainerBookingService trainerBookingService;
+    private final TrainerService trainerService;
+    private final TrainerBookingService trainerBookingService;
 
-  private final TransactionService transactionService;
+    private final TransactionService transactionService;
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<List<TrainerResponse>>> findAll(TrainerSearchRequest request) {
-    PaginationResponse<TrainerResponse> response = trainerService.findAllTrainer(request);
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<TrainerResponse>>> findAll(TrainerSearchRequest request) {
+        PaginationResponse<TrainerResponse> response = trainerService.findAllTrainer(request);
 
-    return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
-  }
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+    }
 
-  @GetMapping(path = "/booking")
-  public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllBooking(
-      TrainerBookingSearchRequest request) {
+    @PostMapping(path = "/create")
+    public ResponseEntity<ApiResponse<String>> createTrainer(@Valid @RequestBody TrainerCreateRequest request) {
 
-    PaginationResponse<TrainerBookingResponse> response = trainerBookingService.findAllBooking(request);
+        trainerService.createTrainer(request);
 
-    return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
-  }
+        String message = "Berhasil Menambahkan Trainer!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
 
-  @PostMapping(path = "/create")
-  public ResponseEntity<ApiResponse<String>> createTrainer(@Valid @RequestBody TrainerCreateRequest request) {
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<ApiResponse<String>> updateTrainer(@PathVariable String id,
+            @Valid @RequestBody TrainerUpdateRequest request) {
 
-    trainerService.createTrainer(request);
+        trainerService.updateTrainer(id, request);
 
-    String message = "Berhasil Menambahkan Trainer!";
-    return ApiResponse.success(HttpStatus.CREATED, message);
-  }
+        String message = "Berhasil mengupdate Trainer!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-  @GetMapping(path = "/slot/{id}")
-  public ResponseEntity<ApiResponse<List<TrainerSlotResponse>>> findSlotByTrainerId(@PathVariable String id,
-      TrainerSlotFilterRequest request) {
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteTrainer(@PathVariable String id) {
 
-    List<TrainerSlotResponse> trainers = trainerService.findSlotByTrainerIdAndDate(id, request);
+        trainerService.deleteTrainerById(id);
 
-    return ApiResponse.success(HttpStatus.OK, trainers);
-  }
+        String message = "Berhasil mengupdate Trainer!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-  @PostMapping(path = "/slot/create/{id}")
-  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
-      @Valid @RequestBody TrainerSlotRequest request) {
+    @GetMapping(path = "/booking")
+    public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllBooking(
+            TrainerBookingSearchRequest request) {
 
-    trainerService.createSlot(id, request);
+        PaginationResponse<TrainerBookingResponse> response = trainerBookingService.findAllBooking(request);
 
-    String message = "Berhasil Menambahkan Jadwal Trainer!";
-    return ApiResponse.success(HttpStatus.CREATED, message);
-  }
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+    }
 
-  @GetMapping(path = "/count")
-  public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
+    @GetMapping(path = "/slot/{id}")
+    public ResponseEntity<ApiResponse<List<TrainerSlotResponse>>> findSlotByTrainerId(@PathVariable String id,
+            TrainerSlotFilterRequest request) {
 
-    ZoneId zone = ZoneId.systemDefault();
-    LocalDate today = LocalDate.now(zone);
+        List<TrainerSlotResponse> trainers = trainerService.findSlotByTrainerIdAndDate(id, request);
 
-    Instant startOfDay = today.atStartOfDay(zone).toInstant();
-    Instant endOfDay = today.atTime(LocalTime.MAX).atZone(zone).toInstant();
+        return ApiResponse.success(HttpStatus.OK, trainers);
+    }
 
-    Long totalTrainer = trainerService.countAllTrainer();
-    Long totalTrainerThatHasSlotOnDate = trainerService.countAllTrainerThatHasSlotDaily(startOfDay, endOfDay);
-    Long totalSlotOnDate = trainerService.countAllSlotDaily(startOfDay, endOfDay);
-    Long totalTransactionBookedTrainer = transactionService.countTotalIncomeByType(TransactionType.PT_BOOKING);
+    @PostMapping(path = "/slot/create/{id}")
+    public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
+            @Valid @RequestBody TrainerSlotCreateRequest request) {
 
-    TrainerCountResponse response = TrainerCountResponse.builder()
-        .countTrainer(totalTrainer)
-        .countTrainerWithSlot(totalTrainerThatHasSlotOnDate)
-        .countSlot(totalSlotOnDate)
-        .sumTransactionBookedTrainer(totalTransactionBookedTrainer)
-        .build();
+        trainerService.createSlot(id, request);
 
-    return ApiResponse.success(HttpStatus.OK, response);
+        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
 
-  }
+    @PatchMapping(path = "/slot/update/{id}")
+    public ResponseEntity<ApiResponse<String>> updateSlot(@PathVariable String id,
+            @Valid @RequestBody TrainerSlotUpdateRequest request) {
 
-  @PutMapping(path = "/{id}")
-  public ResponseEntity<ApiResponse<String>> updateTrainer(@PathVariable String id,
-      @Valid @RequestBody TrainerUpdateRequest request) {
+        trainerService.updateSlot(id, request);
 
-    trainerService.updateTrainer(id, request);
+        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
 
-    String message = "Berhasil mengupdate Trainer!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+    @GetMapping(path = "/count")
+    public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
 
-  @DeleteMapping(path = "/{id}")
-  public ResponseEntity<ApiResponse<String>> deleteTrainer(@PathVariable String id) {
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDate today = LocalDate.now(zone);
 
-    trainerService.deleteTrainerById(id);
+        Instant startOfDay = today.atStartOfDay(zone).toInstant();
+        Instant endOfDay = today.atTime(LocalTime.MAX).atZone(zone).toInstant();
 
-    String message = "Berhasil mengupdate Trainer!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        Long totalTrainer = trainerService.countAllTrainer();
+        Long totalTrainerThatHasSlotOnDate = trainerService.countAllTrainerThatHasSlotDaily(startOfDay, endOfDay);
+        Long totalSlotOnDate = trainerService.countAllSlotDaily(startOfDay, endOfDay);
+        Long totalTransactionBookedTrainer = transactionService.countTotalIncomeByType(TransactionType.PT_BOOKING);
+
+        TrainerCountResponse response = TrainerCountResponse.builder()
+                .countTrainer(totalTrainer)
+                .countTrainerWithSlot(totalTrainerThatHasSlotOnDate)
+                .countSlot(totalSlotOnDate)
+                .sumTransactionBookedTrainer(totalTransactionBookedTrainer)
+                .build();
+
+        return ApiResponse.success(HttpStatus.OK, response);
+
+    }
+
 }

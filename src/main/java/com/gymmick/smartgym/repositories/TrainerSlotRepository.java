@@ -42,16 +42,19 @@ public interface TrainerSlotRepository extends JpaRepository<TrainerSlot, UUID>,
             @Param("startTime") Instant startTime,
             @Param("endTime") Instant endTime);
 
-    @Modifying
     @Query("""
-            UPDATE TrainerSlot t SET t.status = :newStatus, t.member = :member
-            WHERE t.id = :id AND t.status = :expectedStatus
+                SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END
+                FROM TrainerSlot t
+                WHERE (t.id <> :id)
+                    AND t.trainer.id = :trainerId
+                    AND t.startTime < :endTime
+                    AND t.endTime > :startTime
             """)
-    int updateStatusAndMemberIfMatch(
+    boolean existsOverlappingSlotOnAnotherSlotId(
             @Param("id") UUID id,
-            @Param("member") User member,
-            @Param("expectedStatus") SlotStatus expectedStatus,
-            @Param("newStatus") SlotStatus newStatus);
+            @Param("trainerId") UUID trainerId,
+            @Param("startTime") Instant startTime,
+            @Param("endTime") Instant endTime);
 
     @Query("""
             SELECT COUNT(DISTINCT s.trainer.id)

@@ -14,30 +14,29 @@ import lombok.Setter;
 @Getter
 public class TrainerUpdateRequest {
 
-  private UUID id;
+    private UUID id;
 
-  private String name;
+    private String name;
 
-  private String email;
+    private String email;
 
-  private String profileUrl;
+    private String profileUrl;
 
-  private String phoneNumber;
+    private String phoneNumber;
 
-  @EnumValue(enumClass = TrainerSpecialization.class, message = "These provided equipment status was invalid.")
-  private String specialization;
+    @EnumValue(enumClass = TrainerSpecialization.class, message = "These provided equipment status was invalid.")
+    private String specialization;
 
-  private Integer experience;
+    private Integer experience;
 
-  private Long rate;
+    private Long rate;
 
-  @File(contentType = { "image/png", "image/jpg",
-      "image/jpeg" }, message = "File photo harus berupa png, jpg, atau jpeg!", required = false)
-  @FileSize(max = 2, message = "Ukuran file photo tidak boleh lebih dari 2MB!", required = false)
-  private Object photo;
+    @File(contentType = { "image/png", "image/jpg",
+            "image/jpeg" }, message = "File photo harus berupa png, jpg, atau jpeg!", required = false)
+    @FileSize(max = 2, message = "Ukuran file photo tidak boleh lebih dari 2MB!", required = false)
+    private Object photo;
 
-  public TrainerSpecialization getSpecialization() {
-    return TrainerSpecialization.valueOf(this.specialization.trim().toUpperCase());
-  }
-
+    public TrainerSpecialization getSpecialization() {
+        return TrainerSpecialization.valueOf(this.specialization.trim().toUpperCase());
+    }
 }
