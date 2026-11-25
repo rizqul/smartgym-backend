@@ -218,8 +218,8 @@ public class TrainerServiceImpl implements TrainerService {
 
       trainer.setProfileUrl(String.format("%s/%s", awsPublicUrl, fileKey));
 
-      trainerRepository.save(trainer);
     }
 
+      trainerRepository.save(trainer);
   }
 }
