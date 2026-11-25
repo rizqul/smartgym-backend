@@ -1,43 +1,28 @@
 {"properties": [
   {
-    "name": "app.config.app-url",
+    "name": "app.config.web-url",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.app-url'"
+    "description": "A description for 'app.config.web-url'"
   },
   {
-    "name": "app.config.initial-account-name",
+    "name": "app.config.cors-origins",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.initial-account-name'"
+    "description": "A description for 'app.config.cors-origins'"
   },
   {
-    "name": "app.config.initial-account-email",
+    "name": "app.config.init-account",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.initial-account-email'"
-  },
-  {
-    "name": "app.config.initial-account-password",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.initial-account-password'"
-  },
-  {
-    "name": "app.config.cookie-domain",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.cookie-domain'"
-  },
-  {
-    "name": "app.config.cookie-same-site",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.cookie-same-site'"
-  },
-  {
-    "name": "app.config.cookie-secure",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.cookie-secure'"
+    "description": "A description for 'app.config.init-account'"
   },
   {
     "name": "app.config.jwt-secret",
     "type": "java.lang.String",
     "description": "A description for 'app.config.jwt-secret'"
+  },
+  {
+    "name": "app.config.hmac-secret",
+    "type": "java.lang.String",
+    "description": "A description for 'app.config.hmac-secret'"
   },
   {
     "name": "app.config.aws.s3.bucket",
@@ -50,43 +35,23 @@
     "description": "A description for 'app.config.aws.s3.public-url'"
   },
   {
-    "name": "app.config.midtrans.server-key",
+    "name": "spring.cloud.aws.credentials.access-key",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.server-key'"
+    "description": "A description for 'spring.cloud.aws.credentials.access-key'"
   },
   {
-    "name": "app.config.midtrans.client-key",
+    "name": "spring.cloud.aws.credentials.secret-key",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.client-key'"
+    "description": "A description for 'spring.cloud.aws.credentials.secret-key'"
   },
   {
-    "name": "app.config.midtrans.production",
+    "name": "spring.cloud.aws.s3.region",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.production'"
+    "description": "A description for 'spring.cloud.aws.s3.region'"
   },
   {
-    "name": "app.config.midtrans.notification-url",
+    "name": "spring.cloud.aws.s3.endpoint",
     "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.notification-url'"
-  },
-  {
-    "name": "app.config.midtrans.membership.redirect-url",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.membership.redirect-url'"
-  },
-  {
-    "name": "app.config.midtrans.pt-booking.redirect-url",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.pt-booking.redirect-url'"
-  },
-  {
-    "name": "app.config.midtrans.signature-key",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.signature-key'"
-  },
-  {
-    "name": "app.config.midtrans.base-url",
-    "type": "java.lang.String",
-    "description": "A description for 'app.config.midtrans.base-url'"
+    "description": "A description for 'spring.cloud.aws.s3.endpoint'"
   }
 ]}
