@@ -65,7 +65,115 @@ public class TransactionServiceImpl implements TransactionService {
                 .pagination(paginationMeta)
                 .build();
 
+<<<<<<< HEAD
         return paginationResponse;
+=======
+    return paginationResponse;
+  }
+
+  @Override
+  public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request) {
+
+    Integer page = request.getPage();
+    Integer size = request.getSize();
+
+    Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
+
+    String sortByType = request.getSortBy() != null && !request.getSortBy().isBlank() ? request.getSortBy()
+        : "createdAt";
+    String sortByDirection = request.getDirection() != null && !request.getSortBy().isBlank() ? request.getDirection()
+        : "desc";
+
+    Sort sortBy = Sort.by(Sort.Direction.fromString(sortByDirection), sortByType);
+    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+
+    Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
+
+    List<TransactionResponse> transactionResponse = transactionMapping
+        .toListResponses(transactionPage.getContent());
+
+    PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, transactionPage.getTotalPages(), size,
+        transactionPage.getTotalElements(),
+        p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
+
+    PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
+        .data(transactionResponse)
+        .pagination(paginationMeta)
+        .build();
+
+    return paginationResponse;
+  }
+
+  @Override
+  public Transaction findByOrderId(String orderId) {
+    return transactionRespository.findByOrderId(orderId)
+        .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
+  }
+
+  @Override
+  @Transactional
+  public TransactionCreate createTransaction(User user, TransactionData data) throws MidtransError {
+
+    String orderId = UUID.randomUUID().toString();
+    Map<String, Object> params = new HashMap<>();
+
+    Map<String, String> transactionDetails = new HashMap<>();
+    transactionDetails.put("order_id", orderId);
+    transactionDetails.put("gross_amount", data.getGrossAmount().toString());
+
+    List<String> payments = new ArrayList<>();
+    payments.add(data.getPaymentType().toString());
+
+    Map<String, String> callbacks = new HashMap<>();
+    callbacks.put("finish", data.getCallbackUrl());
+    callbacks.put("error", data.getCallbackUrl());
+
+    params.put("transaction_details", transactionDetails);
+    params.put("item_details", data.getItemDetails());
+    params.put("enabled_payments", payments);
+    params.put("callbacks", callbacks);
+
+    Map<String, Object> response = midtransSnapApi.createTransaction(params).toMap();
+    TransactionCreate transactionCreate = TransactionCreate.builder()
+        .orderId(orderId)
+        .redirectUrl(response.get("redirect_url").toString())
+        .token(response.get("token").toString())
+        .build();
+
+    Transaction transaction = Transaction.builder()
+        .member(user)
+        .orderId(orderId)
+        .packageId(data.getPackageId())
+        .name(data.getPackageName())
+        .paymentUrl(transactionCreate.getRedirectUrl())
+        .paymentType(data.getPaymentType())
+        .token(transactionCreate.getToken())
+        .amount(data.getGrossAmount())
+        .type(data.getType())
+        .build();
+
+    transactionRespository.save(transaction);
+
+    return transactionCreate;
+  }
+
+  @Override
+  @Transactional
+  public Transaction detailTransaction(String orderId) {
+    Transaction transaction = this.findByOrderId(orderId);
+
+    return transaction;
+  }
+
+  @Override
+  @Transactional
+  public Transaction updateTransaction(String orderId, String status, String paymentType) {
+    Transaction transaction = this.findByOrderId(orderId);
+    transaction.setExpiredAt(Instant.now().plus(Duration.ofMinutes(15)));
+
+    if (status.equals("cancel")) {
+      transaction.setStatus(TransactionStatus.CANCELLED);
+>>>>>>> cdbef48 ([FIX] add enpoint to update and delete trainer. add sort for transaction)
     }
 
     @Override

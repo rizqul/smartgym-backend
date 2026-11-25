@@ -74,6 +74,7 @@ public class AdminTrainerController {
     @GetMapping(path = "/count")
     public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
 
+<<<<<<< HEAD
         ZoneId zone = ZoneId.systemDefault();
         LocalDate today = LocalDate.now(zone);
 
@@ -94,4 +95,27 @@ public class AdminTrainerController {
 
         return ApiResponse.success(HttpStatus.OK, response);
     }
+=======
+    return ApiResponse.success(HttpStatus.OK, response);
+  }
+
+  @PutMapping(path = "/{id}")
+  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
+      @Valid @RequestBody TrainerUpdateRequest request) {
+
+    trainerService.updateTrainer(id, request);
+
+    String message = "Berhasil mengupdate Trainer!";
+    return ApiResponse.success(HttpStatus.OK, message);
+  }
+
+  @DeleteMapping(path = "/{id}")
+  public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id) {
+
+    trainerService.deleteTrainerById(id);
+
+    String message = "Berhasil mengupdate Trainer!";
+    return ApiResponse.success(HttpStatus.OK, message);
+  }
+>>>>>>> cdbef48 ([FIX] add enpoint to update and delete trainer. add sort for transaction)
 }
