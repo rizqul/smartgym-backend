@@ -814,6 +814,51 @@
               "name": "Trainers",
               "item": [
                 {
+                  "name": "Booking",
+                  "item": [
+                    {
+                      "name": "List Booking",
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{apiUrl}}/admin/dashboard/trainers/booking?page=1&size=10",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "admin",
+                            "dashboard",
+                            "trainers",
+                            "booking"
+                          ],
+                          "query": [
+                            {
+                              "key": "search",
+                              "value": "",
+                              "disabled": true
+                            },
+                            {
+                              "key": "page",
+                              "value": "1"
+                            },
+                            {
+                              "key": "size",
+                              "value": "10"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
                   "name": "Slots",
                   "item": [
                     {
@@ -1658,6 +1703,51 @@
               "name": "Trainers",
               "item": [
                 {
+                  "name": "Booking",
+                  "item": [
+                    {
+                      "name": "List Booking",
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{apiUrl}}/staff/dashboard/trainers/booking?page=1&size=10",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "staff",
+                            "dashboard",
+                            "trainers",
+                            "booking"
+                          ],
+                          "query": [
+                            {
+                              "key": "search",
+                              "value": "",
+                              "disabled": true
+                            },
+                            {
+                              "key": "page",
+                              "value": "1"
+                            },
+                            {
+                              "key": "size",
+                              "value": "10"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
                   "name": "Slots",
                   "item": [
                     {
@@ -1907,6 +1997,45 @@
                   "response": []
                 },
                 {
+                  "name": "List My Booking",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/member/trainers/booking?page=1&size=10",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "member",
+                        "trainers",
+                        "booking"
+                      ],
+                      "query": [
+                        {
+                          "key": "search",
+                          "value": "",
+                          "disabled": true
+                        },
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "size",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
                   "name": "Booking Slot",
                   "event": [
                     {
@@ -2004,8 +2133,27 @@
           ]
         },
         {
-          "name": "Check-Ins",
+          "name": "Attending",
           "item": [
+            {
+              "name": "Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/attendance/status",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "attendance",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
             {
               "name": "Check-In",
               "request": {

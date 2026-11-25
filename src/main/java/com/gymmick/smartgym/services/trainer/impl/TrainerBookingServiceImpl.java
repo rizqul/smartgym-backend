@@ -4,17 +4,31 @@ import java.time.Instant;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.gymmick.smartgym.builder.PaginationLinkBuilder;
+import com.gymmick.smartgym.dto.pagination.PaginationMeta;
+import com.gymmick.smartgym.dto.pagination.PaginationResponse;
+import com.gymmick.smartgym.dto.trainer.TrainerBookingResponse;
+import com.gymmick.smartgym.dto.trainer.TrainerBookingSearchRequest;
+import com.gymmick.smartgym.dto.trainer.TrainerResponse;
 import com.gymmick.smartgym.dto.trainer.TrainerTransactionCreateRequest;
 import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
+import com.gymmick.smartgym.mappers.TrainerBookingMapping;
 import com.gymmick.smartgym.repositories.*;
 import com.gymmick.smartgym.services.trainer.TrainerBookingService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
+import com.gymmick.smartgym.specification.TrainerBookingSpecification;
+import com.gymmick.smartgym.specification.TrainerSpecification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,8 +43,65 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
     private final TransactionService transactionService;
 
+    private final TrainerBookingMapping trainerBookingMapping;
+
     @Value("${app.config.midtrans.pt-booking.redirect-url}")
     private String ptBookedRedirectUrl;
+
+    @Override
+    public PaginationResponse<TrainerBookingResponse> findAllBooking(TrainerBookingSearchRequest request) {
+
+        Integer page = request.getPage();
+        Integer size = request.getSize();
+
+        Specification<TrainerBooking> specification = TrainerBookingSpecification
+                .getAllTrainerBookingSpecification(request);
+
+        Sort sortBy = Sort.by(TrainerBooking::getCreatedAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+
+        Page<TrainerBooking> trainerBookingPage = trainerBookingRepository.findAll(specification, pageRequest);
+        List<TrainerBookingResponse> trainerBookings = trainerBookingMapping
+                .toListResponse(trainerBookingPage.getContent());
+
+        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, trainerBookingPage.getTotalPages(), size,
+                trainerBookingPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
+                        .replaceQueryParam("page", p)
+                        .toUriString());
+
+        return PaginationResponse.<TrainerBookingResponse>builder()
+                .data(trainerBookings)
+                .pagination(paginationMeta)
+                .build();
+    }
+
+    @Override
+    public PaginationResponse<TrainerBookingResponse> findAllMyBooking(User memmber,
+            TrainerBookingSearchRequest request) {
+
+        Integer page = request.getPage();
+        Integer size = request.getSize();
+
+        Specification<TrainerBooking> specification = TrainerBookingSpecification
+                .getMyTrainerBookingSpecification(memmber, request);
+
+        Sort sortBy = Sort.by(TrainerBooking::getCreatedAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+
+        Page<TrainerBooking> trainerBookingPage = trainerBookingRepository.findAll(specification, pageRequest);
+        List<TrainerBookingResponse> trainerBookings = trainerBookingMapping
+                .toListResponse(trainerBookingPage.getContent());
+
+        PaginationMeta paginationMeta = PaginationLinkBuilder.build(page, trainerBookingPage.getTotalPages(), size,
+                trainerBookingPage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
+                        .replaceQueryParam("page", p)
+                        .toUriString());
+
+        return PaginationResponse.<TrainerBookingResponse>builder()
+                .data(trainerBookings)
+                .pagination(paginationMeta)
+                .build();
+    }
 
     @Override
     @Transactional
@@ -55,12 +126,14 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
                 throw new BadRequestException("Tidak dapat melakukan booking, waktu slot sudah terlewati!");
             }
 
-            int updatedStatus = trainerSlotRepository.updateStatusIfMatch(
-                    trainerSlotId, SlotStatus.AVAILABLE, SlotStatus.BOOKED);
-
-            if (updatedStatus == 0) {
+            if (trainerSlot.getStatus().equals(SlotStatus.BOOKED)) {
                 throw new BadRequestException("Slot Ini Telah Di Booking!");
             }
+
+            trainerSlot.setStatus(SlotStatus.BOOKED);
+            trainerSlot.setMember(member);
+
+            trainerSlotRepository.save(trainerSlot);
 
             String slotName = String.format("%s - %s",
                     trainerSlot.getTrainer().getName(),
