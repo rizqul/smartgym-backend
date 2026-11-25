@@ -610,6 +610,71 @@
           "name": "Admin",
           "item": [
             {
+              "name": "Home",
+              "item": [
+                {
+                  "name": "Summary Count",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/summary/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "summary",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Summary Chart",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/summary/chart",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "summary",
+                        "chart"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Summary Recent",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/summary/recent",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "summary",
+                        "recent"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
               "name": "Members",
               "item": [
                 {
