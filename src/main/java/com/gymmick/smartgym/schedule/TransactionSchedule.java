@@ -29,7 +29,8 @@ public class TransactionSchedule {
                             && !transaction.getStatus().equals(TransactionStatus.SUCCESS)
                             && !transaction.getStatus().equals(TransactionStatus.EXPIRED)) {
 
-                        trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
+                        trainerSlotRepository.updateStatusAndMemberIfMatch(transaction.getPackageId(),
+                                null,
                                 SlotStatus.BOOKED,
                                 SlotStatus.AVAILABLE);
 
