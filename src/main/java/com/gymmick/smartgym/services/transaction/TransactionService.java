@@ -11,23 +11,25 @@ import com.midtrans.httpclient.error.MidtransError;
 
 public interface TransactionService {
 
-  PaginationResponse<TransactionResponse> findAllTransaction(TransactionSearchRequest request);
+    PaginationResponse<TransactionResponse> findAllTransaction(TransactionSearchRequest request);
 
-  PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request);
+    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request);
 
-  Transaction findByOrderId(String orderId);
+    List<TransactionResponse> findRecentTransaction(String limit);
 
-  TransactionCreate createTransaction(User user, TransactionData data) throws MidtransError;
+    Transaction findByOrderId(String orderId);
 
-  Transaction detailTransaction(String orderId);
+    TransactionCreate createTransaction(User user, TransactionData data) throws MidtransError;
 
-  Transaction updateTransaction(String orderId, String status, String paymentType);
+    Transaction detailTransaction(String orderId);
 
-  Long countTotalIncomeByType(TransactionType type);
+    Transaction updateTransaction(String orderId, String status, String paymentType);
 
-  Long countTransactionByStatus(TransactionStatus status);
+    Long countTotalIncomeByType(TransactionType type);
 
-  Long sumTotalIncomeYearly(int year, ZoneId zone);
+    Long countTransactionByStatus(TransactionStatus status);
 
-  List<TransactionResponse> getAllTransactionData();
+    Long sumTotalIncomeYearly(int year, ZoneId zone);
+
+    List<TransactionResponse> getAllTransactionData();
 }

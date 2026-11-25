@@ -33,13 +33,6 @@ public class AdminAttendanceController {
         return ApiResponse.success(HttpStatus.OK, response);
     }
 
-    @GetMapping("/summary/chart")
-    public ResponseEntity<ApiResponse<AttendanceHourlyChartResponse>> getHourlyChart() {
-        AttendanceHourlyChartResponse response = attendanceService.getHourlyChart();
-
-        return ApiResponse.success(HttpStatus.OK, response);
-    }
-
     @PostMapping("/qr-token")
     public ResponseEntity<ApiResponse<AttendanceTokenResponse>> generateQrToken() {
 
