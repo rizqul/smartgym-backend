@@ -77,7 +77,7 @@ public class AuthController {
         List<String> cookies = new ArrayList<>();
         cookies.add(createCookie("reset-token", "", Duration.ofSeconds(0)));
 
-        String message = "Berhasil Memperbaharui Kata Sandi!";
+        String message = "Password changed successfully!";
         return ApiResponse.success(HttpStatus.OK, message, cookies);
     }
 
