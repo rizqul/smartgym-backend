@@ -35,6 +35,7 @@ public class AdminTrainerController {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @GetMapping(path = "/booking")
     public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllBooking(
             TrainerBookingSearchRequest request) {
@@ -76,6 +77,11 @@ public class AdminTrainerController {
     public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
 
 <<<<<<< HEAD
+=======
+    @GetMapping(path = "/count")
+    public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
+
+>>>>>>> 0a8b251 (refactor: standardize success messages and improve controller methods for clarity)
         ZoneId zone = ZoneId.systemDefault();
         LocalDate today = LocalDate.now(zone);
 
@@ -95,6 +101,7 @@ public class AdminTrainerController {
                 .build();
 
         return ApiResponse.success(HttpStatus.OK, response);
+<<<<<<< HEAD
     }
 =======
     return ApiResponse.success(HttpStatus.OK, response);
@@ -104,12 +111,17 @@ public class AdminTrainerController {
   public ResponseEntity<ApiResponse<String>> createSlot(@PathVariable String id,
       @Valid @RequestBody TrainerUpdateRequest request) {
 =======
+=======
+
+    }
+
+>>>>>>> 0a8b251 (refactor: standardize success messages and improve controller methods for clarity)
     @PostMapping(path = "/create")
     public ResponseEntity<ApiResponse<String>> createTrainer(@Valid @RequestBody TrainerCreateRequest request) {
 
         trainerService.createTrainer(request);
 
-        String message = "Berhasil Menambahkan Trainer!";
+        String message = "Added trainer successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
@@ -119,7 +131,7 @@ public class AdminTrainerController {
 
         trainerService.updateTrainer(id, request);
 
-        String message = "Berhasil mengupdate Trainer!";
+        String message = "Updated trainer data successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -128,7 +140,7 @@ public class AdminTrainerController {
 
         trainerService.deleteTrainerById(id);
 
-        String message = "Berhasil mengupdate Trainer!";
+        String message = "Deleted trainer data successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -156,7 +168,7 @@ public class AdminTrainerController {
 
         trainerService.createSlot(id, request);
 
-        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        String message = "Added trainer schedule successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
@@ -167,9 +179,10 @@ public class AdminTrainerController {
         trainerService.updateSlot(id, request);
 >>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
 
-        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        String message = "Updated trainer schedule successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
+<<<<<<< HEAD
 
     @GetMapping(path = "/count")
     public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
@@ -208,4 +221,6 @@ public class AdminTrainerController {
 >>>>>>> cdbef48 ([FIX] add enpoint to update and delete trainer. add sort for transaction)
 =======
 >>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
+=======
+>>>>>>> 0a8b251 (refactor: standardize success messages and improve controller methods for clarity)
 }

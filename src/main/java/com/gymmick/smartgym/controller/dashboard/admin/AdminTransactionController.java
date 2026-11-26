@@ -31,14 +31,6 @@ public class AdminTransactionController {
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
 
-    @PostMapping(path = "/refund-booking/{id}")
-    public ResponseEntity<ApiResponse<List<TransactionResponse>>> refundBooking(@PathVariable String id) {
-        trainerBookingService.refundBookedTrainer(id);
-
-        String message = "Refund successfully!";
-        return ApiResponse.success(HttpStatus.OK, message);
-    }
-
     @GetMapping(path = "/count")
     public ResponseEntity<ApiResponse<TransactionCountResponse>> countTransactionStats(
             @RequestParam(required = false) Integer year) {
@@ -71,4 +63,11 @@ public class AdminTransactionController {
         return ApiResponse.success(HttpStatus.OK, message, transactions);
     }
 
+    @PostMapping(path = "/refund-booking/{id}")
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> refundBooking(@PathVariable String id) {
+        trainerBookingService.refundBookedTrainer(id);
+
+        String message = "Refund successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }
