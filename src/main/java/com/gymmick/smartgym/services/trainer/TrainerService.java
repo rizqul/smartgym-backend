@@ -8,6 +8,8 @@ import com.gymmick.smartgym.dto.trainer.*;
 
 public interface TrainerService {
 
+    List<TrainerResponse> findAllTrainer();
+
     PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request);
 
     void createTrainer(TrainerCreateRequest request);
