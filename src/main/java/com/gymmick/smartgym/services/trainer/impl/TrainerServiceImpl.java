@@ -45,6 +45,13 @@ public class TrainerServiceImpl implements TrainerService {
     private final StorageService storageService;
 
     @Override
+    public List<TrainerResponse> findAllTrainer() {
+        List<Trainer> trainerRepositories = trainerRepository.findAll();
+
+        return trainerMapping.toListResponses(trainerRepositories);
+    }
+
+    @Override
     public PaginationResponse<TrainerResponse> findAllTrainer(TrainerSearchRequest request) {
         Integer page = request.getPage();
         Integer size = request.getSize();
