@@ -37,7 +37,7 @@ public class GlobalException {
     public ResponseEntity<ApiResponse<String>> handleBadCredentialsException(
             BadCredentialsException exception) {
 
-        String message = "Alamat Email atau Kata Sandi Salah!";
+        String message = "Incorrect email or password!";
         return ApiResponse.error(HttpStatus.BAD_REQUEST, message);
     }
 

@@ -39,39 +39,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(UUID id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (!user.isPresent() || !user.get().isEnabled()) {
-            throw new ResourceNotFoundException();
-        }
-
-        return user.get();
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        if (!user.isPresent() || !user.get().isEnabled()) {
-            throw new ResourceNotFoundException();
-        }
-
-        return user.get();
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
-    @Transactional
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
     @Transactional
     public User updateProfile(User user, UserProfileUpdateRequest request) {
 
@@ -109,6 +76,29 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User findById(UUID id) {
+        return userRepository.findByIdAndEnabledIsTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException());
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmailAndEnabledIsTrue(email)
+                .orElseThrow(() -> new ResourceNotFoundException());
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public User save(User user) {
         return userRepository.save(user);
     }
 }
