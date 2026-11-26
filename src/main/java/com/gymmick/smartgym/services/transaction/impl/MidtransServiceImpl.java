@@ -16,8 +16,8 @@ import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.BadRequestException;
 import com.gymmick.smartgym.repositories.*;
 import com.gymmick.smartgym.services.membership.MembershipService;
+import com.gymmick.smartgym.services.trainer.TrainerBookingService;
 import com.gymmick.smartgym.services.transaction.*;
-import com.gymmick.smartgym.services.user.TrainerBookingService;
 import com.midtrans.httpclient.error.MidtransError;
 import com.midtrans.service.MidtransCoreApi;
 
@@ -101,7 +101,7 @@ public class MidtransServiceImpl implements MidtransService {
         if (transactionStatus.equals(TransactionStatus.CANCELLED)
                 || transactionStatus.equals(TransactionStatus.EXPIRED)) {
 
-            throw new BadRequestException("Transaksi ini telah dibatalkan atau kedaluwarsa!");
+            throw new BadRequestException("This transaction has been cancelled or expired!");
         }
 
         try {
@@ -116,14 +116,16 @@ public class MidtransServiceImpl implements MidtransService {
             try {
                 midtransCoreApi.cancelTransaction(orderId);
             } catch (MidtransError e) {
-                throw new BadRequestException("Gagal membatalkan transaksi!");
+                throw new BadRequestException("Failed to cancel the transaction!");
             }
         }
 
         if (transaction.getType().equals(TransactionType.PT_BOOKING)) {
-            trainerSlotRepository.updateStatusIfMatch(transaction.getPackageId(),
-                    SlotStatus.BOOKED,
-                    SlotStatus.AVAILABLE);
+            trainerSlotRepository.findById(transaction.getPackageId()).ifPresent(slot -> {
+                slot.setMember(null);
+                slot.setStatus(SlotStatus.AVAILABLE);
+                trainerSlotRepository.save(slot);
+            });
         }
 
         transaction.setStatus(TransactionStatus.CANCELLED);

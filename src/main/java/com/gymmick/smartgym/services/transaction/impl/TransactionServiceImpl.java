@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapping transactionMapping;
 
     @Override
-    public PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request) {
+    public PaginationResponse<TransactionResponse> findAllTransaction(TransactionSearchRequest request) {
 
         Integer page = request.getPage();
         Integer size = request.getSize();
@@ -67,14 +68,20 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request) {
+    public PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request) {
 
         Integer page = request.getPage();
         Integer size = request.getSize();
 
         Specification<Transaction> specification = TransactionSpecification.getMyTransaction(user, request);
 
-        Sort sortBy = Sort.by(Transaction::getCreatedAt).descending();
+        String sortByType = request.getSortBy() != null && !request.getSortBy().isBlank() ? request.getSortBy()
+                : "createdAt";
+        String sortByDirection = request.getDirection() != null && !request.getSortBy().isBlank()
+                ? request.getDirection()
+                : "desc";
+
+        Sort sortBy = Sort.by(Sort.Direction.fromString(sortByDirection), sortByType);
         PageRequest pageRequest = PageRequest.of(page, size, sortBy);
 
         Page<Transaction> transactionPage = transactionRespository.findAll(specification, pageRequest);
@@ -92,6 +99,17 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
 
         return paginationResponse;
+    }
+
+    @Override
+    public List<TransactionResponse> findRecentTransaction(String limit) {
+
+        Integer sizeLimit = NumberUtils.toInt(limit, 10);
+
+        List<Transaction> transactions = transactionRespository
+                .findAllByOrderByCreatedAtDesc(PageRequest.of(0, sizeLimit > 100 ? 100 : sizeLimit));
+
+        return transactionMapping.toListResponses(transactions);
     }
 
     @Override
@@ -202,6 +220,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .toInstant();
 
         return transactionRespository.sumAmountByStatusAndInRange(TransactionStatus.SUCCESS, startOfYear, endOfYear);
+    }
+
+    @Override
+    public List<TransactionResponse> getAllTransactionData() {
+        List<TransactionResponse> transactions = transactionMapping.toListResponses(transactionRespository.findAll());
+
+        return transactions;
     }
 
 }

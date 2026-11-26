@@ -26,11 +26,11 @@ public class TrainerCreateRequest {
     private String specialization;
 
     @NotBlank(message = "The experience field is required.")
-    @NumberValue(message = "The experience field must be a number.")
+    @PositiveNumber(message = "The experience field must be a positive number.")
     private String experience;
 
     @NotBlank(message = "The rate field is required.")
-    @NumberValue(message = "The rate field must be a number.")
+    @PositiveNumber(message = "The rate field must be a positive number.")
     private String rate;
 
     public TrainerSpecialization getSpecialization() {

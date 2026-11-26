@@ -26,7 +26,7 @@ public class TransactionController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TransactionResponse>>> findAll(@AuthenticationPrincipal User user,
-            TransactionFilterRequest request) {
+            TransactionSearchRequest request) {
 
         PaginationResponse<TransactionResponse> response = transactionService.findAllMyTransaction(user, request);
 

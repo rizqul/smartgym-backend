@@ -44,4 +44,8 @@ public class TrainerSlot extends TimeStamp {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SlotStatus status = SlotStatus.AVAILABLE;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id", nullable = true)
+    private User member;
 }

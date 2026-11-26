@@ -34,11 +34,9 @@ public class JwtToken {
         return jwtEncoder.encode(params).getTokenValue();
     }
 
-    public String createCheckinToken(Duration duration) {
+    public String createAttendanceCheckInToken(Duration duration) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .id(UUID.randomUUID().toString())
                 .claim("purpose", "checkin")
-                .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plus(duration))
                 .build();
 
@@ -59,5 +57,4 @@ public class JwtToken {
             throw new BadRequestException("Token JWT tidak valid atau telah kedaluwarsa!");
         }
     }
-
 }

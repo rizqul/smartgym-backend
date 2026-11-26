@@ -10,7 +10,7 @@ import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.trainer.*;
 import com.gymmick.smartgym.dto.transaction.TransactionCreate;
 import com.gymmick.smartgym.entity.User;
-import com.gymmick.smartgym.services.user.*;
+import com.gymmick.smartgym.services.trainer.*;
 import com.gymmick.smartgym.utils.ApiResponse;
 
 import jakarta.validation.Valid;
@@ -38,6 +38,15 @@ public class TrainerController {
         List<TrainerSlotResponse> trainers = trainerService.findSlotByTrainerIdAndDate(id, request);
 
         return ApiResponse.success(HttpStatus.OK, trainers);
+    }
+
+    @GetMapping(path = "/booking")
+    public ResponseEntity<ApiResponse<List<TrainerBookingResponse>>> findAllMyBooking(
+            @AuthenticationPrincipal User member, TrainerBookingSearchRequest request) {
+
+        PaginationResponse<TrainerBookingResponse> response = trainerBookingService.findAllMyBooking(member, request);
+
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
 
     @PostMapping(path = "/booking")

@@ -76,6 +76,8 @@ services:
       MIDTRANS_MEMBERSHIP_REDIRECT_URL: ${MIDTRANS_MEMBERSHIP_REDIRECT_URL}
       MIDTRANS_PT_BOOKING_REDIRECT_URL: ${MIDTRANS_PT_BOOKING_REDIRECT_URL}
 
+      GROQ_API_KEY: ${GROQ_API_KEY}
+
     depends_on:
       postgres:
         condition: service_healthy

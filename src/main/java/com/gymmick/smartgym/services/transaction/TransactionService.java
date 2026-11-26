@@ -1,6 +1,7 @@
 package com.gymmick.smartgym.services.transaction;
 
 import java.time.ZoneId;
+import java.util.List;
 
 import com.gymmick.smartgym.dto.pagination.PaginationResponse;
 import com.gymmick.smartgym.dto.transaction.*;
@@ -10,9 +11,11 @@ import com.midtrans.httpclient.error.MidtransError;
 
 public interface TransactionService {
 
-    PaginationResponse<TransactionResponse> findAllTransaction(TransactionFilterRequest request);
+    PaginationResponse<TransactionResponse> findAllTransaction(TransactionSearchRequest request);
 
-    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionFilterRequest request);
+    PaginationResponse<TransactionResponse> findAllMyTransaction(User user, TransactionSearchRequest request);
+
+    List<TransactionResponse> findRecentTransaction(String limit);
 
     Transaction findByOrderId(String orderId);
 
@@ -27,4 +30,6 @@ public interface TransactionService {
     Long countTransactionByStatus(TransactionStatus status);
 
     Long sumTotalIncomeYearly(int year, ZoneId zone);
+
+    List<TransactionResponse> getAllTransactionData();
 }

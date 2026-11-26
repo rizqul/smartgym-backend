@@ -8,8 +8,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.*;
 
-import jakarta.annotation.PostConstruct;
-
 @EnableAsync
 @EnableCaching
 @EnableJpaAuditing
@@ -17,12 +15,9 @@ import jakarta.annotation.PostConstruct;
 @SpringBootApplication
 public class SmartgymApplication {
 
-    @PostConstruct
-    public void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
-    }
-
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
+
         SpringApplication.run(SmartgymApplication.class, args);
     }
 
