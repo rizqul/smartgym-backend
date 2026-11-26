@@ -43,9 +43,9 @@ public class AdminTrainerController {
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
-    @PutMapping(path = "/update/{id}")
+    @PutMapping(path = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<String>> updateTrainer(@PathVariable String id,
-            @Valid @RequestBody TrainerUpdateRequest request) {
+            @Valid @ModelAttribute TrainerUpdateRequest request) {
 
         trainerService.updateTrainer(id, request);
 

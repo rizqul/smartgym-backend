@@ -1,36 +1,35 @@
 package com.gymmick.smartgym.dto.trainer;
 
-import java.util.UUID;
-
 import com.gymmick.smartgym.entity.enums.TrainerSpecialization;
-import com.gymmick.smartgym.validation.annotation.EnumValue;
-import com.gymmick.smartgym.validation.annotation.File;
-import com.gymmick.smartgym.validation.annotation.FileSize;
-import com.gymmick.smartgym.validation.annotation.PositiveNumber;
+import com.gymmick.smartgym.validation.annotation.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 @Setter
 @Getter
 public class TrainerUpdateRequest {
 
-    private UUID id;
-
+    @NotBlank(message = "The name field is required.")
     private String name;
 
+    @NotBlank(message = "The email field is required.")
+    @Email(message = "The email field must be a valid email address.")
     private String email;
 
-    private String profileUrl;
-
+    @NotBlank(message = "The phone number field is required.")
+    @IdPhoneNumber
     private String phoneNumber;
 
-    @EnumValue(enumClass = TrainerSpecialization.class, message = "These provided equipment status was invalid.")
+    @NotBlank(message = "The specialization field is required.")
+    @EnumValue(enumClass = TrainerSpecialization.class, message = "These provided specialization was invalid.")
     private String specialization;
 
+    @NotBlank(message = "The experience field is required.")
     @PositiveNumber(message = "The experience field must be a positive number.")
     private String experience;
 
+    @NotBlank(message = "The rate field is required.")
     @PositiveNumber(message = "The rate field must be a positive number.")
     private String rate;
 
