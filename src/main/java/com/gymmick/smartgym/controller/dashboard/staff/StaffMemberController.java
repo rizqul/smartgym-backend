@@ -42,43 +42,6 @@ public class StaffMemberController {
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
 
-    @PostMapping(path = "/otp")
-    public ResponseEntity<ApiResponse<String>> requestOtp(@Valid @RequestBody MemberOtpRequest request) {
-
-        memberService.requestOtp(request);
-
-        String message = "Berhasil mengirim kode OTP!";
-        return ApiResponse.success(HttpStatus.OK, message);
-    }
-
-    @PostMapping(path = "/create")
-    public ResponseEntity<ApiResponse<String>> createMember(@Valid @RequestBody MemberCreateRequest request) {
-
-        memberService.createMember(request);
-
-        String message = "Berhasil menambahkan member!";
-        return ApiResponse.success(HttpStatus.CREATED, message);
-    }
-
-    @PutMapping(path = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<String>> updateMember(@PathVariable String id,
-            @Valid @ModelAttribute MemberUpdateRequest request) {
-
-        memberService.updateMember(id, request);
-
-        String message = "Berhasil memperbarui data member!";
-        return ApiResponse.success(HttpStatus.OK, message);
-    }
-
-    @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteMember(@PathVariable String id) {
-
-        memberService.deleteMember(id);
-
-        String message = "Berhasil menghapus member!";
-        return ApiResponse.success(HttpStatus.OK, message);
-    }
-
     @GetMapping(path = "/count")
     public ResponseEntity<ApiResponse<MemberCountResponse>> countAllMember() {
         Long allMember = memberService.countAllMember();
@@ -94,5 +57,42 @@ public class StaffMemberController {
                 .build();
 
         return ApiResponse.success(HttpStatus.OK, response);
+    }
+
+    @PostMapping(path = "/otp")
+    public ResponseEntity<ApiResponse<String>> requestOtp(@Valid @RequestBody MemberOtpRequest request) {
+
+        memberService.requestOtp(request);
+
+        String message = "OTP code sent successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<ApiResponse<String>> createMember(@Valid @RequestBody MemberCreateRequest request) {
+
+        memberService.createMember(request);
+
+        String message = "Added member successfully!";
+        return ApiResponse.success(HttpStatus.CREATED, message);
+    }
+
+    @PutMapping(path = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> updateMember(@PathVariable String id,
+            @Valid @ModelAttribute MemberUpdateRequest request) {
+
+        memberService.updateMember(id, request);
+
+        String message = "Updated member data successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteMember(@PathVariable String id) {
+
+        memberService.deleteMember(id);
+
+        String message = "Deleted member data successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
     }
 }

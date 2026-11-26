@@ -34,12 +34,37 @@ public class AdminTrainerController {
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
     }
 
+    @GetMapping(path = "/count")
+    public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
+
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDate today = LocalDate.now(zone);
+
+        Instant startOfDay = today.atStartOfDay(zone).toInstant();
+        Instant endOfDay = today.atTime(LocalTime.MAX).atZone(zone).toInstant();
+
+        Long totalTrainer = trainerService.countAllTrainer();
+        Long totalTrainerThatHasSlotOnDate = trainerService.countAllTrainerThatHasSlotDaily(startOfDay, endOfDay);
+        Long totalSlotOnDate = trainerService.countAllSlotDaily(startOfDay, endOfDay);
+        Long totalTransactionBookedTrainer = transactionService.countTotalIncomeByType(TransactionType.PT_BOOKING);
+
+        TrainerCountResponse response = TrainerCountResponse.builder()
+                .countTrainer(totalTrainer)
+                .countTrainerWithSlot(totalTrainerThatHasSlotOnDate)
+                .countSlot(totalSlotOnDate)
+                .sumTransactionBookedTrainer(totalTransactionBookedTrainer)
+                .build();
+
+        return ApiResponse.success(HttpStatus.OK, response);
+
+    }
+
     @PostMapping(path = "/create")
     public ResponseEntity<ApiResponse<String>> createTrainer(@Valid @RequestBody TrainerCreateRequest request) {
 
         trainerService.createTrainer(request);
 
-        String message = "Berhasil Menambahkan Trainer!";
+        String message = "Added trainer successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
@@ -49,7 +74,7 @@ public class AdminTrainerController {
 
         trainerService.updateTrainer(id, request);
 
-        String message = "Berhasil mengupdate Trainer!";
+        String message = "Updated trainer data successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -58,7 +83,7 @@ public class AdminTrainerController {
 
         trainerService.deleteTrainerById(id);
 
-        String message = "Berhasil mengupdate Trainer!";
+        String message = "Deleted trainer data successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -86,7 +111,7 @@ public class AdminTrainerController {
 
         trainerService.createSlot(id, request);
 
-        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        String message = "Added trainer schedule successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
@@ -96,33 +121,7 @@ public class AdminTrainerController {
 
         trainerService.updateSlot(id, request);
 
-        String message = "Berhasil Menambahkan Jadwal Trainer!";
+        String message = "Updated trainer schedule successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
-
-    @GetMapping(path = "/count")
-    public ResponseEntity<ApiResponse<TrainerCountResponse>> countTrainer() {
-
-        ZoneId zone = ZoneId.systemDefault();
-        LocalDate today = LocalDate.now(zone);
-
-        Instant startOfDay = today.atStartOfDay(zone).toInstant();
-        Instant endOfDay = today.atTime(LocalTime.MAX).atZone(zone).toInstant();
-
-        Long totalTrainer = trainerService.countAllTrainer();
-        Long totalTrainerThatHasSlotOnDate = trainerService.countAllTrainerThatHasSlotDaily(startOfDay, endOfDay);
-        Long totalSlotOnDate = trainerService.countAllSlotDaily(startOfDay, endOfDay);
-        Long totalTransactionBookedTrainer = transactionService.countTotalIncomeByType(TransactionType.PT_BOOKING);
-
-        TrainerCountResponse response = TrainerCountResponse.builder()
-                .countTrainer(totalTrainer)
-                .countTrainerWithSlot(totalTrainerThatHasSlotOnDate)
-                .countSlot(totalSlotOnDate)
-                .sumTransactionBookedTrainer(totalTransactionBookedTrainer)
-                .build();
-
-        return ApiResponse.success(HttpStatus.OK, response);
-
-    }
-
 }

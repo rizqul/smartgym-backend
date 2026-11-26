@@ -42,7 +42,7 @@ public class AuthController {
         cookies.add(createCookie("access-token", response.getAccessToken(), Duration.ofHours(1)));
         cookies.add(createCookie("refresh-token", response.getRefreshToken(), Duration.ofDays(30)));
 
-        String message = "Login Berhasil!";
+        String message = "Login Successfully!";
         return ApiResponse.success(HttpStatus.OK, message, response.getUser(), cookies);
     }
 
@@ -51,7 +51,7 @@ public class AuthController {
 
         authService.forgotPassword(request);
 
-        String message = "Kode OTP Berhasil Dikirim!";
+        String message = "OTP code sent successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 

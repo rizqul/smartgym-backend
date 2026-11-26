@@ -56,7 +56,7 @@ public class StaffAttendanceController {
 
         AttendingResponse response = attendanceService.checkOut(memberId);
 
-        String message = "Check-out member succesfully!";
+        String message = "Check-out member successfully!";
         return ApiResponse.success(HttpStatus.OK, message, response);
     }
 }
