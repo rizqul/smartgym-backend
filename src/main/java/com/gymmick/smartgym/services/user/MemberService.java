@@ -7,6 +7,14 @@ import com.gymmick.smartgym.exceptions.EmailSenderException;
 
 public interface MemberService {
 
+    long countAllMember();
+
+    long countAllActiveMember();
+
+    long countAllInactiveMember();
+
+    long countNewMember();
+
     PaginationResponse<UserResponse> findAllMember(UserSearchRequest request);
 
     void requestOtp(MemberOtpRequest request) throws EmailSenderException;
@@ -16,12 +24,4 @@ public interface MemberService {
     void updateMember(String id, MemberUpdateRequest request);
 
     void deleteMember(String id);
-
-    long countAllMember();
-
-    long countAllActiveMember();
-
-    long countAllInactiveMember();
-
-    long countNewMember();
 }

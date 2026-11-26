@@ -18,7 +18,6 @@ import com.gymmick.smartgym.dto.pagination.*;
 import com.gymmick.smartgym.dto.user.*;
 import com.gymmick.smartgym.entity.User;
 import com.gymmick.smartgym.entity.enums.UserRole;
-import com.gymmick.smartgym.exceptions.ResourceNotFoundException;
 import com.gymmick.smartgym.mappers.UserMapping;
 import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.user.*;
@@ -43,6 +42,11 @@ public class StaffServiceImpl implements StaffService {
 
     @Value("${app.config.aws.s3.public-url}")
     private String awsPublicUrl;
+
+    @Override
+    public Long countStaff() {
+        return userRepository.countByRoleAndEnabledIsTrue(UserRole.STAFF);
+    }
 
     @Override
     public PaginationResponse<UserResponse> findAllStaff(UserSearchRequest request) {
@@ -88,7 +92,7 @@ public class StaffServiceImpl implements StaffService {
                 .role(UserRole.STAFF)
                 .build();
 
-        userService.save(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -96,7 +100,7 @@ public class StaffServiceImpl implements StaffService {
     public void updateStaff(String id, UserStaffUpdateRequest request) {
 
         UUID staffId = UUID.fromString(id);
-        User staff = userRepository.findById(staffId).orElseThrow(() -> new ResourceNotFoundException());
+        User staff = userService.findById(staffId);
 
         if (request.getName() != null && !request.getName().trim().isBlank()) {
             staff.setName(request.getName());
@@ -135,16 +139,12 @@ public class StaffServiceImpl implements StaffService {
     @Transactional
     public void deleteStaff(String id) {
 
-        UUID userId = UUID.fromString(id);
-        User user = userService.findById(userId);
+        UUID staffId = UUID.fromString(id);
+        User staff = userService.findById(staffId);
 
-        user.setDeletedAt(Instant.now());
-        userService.save(user);
-    }
+        staff.setDeletedAt(Instant.now());
+        staff.setEnabled(false);
 
-    @Override
-    public Long countStaff() {
-
-        return userRepository.countByRole(UserRole.STAFF);
+        userRepository.save(staff);
     }
 }

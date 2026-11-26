@@ -41,6 +41,8 @@ public class UserSpecification {
 
             predicates.add(criteriaBuilder.equal(root.get("role"), role.toString()));
 
+            predicates.add(criteriaBuilder.equal(root.get("enabled"), true));
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
     }

@@ -5,13 +5,13 @@ import com.gymmick.smartgym.dto.user.*;
 
 public interface StaffService {
 
-  PaginationResponse<UserResponse> findAllStaff(UserSearchRequest request);
+    Long countStaff();
 
-  void createStaff(UserStaffCreateRequest request);
+    PaginationResponse<UserResponse> findAllStaff(UserSearchRequest request);
 
-  void updateStaff(String id, UserStaffUpdateRequest request);
+    void createStaff(UserStaffCreateRequest request);
 
-  void deleteStaff(String id);
+    void updateStaff(String id, UserStaffUpdateRequest request);
 
-  Long countStaff();
+    void deleteStaff(String id);
 }

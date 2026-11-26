@@ -51,7 +51,33 @@ public class MemberServiceImpl implements MemberService {
     private String awsPublicUrl;
 
     @Override
+    public long countAllMember() {
+        return userRepository.countByRoleAndEnabledIsTrue(UserRole.MEMBER);
+    }
+
+    @Override
+    public long countAllActiveMember() {
+        return userRepository.countByRoleAndMembershipExpiredAtAfterAndEnabledIsTrue(UserRole.MEMBER, Instant.now());
+    }
+
+    @Override
+    public long countAllInactiveMember() {
+        return userRepository.countByRoleAndMembershipExpiredAtBeforeAndEnabledIsTrue(UserRole.MEMBER, Instant.now());
+    }
+
+    @Override
+    public long countNewMember() {
+        Instant now = Instant.now();
+        Instant oneMonthAgo = ZonedDateTime.now()
+                .minusMonths(1)
+                .toInstant();
+
+        return userRepository.countByRoleAndCreatedAtBetweenAndEnabledIsTrue(UserRole.MEMBER, oneMonthAgo, now);
+    }
+
+    @Override
     public PaginationResponse<UserResponse> findAllMember(UserSearchRequest request) {
+
         Integer page = request.getPage();
         Integer size = request.getSize();
 
@@ -76,15 +102,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void requestOtp(MemberOtpRequest request)
-            throws EmailSenderException {
+    public void requestOtp(MemberOtpRequest request) throws EmailSenderException {
 
         String otpCode = OtpToken.generateOtp();
 
         otpService.store(request.getEmail(), otpCode, OtpType.EMAIL_VERIFICATION, Duration.ofMinutes(10));
 
         String emailTemplate = "email/auth/reset-password";
-        String emailSubject = "Verifikasi Email";
+        String emailSubject = "Email Verification";
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("email", request.getEmail());
@@ -97,14 +122,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void createMember(MemberCreateRequest request) {
 
-        // Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
+        Otp otp = otpService.findByEmailAndCode(request.getEmail(), request.getCode());
 
-        // if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
-        //     throw new BadRequestException("Kode Otp Tidak Valid!");
-        // }
+        if (!otp.getType().equals(OtpType.EMAIL_VERIFICATION) || otp.getExpiredAt().isBefore(Instant.now())) {
+            throw new BadRequestException("These provided OTP code was invalid!");
+        }
 
-        // otp.setExpiredAt(Instant.now());
-        // otpService.save(otp);
+        otp.setExpiredAt(Instant.now());
+        otpService.save(otp);
 
         String profileUrl = String
                 .format("https://ui-avatars.com/api/?background=random&color=random&name=%s&size=256",
@@ -118,7 +143,7 @@ public class MemberServiceImpl implements MemberService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
-        userService.save(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -165,41 +190,13 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void deleteMember(String id) {
 
-        UUID userId = UUID.fromString(id);
-        User user = userService.findById(userId);
+        UUID memberId = UUID.fromString(id);
+        User member = userService.findById(memberId);
 
-        user.setMembershipExpiredAt(null);
-        user.setDeletedAt(Instant.now());
+        member.setMembershipExpiredAt(null);
+        member.setDeletedAt(Instant.now());
+        member.setEnabled(false);
 
-        userService.save(user);
-    }
-
-    @Override
-    public long countAllActiveMember() {
-
-        return userRepository.countByRoleAndMembershipExpiredAtAfter(UserRole.MEMBER, Instant.now());
-    }
-
-    @Override
-    public long countAllInactiveMember() {
-
-        return userRepository.countByRoleAndMembershipExpiredAtBefore(UserRole.MEMBER, Instant.now());
-    }
-
-    @Override
-    public long countAllMember() {
-
-        return userRepository.countByRole(UserRole.MEMBER);
-    }
-
-    @Override
-    public long countNewMember() {
-
-        Instant now = Instant.now();
-        Instant oneMonthAgoLocal = ZonedDateTime.now()
-                .minusMonths(1)
-                .toInstant();
-
-        return userRepository.countByRoleAndCreatedAtBetween(UserRole.MEMBER, oneMonthAgoLocal, now);
+        userRepository.save(member);
     }
 }
