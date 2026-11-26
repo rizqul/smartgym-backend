@@ -178,7 +178,7 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
     @Transactional
     public void finalizeBookedTrainer(Transaction transaction) {
         if (transaction.getStatus() == TransactionStatus.PROCESS) {
-            TrainerSlot trainerSlot = this.findById(transaction.getPackageId());
+            TrainerSlot trainerSlot = this.findSlotById(transaction.getPackageId());
 
             TrainerBooking trainerBooking = TrainerBooking.builder()
                     .trainer(trainerSlot.getTrainer())
@@ -194,8 +194,40 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
         }
     }
 
-    public TrainerSlot findById(UUID id) {
+    @Override
+    @Transactional
+    public void refundBookedTrainer(String packageId) {
+
+        UUID trainerBookedId = UUID.fromString(packageId);
+        TrainerBooking trainerBooking = this.findBookingById(trainerBookedId);
+
+        Transaction transaction = trainerBooking.getTransaction();
+
+        if (!transaction.getStatus().equals(TransactionStatus.SUCCESS)
+                && !transaction.getType().equals(TransactionType.PT_BOOKING)) {
+
+            throw new BadRequestException("This transaction cannot be refunded!");
+        }
+
+        String orderId = transaction.getOrderId();
+        transactionService.refundTransaction(orderId);
+
+        transaction.setStatus(TransactionStatus.REFUNDED);
+        transactionRespository.save(transaction);
+
+        TrainerSlot trainerSlot = this.findSlotById(trainerBooking.getSlot().getId());
+        trainerSlot.setStatus(SlotStatus.AVAILABLE);
+
+        trainerSlotRepository.save(trainerSlot);
+    }
+
+    public TrainerSlot findSlotById(UUID id) {
         return trainerSlotRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException());
+    }
+
+    private TrainerBooking findBookingById(UUID id) {
+        return trainerBookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException());
     }
 }

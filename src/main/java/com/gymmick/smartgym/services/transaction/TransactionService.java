@@ -25,6 +25,8 @@ public interface TransactionService {
 
     Transaction updateTransaction(String orderId, String status, String paymentType);
 
+    void refundTransaction(String orderId);
+
     Long countTotalIncomeByType(TransactionType type);
 
     Long countTransactionByStatus(TransactionStatus status);

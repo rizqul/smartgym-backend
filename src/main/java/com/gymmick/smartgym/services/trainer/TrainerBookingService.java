@@ -14,4 +14,6 @@ public interface TrainerBookingService {
     TransactionCreate createBookedTrainer(User member, TrainerTransactionCreateRequest request);
 
     void finalizeBookedTrainer(Transaction transaction);
+
+    void refundBookedTrainer(String packageId);
 }

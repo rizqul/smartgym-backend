@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class TransactionServiceImpl implements TransactionService {
 
     private final MidtransSnapApi midtransSnapApi;
+    private final MidtransCoreApi midtransCoreApi;
 
     private final TransactionRespository transactionRespository;
 
@@ -309,6 +310,26 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         return transactionRespository.save(transaction);
+    }
+
+    @Override
+    @Transactional
+    public void refundTransaction(String orderId) {
+        Transaction transaction = this.findByOrderId(orderId);
+
+        if (!transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
+            throw new BadRequestException("This transaction cannot be refunded!");
+        }
+
+        try {
+            Map<String, String> refundDetails = new HashMap<>();
+            refundDetails.put("refund_key", orderId);
+            refundDetails.put("amount", transaction.getAmount().toString());
+
+            midtransCoreApi.refundTransaction(orderId, refundDetails);
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to refund the transaction!");
+        }
     }
 
     @Override
