@@ -22,11 +22,13 @@ public class StaffAttendanceController {
     public ResponseEntity<ApiResponse<List<AttendingResponse>>> findRecentAttending(@RequestParam String limit) {
 
         List<AttendingResponse> responses = attendanceService.findRecentAttending(limit);
+
         return ApiResponse.success(HttpStatus.OK, responses);
     }
 
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<AttendanceSummaryResponse>> getSummary() {
+
         AttendanceSummaryResponse response = attendanceService.getSummary();
 
         return ApiResponse.success(HttpStatus.OK, response);
@@ -34,6 +36,7 @@ public class StaffAttendanceController {
 
     @GetMapping("/summary/chart")
     public ResponseEntity<ApiResponse<AttendanceHourlyChartResponse>> getHourlyChart() {
+
         AttendanceHourlyChartResponse response = attendanceService.getHourlyChart();
 
         return ApiResponse.success(HttpStatus.OK, response);
@@ -44,7 +47,7 @@ public class StaffAttendanceController {
 
         AttendanceTokenResponse response = attendanceService.generateQrToken();
 
-        String message = "QR check-in berhasil dibuat!";
+        String message = "Create check-in QR token successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message, response);
     }
 
@@ -53,7 +56,7 @@ public class StaffAttendanceController {
 
         AttendingResponse response = attendanceService.checkOut(memberId);
 
-        String message = "Berhasil melakukan check-out!";
+        String message = "Check-out member successfully!";
         return ApiResponse.success(HttpStatus.OK, message, response);
     }
 }

@@ -23,6 +23,7 @@ public class AdminStaffController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserResponse>>> search(UserSearchRequest request) {
+
         PaginationResponse<UserResponse> response = staffService.findAllStaff(request);
 
         return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
@@ -33,7 +34,7 @@ public class AdminStaffController {
 
         staffService.createStaff(request);
 
-        String message = "staff berhasil dibuat";
+        String message = "Added staff successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message);
     }
 
@@ -43,8 +44,7 @@ public class AdminStaffController {
 
         staffService.updateStaff(id, request);
 
-        String message = "Berhasil Mengupdate staff";
-
+        String message = "Updated staff data successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -53,7 +53,7 @@ public class AdminStaffController {
 
         staffService.deleteStaff(id);
 
-        String message = "Berhasil Menghapus staff!";
+        String message = "Deleted staff successfully!";
         return ApiResponse.success(HttpStatus.OK, message);
     }
 
@@ -64,6 +64,7 @@ public class AdminStaffController {
         StaffCountResponse response = StaffCountResponse.builder()
                 .staffCount(staffCount)
                 .build();
+
         return ApiResponse.success(HttpStatus.OK, response);
     }
 }

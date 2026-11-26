@@ -54,7 +54,7 @@ public class JwtToken {
 
             return jwtDecoder.decode(token);
         } catch (Exception e) {
-            throw new BadRequestException("Token JWT tidak valid atau telah kedaluwarsa!");
+            throw new BadRequestException("These JWT token is invalid or expired!");
         }
     }
 }

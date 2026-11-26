@@ -1,6 +1,6 @@
 package com.gymmick.smartgym.services.user.impl;
 
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.*;
@@ -35,7 +35,40 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Alamat Email atau Kata Sandi Salah!"));
+                .orElseThrow(() -> new UsernameNotFoundException("Incorrect email or password!"));
+    }
+
+    @Override
+    public User findById(UUID id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent() || !user.get().isEnabled()) {
+            throw new ResourceNotFoundException();
+        }
+
+        return user.get();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (!user.isPresent() || !user.get().isEnabled()) {
+            throw new ResourceNotFoundException();
+        }
+
+        return user.get();
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Override
@@ -72,33 +105,10 @@ public class UserServiceImpl implements UserService {
     public User updatePassword(User user, UserPasswordUpdateRequest request) {
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new BadRequestException("Kata sandi tidak sesuai!");
+            throw new BadRequestException("Password doesn't match!");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User findById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException());
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException());
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
-    @Transactional
-    public User save(User user) {
         return userRepository.save(user);
     }
 }

@@ -3,7 +3,7 @@ package com.gymmick.smartgym.exceptions;
 public class ResourceNotFoundException extends RuntimeException {
 
     public ResourceNotFoundException() {
-        super("Data Tidak Ditemukan!");
+        super("The resource you are trying to access doesn't exist!");
     }
 
     public ResourceNotFoundException(String message) {

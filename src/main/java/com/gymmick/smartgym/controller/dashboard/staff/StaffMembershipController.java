@@ -21,13 +21,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StaffMembershipController {
 
-  private final MembershipService membershipService;
+    private final MembershipService membershipService;
 
-  @GetMapping(path = "/packages")
-  public ResponseEntity<ApiResponse<Map<MembershipType, List<MembershipPackageResponse>>>> findAllMemberPackage() {
-    Map<MembershipType, List<MembershipPackageResponse>> responses = membershipService.findAllPackage();
+    @GetMapping(path = "/packages")
+    public ResponseEntity<ApiResponse<Map<MembershipType, List<MembershipPackageResponse>>>> findAllMemberPackage() {
 
-    return ApiResponse.success(HttpStatus.OK, "OK", responses);
-  }
+        Map<MembershipType, List<MembershipPackageResponse>> responses = membershipService.findAllPackage();
 
+        return ApiResponse.success(HttpStatus.OK, responses);
+    }
 }

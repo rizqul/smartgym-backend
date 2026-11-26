@@ -21,56 +21,57 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminMembershipController {
 
-  private final MembershipService membershipService;
-  private final TransactionService transactionService;
+    private final MembershipService membershipService;
+    private final TransactionService transactionService;
 
-  @GetMapping(path = "/packages")
-  public ResponseEntity<ApiResponse<Map<MembershipType, List<MembershipPackageResponse>>>> findAllMemberPackage() {
-    Map<MembershipType, List<MembershipPackageResponse>> responses = membershipService.findAllPackage();
+    @GetMapping(path = "/count")
+    public ResponseEntity<ApiResponse<MembershipCountResponse>> countMembership() {
 
-    return ApiResponse.success(HttpStatus.OK, "OK", responses);
-  }
+        Long countMembershipPackage = membershipService.countMembershipPackage();
+        Long totalMembershipIncome = transactionService.countTotalIncomeByType(TransactionType.MEMBERSHIP);
 
-  @PostMapping(path = "/packages/create")
-  public ResponseEntity<ApiResponse<String>> createMemberPackage(
-      @Valid @RequestBody MembershipPackageCreateRequest request) {
+        MembershipCountResponse response = MembershipCountResponse.builder()
+                .totalMembershipIncome(totalMembershipIncome)
+                .countMembershipPackage(countMembershipPackage)
+                .build();
 
-    membershipService.createPackage(request);
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
 
-    String message = "Berhasil Menambahkan Membership Package!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+    @GetMapping(path = "/packages")
+    public ResponseEntity<ApiResponse<Map<MembershipType, List<MembershipPackageResponse>>>> findAllMemberPackage() {
 
-  @PatchMapping(path = "/packages/update/{id}")
-  public ResponseEntity<ApiResponse<String>> updateMemberPackage(@PathVariable String id,
-      @Valid @RequestBody MembershipPackageUpdateRequest request) {
+        Map<MembershipType, List<MembershipPackageResponse>> responses = membershipService.findAllPackage();
 
-    membershipService.updatePackage(id, request);
+        return ApiResponse.success(HttpStatus.OK, responses);
+    }
 
-    String message = "Berhasil Menambahkan Membership Package!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+    @PostMapping(path = "/packages/create")
+    public ResponseEntity<ApiResponse<String>> createMemberPackage(
+            @Valid @RequestBody MembershipPackageCreateRequest request) {
 
-  @DeleteMapping(path = "/packages/delete/{id}")
-  public ResponseEntity<ApiResponse<String>> deleteMemberPackage(@PathVariable String id) {
+        membershipService.createPackage(request);
 
-    membershipService.deletePackage(id);
+        String message = "Added membership package successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-    String message = "Berhasil Menghapus Membership Package!";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+    @PatchMapping(path = "/packages/update/{id}")
+    public ResponseEntity<ApiResponse<String>> updateMemberPackage(@PathVariable String id,
+            @Valid @RequestBody MembershipPackageUpdateRequest request) {
 
-  @GetMapping(path = "/count")
-  public ResponseEntity<ApiResponse<MembershipCountResponse>> countMembership() {
+        membershipService.updatePackage(id, request);
 
-    Long countMembershipPackage = membershipService.countMembershipPackage();
-    Long totalMembershipIncome = transactionService.countTotalIncomeByType(TransactionType.MEMBERSHIP);
+        String message = "Updated membership package successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-    MembershipCountResponse response = MembershipCountResponse.builder()
-        .totalMembershipIncome(totalMembershipIncome)
-        .countMembershipPackage(countMembershipPackage)
-        .build();
+    @DeleteMapping(path = "/packages/delete/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteMemberPackage(@PathVariable String id) {
 
-    return ApiResponse.success(HttpStatus.OK, response);
-  }
+        membershipService.deletePackage(id);
+
+        String message = "Deleted membership package successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }

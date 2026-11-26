@@ -1,7 +1,6 @@
 package com.gymmick.smartgym.controller.dashboard.admin;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +22,13 @@ public class AdminAttendanceController {
     public ResponseEntity<ApiResponse<List<AttendingResponse>>> findRecentAttending(@RequestParam String limit) {
 
         List<AttendingResponse> responses = attendanceService.findRecentAttending(limit);
+
         return ApiResponse.success(HttpStatus.OK, responses);
     }
 
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<AttendanceSummaryResponse>> getSummary() {
+
         AttendanceSummaryResponse response = attendanceService.getSummary();
 
         return ApiResponse.success(HttpStatus.OK, response);
@@ -38,7 +39,7 @@ public class AdminAttendanceController {
 
         AttendanceTokenResponse response = attendanceService.generateQrToken();
 
-        String message = "Berhasil membuat token check-in!";
+        String message = "Create check-in QR token successfully!";
         return ApiResponse.success(HttpStatus.CREATED, message, response);
     }
 
@@ -47,7 +48,7 @@ public class AdminAttendanceController {
 
         AttendingResponse response = attendanceService.checkOut(memberId);
 
-        String message = "Berhasil melakukan check-out!";
+        String message = "Check-out member successfully!";
         return ApiResponse.success(HttpStatus.OK, message, response);
     }
 }

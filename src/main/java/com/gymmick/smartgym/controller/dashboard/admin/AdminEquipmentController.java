@@ -2,13 +2,8 @@ package com.gymmick.smartgym.controller.dashboard.admin;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.dto.equipment.EquipmentCreateRequest;
 import com.gymmick.smartgym.entity.Equipment;
@@ -23,23 +18,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminEquipmentController {
 
-  private final EquipmentService equipmentService;
+    private final EquipmentService equipmentService;
 
-  @PostMapping(path = "/create")
-  public ResponseEntity<ApiResponse<String>> createEquipment(@Valid @RequestBody EquipmentCreateRequest request) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Equipment>>> getAll() {
 
-    equipmentService.createEquipment(request);
+        List<Equipment> response = equipmentService.getAllEquipment();
 
-    String message = "successfully created equipment";
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<List<Equipment>>> getAll() {
+    @PostMapping(path = "/create")
+    public ResponseEntity<ApiResponse<String>> createEquipment(@Valid @RequestBody EquipmentCreateRequest request) {
 
-    List<Equipment> response = equipmentService.getAllEquipment();
+        equipmentService.createEquipment(request);
 
-    String message = "successfully get equipment";
-    return ApiResponse.success(HttpStatus.OK, message, response);
-  }
+        String message = "Create enquipment successfully!";
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }

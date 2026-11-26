@@ -136,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
         Token refreshToken = tokenService.findByRefreshId(tokenId);
 
         if (refreshToken.getRevoked()) {
-            throw new BadRequestException("Token JWT tidak valid atau telah kedaluwarsa!");
+            throw new BadRequestException("These JWT token is invalid or expired!");
         }
 
         refreshToken.setRevoked(true);
