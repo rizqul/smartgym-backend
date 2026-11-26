@@ -1,0 +1,78 @@
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: smartgym-postgres-db
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/18/docker
+
+  smartgym:
+    build: .
+    container_name: smartgym-app
+    ports:
+      - "8080:8080"
+    environment:
+      APP_URL: ${APP_URL}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+      COOKIE_DOMAIN: ${COOKIE_DOMAIN}
+      COOKIE_SAME_SITE: ${COOKIE_SAME_SITE}
+      COOKIE_SECURE: ${COOKIE_SECURE}
+
+      DATABASE_HOST: postgres
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HIBERNATE_DDL: ${DATABASE_HIBERNATE_DDL}
+
+      AWS_BUCKET: ${AWS_BUCKET}
+      AWS_REGION: auto
+      AWS_PUBLIC_URL: ${AWS_PUBLIC_URL}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_ENDPOINT: ${AWS_ENDPOINT}
+
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+      MIDTRANS_BASE_URL: ${MIDTRANS_BASE_URL}
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY}
+      MIDTRANS_SIGNATURE_KEY: ${MIDTRANS_SIGNATURE_KEY}
+      MIDTRANS_PRODUCTION: ${MIDTRANS_PRODUCTION}
+      MIDTRANS_NOTIFICATION_URL: ${MIDTRANS_NOTIFICATION_URL}
+      MIDTRANS_MEMBERSHIP_REDIRECT_URL: ${MIDTRANS_MEMBERSHIP_REDIRECT_URL}
+      MIDTRANS_PT_BOOKING_REDIRECT_URL: ${MIDTRANS_PT_BOOKING_REDIRECT_URL}
+
+      GROQ_API_KEY: ${GROQ_API_KEY}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: smartgym-cloudflared
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      - smartgym
+
+volumes:
+  pgdata:
+  
