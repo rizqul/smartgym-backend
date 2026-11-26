@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
 import com.gymmick.smartgym.entity.TrainerSlot;
-import com.gymmick.smartgym.entity.User;
-import com.gymmick.smartgym.entity.enums.SlotStatus;
 
 public interface TrainerSlotRepository extends JpaRepository<TrainerSlot, UUID>, JpaSpecificationExecutor<TrainerSlot> {
 
