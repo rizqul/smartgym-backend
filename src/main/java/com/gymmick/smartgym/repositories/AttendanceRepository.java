@@ -10,17 +10,26 @@ import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, UUID>, JpaSpecificationExecutor<Attendance> {
-    Optional<Attendance> findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
-            User member, AttendingStatus status);
+  Optional<Attendance> findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
+      User member, AttendingStatus status);
 
-    Optional<Attendance> findFirstByMemberOrderByCheckInAtDesc(User member);
+  Optional<Attendance> findFirstByMemberOrderByCheckInAtDesc(User member);
 
-    List<Attendance> findAllByOrderByCheckInAtDesc(Pageable pageable);
+  List<Attendance> findAllByOrderByCheckInAtDesc(Pageable pageable);
 
-    List<Attendance> findAllByCheckInAtGreaterThanEqualAndCheckInAtLessThan(
-            Instant rangeStart, Instant rangeEnd);
+  List<Attendance> findAllByCheckInAtGreaterThanEqualAndCheckInAtLessThan(
+      Instant rangeStart, Instant rangeEnd);
 
-    long countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(Instant since, Instant before);
+  long countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(Instant since, Instant before);
 
-    long countByStatusAndCheckOutAtIsNull(AttendingStatus status);
+  long countByStatusAndCheckOutAtIsNull(AttendingStatus status);
+
+  List<Attendance> findAllByMemberAndStatusAndCheckOutAtIsNotNull(
+      User member,
+      AttendingStatus status);
+
+  List<Attendance> findAllByMemberAndStatusOrderByCheckInAtDesc(
+      User member,
+      AttendingStatus status);
+
 }

@@ -8,19 +8,21 @@ import com.gymmick.smartgym.entity.User;
 
 public interface AttendanceService {
 
-    AttendanceSummaryResponse getSummary();
+  AttendanceSummaryResponse getSummary();
 
-    AttendanceHourlyChartResponse getHourlyChart();
+  AttendanceHourlyChartResponse getHourlyChart();
 
-    PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request);
+  PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request);
 
-    List<AttendingResponse> findRecentAttending(String limit);
+  List<AttendingResponse> findRecentAttending(String limit);
 
-    AttendingResponse findActiveCheckIn(User member);
+  AttendingResponse findActiveCheckIn(User member);
 
-    AttendanceTokenResponse generateQrToken();
+  AttendanceTokenResponse generateQrToken();
 
-    AttendingResponse checkIn(String token, User member);
+  AttendingResponse checkIn(String token, User member);
 
-    AttendingResponse checkOut(UUID memberId);
+  AttendingResponse checkOut(UUID memberId);
+
+  MemberAttendanceSummaryResponse getMyAttendanceSummary(User member);
 }
