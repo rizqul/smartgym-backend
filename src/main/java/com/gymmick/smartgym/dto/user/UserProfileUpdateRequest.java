@@ -14,7 +14,7 @@ public class UserProfileUpdateRequest {
     private String phoneNumber;
 
     @File(contentType = { "image/png", "image/jpg",
-            "image/jpeg" }, message = "File photo harus berupa png, jpg, atau jpeg!", required = false)
-    @FileSize(max = 2, message = "Ukuran file photo tidak boleh lebih dari 2MB!", required = false)
+            "image/jpeg" }, message = "Photo files must be png, jpg, or jpeg!", required = false)
+    @FileSize(max = 2, message = "The photo file size cannot be more than 2MB!", required = false)
     private Object photo;
 }

@@ -8,7 +8,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserCountFilterRequest {
-  String role;
-  Instant startTime;
-  Instant endTime;
+
+    String role;
+
+    Instant startTime;
+
+    Instant endTime;
 }

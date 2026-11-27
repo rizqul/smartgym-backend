@@ -23,7 +23,7 @@ public class CustomAuthenticationEntryPointException implements AuthenticationEn
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("statusCode", HttpStatus.UNAUTHORIZED.value());
-        body.put("message", "Silahkan Login Terlebih Dahulu!");
+        body.put("message", "Unauthenticated");
 
         final ObjectMapper objectMapper = new ObjectMapper();
 
