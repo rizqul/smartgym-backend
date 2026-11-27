@@ -58,9 +58,7 @@ public class AdminTransactionController {
 
         List<TransactionResponse> transactions = transactionService.getAllTransactionData();
 
-        String message = "success retrieve response";
-
-        return ApiResponse.success(HttpStatus.OK, message, transactions);
+        return ApiResponse.success(HttpStatus.OK, transactions);
     }
 
     @PostMapping(path = "/refund-booking/{id}")

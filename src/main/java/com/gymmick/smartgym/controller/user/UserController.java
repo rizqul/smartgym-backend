@@ -18,34 +18,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-  private final UserMapping userMapping;
-  private final UserService userService;
+    private final UserMapping userMapping;
+    private final UserService userService;
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<UserResponse>> profile(@AuthenticationPrincipal User user) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<UserResponse>> profile(@AuthenticationPrincipal User user) {
 
-    UserResponse userResponse = userMapping.toResponse(user);
+        UserResponse userResponse = userMapping.toResponse(user);
 
-    return ApiResponse.success(HttpStatus.OK, userResponse);
-  }
+        return ApiResponse.success(HttpStatus.OK, userResponse);
+    }
 
-  @PutMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<ApiResponse<String>> updateProfile(@AuthenticationPrincipal User user,
-      @Valid @ModelAttribute UserProfileUpdateRequest request) {
+    @PutMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> updateProfile(@AuthenticationPrincipal User user,
+            @Valid @ModelAttribute UserProfileUpdateRequest request) {
 
-    userService.updateProfile(user, request);
-    String message = "Berhasil Memperbaharui Profil!";
+        userService.updateProfile(user, request);
+        String message = "Profile updated successfully!";
 
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 
-  @PutMapping(path = "/password")
-  public ResponseEntity<ApiResponse<String>> updatePassword(@AuthenticationPrincipal User user,
-      @Valid @RequestBody UserPasswordUpdateRequest request) {
+    @PutMapping(path = "/password")
+    public ResponseEntity<ApiResponse<String>> updatePassword(@AuthenticationPrincipal User user,
+            @Valid @RequestBody UserPasswordUpdateRequest request) {
 
-    userService.updatePassword(user, request);
-    String message = "Berhasil Memperbaharui Kata Sandi!";
+        userService.updatePassword(user, request);
+        String message = "Password updated successfully!";
 
-    return ApiResponse.success(HttpStatus.OK, message);
-  }
+        return ApiResponse.success(HttpStatus.OK, message);
+    }
 }
