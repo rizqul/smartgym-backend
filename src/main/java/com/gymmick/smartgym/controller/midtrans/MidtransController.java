@@ -71,12 +71,12 @@ public class MidtransController {
             String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {
-                case "pending" -> throw new BadRequestException("Menunggu Pembayaran!");
-                case "cancel" -> throw new BadRequestException("Transaksi Telah Dibatalkan!");
-                case "expire" -> throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
-                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Aktivasi Membership Berhasil!");
+                case "pending" -> throw new BadRequestException("Waiting for payment!");
+                case "cancel" -> throw new BadRequestException("Transaction has been canceled!");
+                case "expire" -> throw new BadRequestException("Payment link has been expired!");
+                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Membership payment successfully!");
                 default -> throw new BadRequestException(
-                        "Terjadi Kesalahan Saat Melakukan Pengecekan Transaksi!");
+                        "An error occurred while checking the transaction!");
             };
         } catch (MidtransError e) {
             throw new BadRequestException(e.getMessage());
@@ -90,12 +90,12 @@ public class MidtransController {
             String transactionStatus = transactionResult.get("transaction_status").toString();
 
             return switch (transactionStatus) {
-                case "pending" -> throw new BadRequestException("Menunggu Pembayaran!");
-                case "cancel" -> throw new BadRequestException("Transaksi Telah Dibatalkan!");
-                case "expire" -> throw new BadRequestException("Tautan Pembayaran Telah Kedaluwarsa!");
-                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Booking Trainer Berhasil!");
+                case "pending" -> throw new BadRequestException("Waiting for payment!");
+                case "cancel" -> throw new BadRequestException("Transaction has been canceled!");
+                case "expire" -> throw new BadRequestException("Payment link has been expired!");
+                case "settlement" -> ApiResponse.success(HttpStatus.OK, "Trainer booking payment successfully!");
                 default -> throw new BadRequestException(
-                        "Terjadi Kesalahan Saat Melakukan Pengecekan Transaksi!");
+                        "An error occurred while checking the transaction!");
             };
         } catch (MidtransError e) {
             throw new BadRequestException(e.getMessage());
