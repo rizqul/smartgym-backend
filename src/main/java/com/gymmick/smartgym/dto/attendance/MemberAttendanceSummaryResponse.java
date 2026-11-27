@@ -11,7 +11,7 @@ public class MemberAttendanceSummaryResponse {
 
     private long totalGymMinutes;
 
-    private long totalGymHours;
+    private float totalGymHours;
 
     private long currentStreak;
 
