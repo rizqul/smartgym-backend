@@ -21,7 +21,9 @@ import com.gymmick.smartgym.services.membership.MembershipService;
 import com.gymmick.smartgym.services.transaction.TransactionService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -41,7 +43,13 @@ public class MembershipServiceImpl implements MembershipService {
     private String membershipRedirectUrl;
 
     @Override
+    public Long countMembershipPackage() {
+        return membershipPackageRepository.countByDeletedAtIsNull();
+    }
+
+    @Override
     public Map<MembershipType, List<MembershipPackageResponse>> findAllPackage() {
+
         List<MembershipPackage> membershipPackages = membershipPackageRepository
                 .findByDeletedAtIsNull(Sort.by(MembershipPackage::getPrice).ascending());
 
@@ -52,6 +60,7 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @Transactional
     public void createPackage(MembershipPackageCreateRequest request) {
+
         MembershipPackage membershipPackage = MembershipPackage.builder()
                 .type(request.getType())
                 .name(request.getName())
@@ -61,11 +70,17 @@ public class MembershipServiceImpl implements MembershipService {
                 .build();
 
         membershipPackageRepository.save(membershipPackage);
+
+        log.info("Create membership package {} with type {}, price {}, and duration {}", request.getName(),
+                request.getType(),
+                request.getPrice(),
+                request.getDuration());
     }
 
     @Override
     @Transactional
     public void updatePackage(String id, MembershipPackageUpdateRequest request) {
+
         MembershipPackage membershipPackage = this.findById(id);
 
         membershipPackage.setType(request.getType());
@@ -74,23 +89,32 @@ public class MembershipServiceImpl implements MembershipService {
         membershipPackage.setDuration(request.getDuration());
 
         membershipPackageRepository.save(membershipPackage);
+
+        log.info("Update membership package {}, type {}, name {}, and duration {}", id,
+                request.getType(),
+                request.getName(),
+                request.getDuration());
     }
 
     @Override
     @Transactional
     public void deletePackage(String id) {
+
         MembershipPackage membershipPackage = this.findById(id);
 
         membershipPackage.setDeletedAt(Instant.now());
         membershipPackageRepository.save(membershipPackage);
+
+        log.info("Update membership package {}", id);
     }
 
     @Override
     @Transactional
-    public TransactionCreate buyMembership(User user, MembershipTransactionCreateRequest request) {
+    public TransactionCreate buyMembership(User member, MembershipTransactionCreateRequest request) {
+
         try {
             Optional<Transaction> transaction = transactionRespository
-                    .findFirstByMemberIdAndStatusEqualsOrderByCreatedAtAsc(user.getId(), TransactionStatus.PENDING);
+                    .findFirstByMemberIdAndStatusEqualsOrderByCreatedAtAsc(member.getId(), TransactionStatus.PENDING);
 
             transaction.ifPresent(t -> {
                 if (t.getStatus().equals(TransactionStatus.PENDING)) {
@@ -119,7 +143,9 @@ public class MembershipServiceImpl implements MembershipService {
                     .callbackUrl(membershipRedirectUrl)
                     .build();
 
-            return transactionService.createTransaction(user, transactionData);
+            log.info("Member {} buying membership {}", member.getId(), membershipPackage.getId());
+
+            return transactionService.createTransaction(member, transactionData);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -128,6 +154,7 @@ public class MembershipServiceImpl implements MembershipService {
     @Override
     @Transactional
     public void activationMembership(Transaction transaction) {
+
         if (transaction.getStatus() == TransactionStatus.PROCESS) {
             MembershipPackage membershipPackage = this.findById(transaction.getPackageId().toString());
 
@@ -141,16 +168,18 @@ public class MembershipServiceImpl implements MembershipService {
 
             membershipRepository.save(membership);
 
-            User user = transaction.getMember();
-            user.setMembershipExpiredAt(
-                    user.getMembershipExpiredAt() == null || Instant.now().isAfter(user.getMembershipExpiredAt())
+            User member = transaction.getMember();
+            member.setMembershipExpiredAt(
+                    member.getMembershipExpiredAt() == null || Instant.now().isAfter(member.getMembershipExpiredAt())
                             ? Instant.now().plus(Duration.ofDays(membershipPackage.getDuration()))
-                            : user.getMembershipExpiredAt().plus(Duration.ofDays(membershipPackage.getDuration())));
+                            : member.getMembershipExpiredAt().plus(Duration.ofDays(membershipPackage.getDuration())));
 
-            userRepository.save(user);
+            userRepository.save(member);
 
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRespository.save(transaction);
+
+            log.info("Activation membership for member {}", member.getId());
         }
     }
 
@@ -159,11 +188,5 @@ public class MembershipServiceImpl implements MembershipService {
         UUID packageId = UUID.fromString(id);
         return membershipPackageRepository.findById(packageId)
                 .orElseThrow(() -> new ResourceNotFoundException());
-    }
-
-    @Override
-
-    public Long countMembershipPackage() {
-        return membershipPackageRepository.countByDeletedAtIsNotNull();
     }
 }
