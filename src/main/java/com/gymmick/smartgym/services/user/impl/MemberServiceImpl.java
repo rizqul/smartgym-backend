@@ -137,7 +137,7 @@ public class MemberServiceImpl implements MemberService {
 
         User user = User.builder()
                 .name(request.getName())
-                .email(request.getEmail())
+                .email(request.getEmail().toLowerCase())
                 .profileUrl(profileUrl)
                 .phoneNumber(request.getPhoneNumber())
                 .password(passwordEncoder.encode(request.getPassword()))

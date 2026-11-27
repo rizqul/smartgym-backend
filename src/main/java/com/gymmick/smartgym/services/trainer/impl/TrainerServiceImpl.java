@@ -97,7 +97,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         Trainer trainer = Trainer.builder()
                 .name(request.getName())
-                .email(request.getEmail())
+                .email(request.getEmail().toLowerCase())
                 .profileUrl(profileUrl)
                 .phoneNumber(request.getPhoneNumber())
                 .experience(request.getExperience())

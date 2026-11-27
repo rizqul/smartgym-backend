@@ -85,7 +85,7 @@ public class StaffServiceImpl implements StaffService {
 
         User user = User.builder()
                 .name(request.getName())
-                .email(request.getEmail())
+                .email(request.getEmail().toLowerCase())
                 .profileUrl(profileUrl)
                 .phoneNumber(request.getPhoneNumber())
                 .password(passwordEncoder.encode(request.getPassword()))
