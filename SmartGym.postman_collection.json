@@ -513,6 +513,17 @@
       "item": [
         {
           "name": "Get My Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -678,6 +689,36 @@
               "name": "Members",
               "item": [
                 {
+                  "name": "Summary",
+                  "protocolProfileBehavior": {
+                    "disabledSystemHeaders": {
+                      "accept": true
+                    }
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/members/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "members",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
                   "name": "List Members",
                   "event": [
                     {
@@ -704,7 +745,7 @@
                       }
                     ],
                     "url": {
-                      "raw": "{{apiUrl}}/admin/dashboard/members?page=1&size=10",
+                      "raw": "{{apiUrl}}/admin/dashboard/members?search=crunchynuts&page=1&size=5",
                       "host": [
                         "{{apiUrl}}"
                       ],
@@ -716,8 +757,7 @@
                       "query": [
                         {
                           "key": "search",
-                          "value": "",
-                          "disabled": true
+                          "value": "crunchynuts"
                         },
                         {
                           "key": "membership",
@@ -730,7 +770,7 @@
                         },
                         {
                           "key": "size",
-                          "value": "10"
+                          "value": "5"
                         }
                       ]
                     }
@@ -815,9 +855,8 @@
                       "formdata": [
                         {
                           "key": "name",
-                          "value": "",
-                          "type": "text",
-                          "disabled": true
+                          "value": "{{memberName}}",
+                          "type": "text"
                         },
                         {
                           "key": "email",
@@ -1050,6 +1089,44 @@
                   ]
                 },
                 {
+                  "name": "Summary",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          ""
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers",
+                        "count"
+                      ],
+                      "query": [
+                        {
+                          "key": "search",
+                          "value": "",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
                   "name": "List Trainers",
                   "event": [
                     {
@@ -1127,6 +1204,92 @@
                     }
                   },
                   "response": []
+                },
+                {
+                  "name": "Update Trainer",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "name",
+                          "value": "{{trainerName}}",
+                          "type": "text"
+                        },
+                        {
+                          "key": "email",
+                          "value": "{{trainerEmail}}",
+                          "type": "text"
+                        },
+                        {
+                          "key": "specialization",
+                          "value": "{{trainerSpecialization}}",
+                          "type": "text"
+                        },
+                        {
+                          "key": "phoneNumber",
+                          "value": "0812312341234",
+                          "type": "text"
+                        },
+                        {
+                          "key": "experience",
+                          "value": "{{trainerExperience}}",
+                          "type": "text"
+                        },
+                        {
+                          "key": "rate",
+                          "value": "{{trainerRate}}",
+                          "type": "text"
+                        },
+                        {
+                          "key": "photo",
+                          "type": "file",
+                          "src": [
+                            "",
+                            "/C:/Users/CrunchyNuts/Downloads/ab40b094-c737-415e-9235-5a9665aesc039.jpg"
+                          ],
+                          "disabled": true
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers/update/{{trainerId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers",
+                        "update",
+                        "{{trainerId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Trainer",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/trainers/delete/{{trainerId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "trainers",
+                        "delete",
+                        "{{trainerId}}"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             },
@@ -1134,7 +1297,49 @@
               "name": "Staffs",
               "item": [
                 {
+                  "name": "Summary",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"staffId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/staff/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "staff",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
                   "name": "List Staff",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"staffId\", response.data[0].id)"
+                        ]
+                      }
+                    }
+                  ],
                   "request": {
                     "method": "GET",
                     "header": [],
@@ -1178,7 +1383,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"name\": \"{{staffName}}\",\n  \"email\": \"{{staffEmail}}\",\n  \"phoneNumber\": \"081234567890\",\n  \"password\": \"{{staffPassword}}\"\n}",
+                      "raw": "{\n    \"name\": \"{{staffName}}\",\n    \"email\": \"{{staffEmail}}\",\n    \"phoneNumber\": \"081234567890\",\n    \"password\": \"{{staffPassword}}\"\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1211,13 +1416,19 @@
                       }
                     ],
                     "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"name\": \"Updated Staff\",\n  \"email\": \"{{staffEmail}}\",\n  \"phoneNumber\": \"081234567890\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "name",
+                          "value": "hihi",
+                          "type": "text"
+                        },
+                        {
+                          "key": "email",
+                          "value": "testtt@gmail.com",
+                          "type": "text"
                         }
-                      }
+                      ]
                     },
                     "url": {
                       "raw": "{{apiUrl}}/admin/dashboard/staff/update/{{staffId}}",
@@ -1307,7 +1518,7 @@
                         ],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\n    \"type\": \"MONTHLY\",\n    \"name\": \"Monthly Membership\",\n    \"description\": \"30-day gym membership\",\n    \"duration\": 30,\n    \"price\": 300000\n}",
+                          "raw": "{\n    \"type\": \"MONTHLY\",\n    \"name\": \"Monthly Membership\",\n    \"description\": \"30-day gym membership\",\n    \"duration\": 30,\n    \"price\": 350000\n}",
                           "options": {
                             "raw": {
                               "language": "json"
@@ -1389,6 +1600,26 @@
                       "response": []
                     }
                   ]
+                },
+                {
+                  "name": "Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/memberships/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "memberships",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             },
@@ -1413,27 +1644,6 @@
                             "dashboard",
                             "attendances",
                             "summary"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "Summary Chart",
-                      "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                          "raw": "{{apiUrl}}/admin/dashboard/attendances/summary/chart",
-                          "host": [
-                            "{{apiUrl}}"
-                          ],
-                          "path": [
-                            "admin",
-                            "dashboard",
-                            "attendances",
-                            "summary",
-                            "chart"
                           ]
                         }
                       },
@@ -1530,7 +1740,80 @@
               "name": "Transactions",
               "item": [
                 {
+                  "name": "Csv Export",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          ""
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions/csv-data",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "transactions",
+                        "csv-data"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Summary",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"orderId\", response.data[0].orderId)"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "transactions",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
                   "name": "List All Transaction",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "const response = pm.response.json()\r\npm.environment.set(\"orderId\", response.data[0].orderId)"
+                        ]
+                      }
+                    }
+                  ],
                   "request": {
                     "method": "GET",
                     "header": [],
@@ -1568,6 +1851,27 @@
                           "key": "size",
                           "value": "10"
                         }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Refund Transaction",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/transactions/refund-booking/{{trainerBookingId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "transactions",
+                        "refund-booking",
+                        "{{trainerBookingId}}"
                       ]
                     }
                   },
@@ -1630,6 +1934,68 @@
                   "description": "Valid Midtrans webhook signature for notification testing."
                 }
               ]
+            },
+            {
+              "name": "Enquipment",
+              "item": [
+                {
+                  "name": "List Equipment",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/equipments",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "equipments"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Equipment",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"name\": \"{{equipmentName}}\",\r\n    \"status\": \"{{equipmentStatus}}\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/admin/dashboard/equipments/create",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "dashboard",
+                        "equipments",
+                        "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
             }
           ]
         },
@@ -1639,6 +2005,36 @@
             {
               "name": "Members",
               "item": [
+                {
+                  "name": "Summary",
+                  "protocolProfileBehavior": {
+                    "disabledSystemHeaders": {
+                      "accept": true
+                    }
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/members/count",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "members",
+                        "count"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
                 {
                   "name": "List Members",
                   "request": {
@@ -1736,6 +2132,63 @@
                         "dashboard",
                         "member",
                         "create"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update Member",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "name",
+                          "value": "{{memberName}}",
+                          "type": "text"
+                        },
+                        {
+                          "key": "email",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "password",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "phoneNumber",
+                          "value": "",
+                          "type": "text",
+                          "disabled": true
+                        },
+                        {
+                          "key": "photo",
+                          "type": "file",
+                          "src": [
+                            ""
+                          ],
+                          "disabled": true
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/members/update/{{memberId}}",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "members",
+                        "update",
+                        "{{memberId}}"
                       ]
                     }
                   },
@@ -1927,22 +2380,83 @@
               ]
             },
             {
-              "name": "Check-Ins",
+              "name": "Attendance",
               "item": [
                 {
-                  "name": "Generate QR Token",
+                  "name": "Summary",
+                  "item": [
+                    {
+                      "name": "Summary Count",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{apiUrl}}/staff/dashboard/attendances/summary",
+                          "host": [
+                            "{{apiUrl}}"
+                          ],
+                          "path": [
+                            "staff",
+                            "dashboard",
+                            "attendances",
+                            "summary"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "List Recent Attendance",
                   "request": {
-                    "method": "POST",
+                    "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{apiUrl}}/staff/dashboard/checkins/qr-token",
+                      "raw": "{{apiUrl}}/staff/dashboard/attendances?limit=10",
                       "host": [
                         "{{apiUrl}}"
                       ],
                       "path": [
                         "staff",
                         "dashboard",
-                        "checkins",
+                        "attendances"
+                      ],
+                      "query": [
+                        {
+                          "key": "limit",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Generate QR Token",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "if (pm.response.code === 201) {\r\n    const response = pm.response.json()\r\n    pm.environment.set(\"checkInToken\", response.data.token)\r\n}"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{apiUrl}}/staff/dashboard/attendances/qr-token",
+                      "host": [
+                        "{{apiUrl}}"
+                      ],
+                      "path": [
+                        "staff",
+                        "dashboard",
+                        "attendances",
                         "qr-token"
                       ]
                     }
@@ -1950,7 +2464,7 @@
                   "response": []
                 },
                 {
-                  "name": "Check Out Member",
+                  "name": "Check-Out Member",
                   "request": {
                     "method": "POST",
                     "header": [
@@ -1972,7 +2486,7 @@
                         "checkout"
                       ]
                     },
-                    "description": "Staff closes the active check-in for the member ID in {{memberId}}."
+                    "description": "Admin closes the active check-in for the member ID in {{memberId}}."
                   },
                   "response": []
                 }
@@ -1985,6 +2499,119 @@
     {
       "name": "Member",
       "item": [
+        {
+          "name": "Attending",
+          "item": [
+            {
+              "name": "History",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/attendance",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "attendance"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/attendance/status",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "attendance",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Summary",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/attendance/summary",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "attendance",
+                    "summary"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check-In",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"token\": \"{{checkInToken}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/member/attendance/check-in",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "attendance",
+                    "check-in"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check-Out",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{apiUrl}}/member/attendance/check-out",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "attendance",
+                    "check-out"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
         {
           "name": "Membership",
           "item": [
@@ -2243,82 +2870,6 @@
           ]
         },
         {
-          "name": "Attending",
-          "item": [
-            {
-              "name": "Status",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{apiUrl}}/member/attendance/status",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "member",
-                    "attendance",
-                    "status"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Check-In",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"token\": \"{{checkInToken}}\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{apiUrl}}/member/attendance/check-in",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "member",
-                    "attendance",
-                    "check-in"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Check-Out",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "url": {
-                  "raw": "{{apiUrl}}/member/attendance/check-out",
-                  "host": [
-                    "{{apiUrl}}"
-                  ],
-                  "path": [
-                    "member",
-                    "attendance",
-                    "check-out"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
           "name": "Transactions",
           "item": [
             {
@@ -2440,6 +2991,124 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "Groq",
+          "item": [
+            {
+              "name": "New Request",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"primaryTarget\": \"\",\n    \"trainingAge\": \"\",\n    \"weeklySplitInDays\": \"\",\n    \"sessionDuration\": \"\",\n    \"focusAnatomy\": \"\",\n    \"prioritizeMachines\": \"\",\n    \"avoidMaintenance\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiUrl}}/member/generate",
+                  "host": [
+                    "{{apiUrl}}"
+                  ],
+                  "path": [
+                    "member",
+                    "generate"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Landing",
+      "item": [
+        {
+          "name": "List Trainer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{staffEmail}}\",\n    \"password\": \"{{staffPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiUrl}}/landing/membership-packages",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "landing",
+                "membership-packages"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Membership Packages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{staffEmail}}\",\n    \"password\": \"{{staffPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiUrl}}/landing/membership-packages",
+              "host": [
+                "{{apiUrl}}"
+              ],
+              "path": [
+                "landing",
+                "membership-packages"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
