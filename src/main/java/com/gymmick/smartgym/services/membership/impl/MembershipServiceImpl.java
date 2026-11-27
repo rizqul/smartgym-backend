@@ -118,7 +118,7 @@ public class MembershipServiceImpl implements MembershipService {
 
             transaction.ifPresent(t -> {
                 if (t.getStatus().equals(TransactionStatus.PENDING)) {
-                    throw new BadRequestException("Silahkan Selesaikan Transaksi Sebelumnya!");
+                    throw new BadRequestException("Please complete previous transaction!");
                 }
             });
 

@@ -19,6 +19,7 @@ import com.gymmick.smartgym.dto.transaction.*;
 import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.BadRequestException;
+import com.gymmick.smartgym.exceptions.ResourceNotFoundException;
 import com.gymmick.smartgym.mappers.TransactionMapping;
 import com.gymmick.smartgym.repositories.TransactionRespository;
 import com.gymmick.smartgym.services.transaction.TransactionService;
@@ -27,7 +28,9 @@ import com.midtrans.httpclient.error.MidtransError;
 import com.midtrans.service.*;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -60,10 +63,11 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionPage.getTotalElements(),
                 p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
 
-        PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
+        return PaginationResponse.<TransactionResponse>builder()
                 .data(transactionResponse)
                 .pagination(paginationMeta)
                 .build();
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -178,6 +182,8 @@ public class TransactionServiceImpl implements TransactionService {
 =======
         return paginationResponse;
 >>>>>>> b9483e4 (feat: add update trainer slot and change some endpoint)
+=======
+>>>>>>> e19aec3 (fix: standardize exception messages to English and improve logging in various services)
     }
 
     @Override
@@ -210,12 +216,10 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionPage.getTotalElements(),
                 p -> ServletUriComponentsBuilder.fromCurrentRequest().replaceQueryParam("page", p).toUriString());
 
-        PaginationResponse<TransactionResponse> paginationResponse = PaginationResponse.<TransactionResponse>builder()
+        return PaginationResponse.<TransactionResponse>builder()
                 .data(transactionResponse)
                 .pagination(paginationMeta)
                 .build();
-
-        return paginationResponse;
     }
 
     @Override
@@ -232,7 +236,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction findByOrderId(String orderId) {
         return transactionRespository.findByOrderId(orderId)
-                .orElseThrow(() -> new BadRequestException("Data Tidak Ditemukan!"));
+                .orElseThrow(() -> new ResourceNotFoundException());
     }
 
     @Override
@@ -277,7 +281,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .type(data.getType())
                 .build();
 
-        transactionRespository.save(transaction);
+        transaction = transactionRespository.save(transaction);
+
+        log.info("Create a payment link for transaction {}", transaction.getId());
 
         return transactionCreate;
     }
@@ -285,9 +291,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public Transaction detailTransaction(String orderId) {
-        Transaction transaction = this.findByOrderId(orderId);
-
-        return transaction;
+        return this.findByOrderId(orderId);
     }
 
     @Override
@@ -309,6 +313,8 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setStatus(TransactionStatus.PROCESS);
         }
 
+        log.info("Update transaction {}", transaction.getId());
+
         return transactionRespository.save(transaction);
     }
 
@@ -318,6 +324,9 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = this.findByOrderId(orderId);
 
         if (!transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
+
+            log.info("Failed to refund transaction {}", transaction.getId());
+
             throw new BadRequestException("This transaction cannot be refunded!");
         }
 
@@ -327,17 +336,17 @@ public class TransactionServiceImpl implements TransactionService {
             refundDetails.put("amount", transaction.getAmount().toString());
 
             midtransCoreApi.refundTransaction(orderId, refundDetails);
+            log.info("Success to refund the transaction {}", transaction.getId());
         } catch (Exception e) {
+
+            log.info("Failed to refund transaction {}", transaction.getId());
             throw new BadRequestException("Failed to refund the transaction!");
         }
     }
 
     @Override
     public Long countTotalIncomeByType(TransactionType type) {
-
-        Long total = transactionRespository.sumAmountByTypeAndStatus(type, TransactionStatus.SUCCESS);
-
-        return total;
+        return transactionRespository.sumAmountByTypeAndStatus(type, TransactionStatus.SUCCESS);
     }
 
     @Override
@@ -361,9 +370,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionResponse> getAllTransactionData() {
-        List<TransactionResponse> transactions = transactionMapping.toListResponses(transactionRespository.findAll());
-
-        return transactions;
+        return transactionMapping.toListResponses(transactionRespository.findAll());
     }
-
 }

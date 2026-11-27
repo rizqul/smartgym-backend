@@ -24,7 +24,9 @@ import com.gymmick.smartgym.services.transaction.TransactionService;
 import com.gymmick.smartgym.specification.TrainerBookingSpecification;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -99,6 +101,7 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
     @Override
     @Transactional
     public TransactionCreate createBookedTrainer(User member, TrainerTransactionCreateRequest request) {
+
         try {
             Optional<Transaction> transaction = transactionRespository
                     .findFirstByMemberIdAndStatusEqualsOrderByCreatedAtAsc(member.getId(),
@@ -106,7 +109,7 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
             transaction.ifPresent(t -> {
                 if (t.getStatus().equals(TransactionStatus.PENDING)) {
-                    throw new BadRequestException("Silahkan Selesaikan Transaksi Sebelumnya!");
+                    throw new BadRequestException("Please complete previous transaction!");
                 }
             });
 
@@ -166,6 +169,8 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
                     .callbackUrl(ptBookedRedirectUrl)
                     .build();
 
+            log.info("Member {} booking trainer {}", member.getId(), trainerSlot.getTrainer().getName());
+
             return transactionService.createTransaction(member, transactionData);
         } catch (BadRequestException | ResourceNotFoundException e) {
             throw e;
@@ -191,6 +196,9 @@ public class TrainerBookingServiceImpl implements TrainerBookingService {
 
             transaction.setStatus(TransactionStatus.SUCCESS);
             transactionRespository.save(transaction);
+
+            log.info("Booking trainer slot ({}) successfully for member {}", trainerSlot.getId(),
+                    transaction.getMember().getId());
         }
     }
 
