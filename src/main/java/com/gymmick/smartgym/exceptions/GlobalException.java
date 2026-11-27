@@ -1,5 +1,6 @@
 package com.gymmick.smartgym.exceptions;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -68,7 +69,44 @@ public class GlobalException {
         return ApiResponse.error(HttpStatus.FORBIDDEN, message);
     }
 
+    // Database
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<String>> handleDataIntegrityViolationException(
+            DataIntegrityViolationException exception) {
+
+        String message = "Can't inserted duplicate data!";
+        return ApiResponse.error(HttpStatus.UNPROCESSABLE_CONTENT, message);
+    }
+
     // Global Exception
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(
+            IllegalArgumentException exception) {
+
+        String message = exception.getMessage();
+
+        log.info("Argument error: {}", message);
+
+        if (message.contains("UUID")) {
+            message = "The resource you are trying to access doesn't exist!";
+
+            return ApiResponse.error(HttpStatus.NOT_FOUND, message);
+        }
+
+        return ApiResponse.error(HttpStatus.UNPROCESSABLE_CONTENT, message);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleResourceNotFoundException(
+            ResourceNotFoundException exception) {
+
+        String message = exception.getMessage();
+
+        log.info("Resource not found: {}", message);
+
+        return ApiResponse.error(HttpStatus.NOT_FOUND, message);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<String>> handleRuntimeException(
             RuntimeException exception) {
