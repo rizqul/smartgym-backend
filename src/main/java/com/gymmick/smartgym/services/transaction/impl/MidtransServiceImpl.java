@@ -22,7 +22,9 @@ import com.midtrans.httpclient.error.MidtransError;
 import com.midtrans.service.MidtransCoreApi;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MidtransServiceImpl implements MidtransService {
@@ -49,7 +51,9 @@ public class MidtransServiceImpl implements MidtransService {
         String calculatedSignature = Sha512DigestUtils.shaHex(orderId + statusCode + grossAmount + midtransServerKey);
 
         if (!MessageDigest.isEqual(calculatedSignature.getBytes(), signatureKey.getBytes())) {
-            throw new BadRequestException("Gagal Memverifikasi Transaksi!");
+            log.info("Failed to verify the transaction {}", orderId);
+
+            throw new BadRequestException("Failed to verify the transaction!");
         }
 
         return midtransCoreApi.checkTransaction(orderId).toMap();
@@ -89,6 +93,7 @@ public class MidtransServiceImpl implements MidtransService {
             transaction.setStatus(TransactionStatus.SUCCESS);
         }
 
+        log.info("Update transaction {} status to {}", transaction.getId(), transaction.getType());
         return transactionRespository.save(transaction);
     }
 
@@ -101,21 +106,27 @@ public class MidtransServiceImpl implements MidtransService {
         if (transactionStatus.equals(TransactionStatus.CANCELLED)
                 || transactionStatus.equals(TransactionStatus.EXPIRED)) {
 
+            log.info("Failed to cancel the transaction {}", transaction.getId());
+
             throw new BadRequestException("This transaction has been cancelled or expired!");
         }
 
         try {
-            String response = midtransRestClient.post()
+            midtransRestClient.post()
                     .uri("/snap/v1/transactions/{token}/cancel", request.getToken())
                     .body(Map.of())
                     .retrieve()
                     .body(String.class);
 
-            System.out.println(response);
+            log.info("Success to cancel the transaction {}", transaction.getId());
         } catch (RestClientException restClientException) {
             try {
                 midtransCoreApi.cancelTransaction(orderId);
+
+                log.info("Success to cancel the transaction {}", transaction.getId());
             } catch (MidtransError e) {
+                log.info("Failed to cancel the transaction {}", transaction.getId());
+
                 throw new BadRequestException("Failed to cancel the transaction!");
             }
         }

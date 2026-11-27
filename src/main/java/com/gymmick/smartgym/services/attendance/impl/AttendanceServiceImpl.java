@@ -245,7 +245,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
 
         member = userRepository.findByIdForUpdate(member.getId())
-                .orElseThrow(() -> new BadRequestException("Member not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException());
 
         if (member.getMembershipExpiredAt() == null || member.getMembershipExpiredAt().isBefore(Instant.now())) {
             Attendance attendance = Attendance.builder()
@@ -287,10 +287,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     public AttendingResponse checkOut(UUID memberId) {
         User member = userRepository.findByIdForUpdate(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("Member not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException());
 
         if (member.getRole() != UserRole.MEMBER) {
-            throw new ResourceNotFoundException("Member not found!");
+            throw new ResourceNotFoundException();
         }
 
         Attendance attendance = attendanceRepository

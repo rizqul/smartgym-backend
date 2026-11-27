@@ -17,22 +17,21 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class EquipmentServiceImpl implements EquipmentService {
 
-  private final EquipmentRepository equipmentRepository;
+    private final EquipmentRepository equipmentRepository;
 
-  @Override
-  @Transactional
-  public void createEquipment(EquipmentCreateRequest request) {
-    Equipment equipment = Equipment.builder()
-        .name(request.getName())
-        .status(request.getEquipmentStatus())
-        .build();
+    @Override
+    @Transactional
+    public void createEquipment(EquipmentCreateRequest request) {
+        Equipment equipment = Equipment.builder()
+                .name(request.getName())
+                .status(request.getEquipmentStatus())
+                .build();
 
-    equipmentRepository.save(equipment);
-  }
+        equipmentRepository.save(equipment);
+    }
 
-  @Override
-  public List<Equipment> getAllEquipment() {
-    return equipmentRepository.findAll();
-  }
-
+    @Override
+    public List<Equipment> getAllEquipment() {
+        return equipmentRepository.findAll();
+    }
 }
