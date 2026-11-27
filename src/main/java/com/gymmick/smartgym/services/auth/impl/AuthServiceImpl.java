@@ -13,6 +13,7 @@ import com.gymmick.smartgym.entity.*;
 import com.gymmick.smartgym.entity.enums.*;
 import com.gymmick.smartgym.exceptions.*;
 import com.gymmick.smartgym.mappers.UserMapping;
+import com.gymmick.smartgym.repositories.UserRepository;
 import com.gymmick.smartgym.services.auth.*;
 import com.gymmick.smartgym.services.user.UserService;
 import com.gymmick.smartgym.services.utils.EmailService;
@@ -27,6 +28,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
 
     private final UserService userService;
     private final EmailService emailService;
@@ -67,7 +70,9 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void forgotPassword(ForgotPasswordRequest request) {
 
-        if (!userService.existsByEmail(request.getEmail())) {
+        Optional<User> user = userRepository.findByEmailAndEnabledIsTrue(request.getEmail());
+
+        if (!user.isPresent()) {
             return;
         }
 
@@ -124,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
             User user = resetToken.getUser();
             user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-            userService.save(user);
+            userRepository.save(user);
         }
     }
 
