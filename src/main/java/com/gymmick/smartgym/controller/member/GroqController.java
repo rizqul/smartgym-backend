@@ -70,8 +70,7 @@ public class GroqController {
 
         aiWorkOutPlanService.createWorkoutPlan(aiResponse, member);
 
-        String message = "Berhasil generate workout plan!";
-
+        String message = "Generated workout plan successfully!";
         return ApiResponse.success(HttpStatus.OK, message, aiResponse);
     }
 }
