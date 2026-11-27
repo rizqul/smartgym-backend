@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gymmick.smartgym.utils.ApiResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalException {
 
@@ -70,7 +73,9 @@ public class GlobalException {
     public ResponseEntity<ApiResponse<String>> handleRuntimeException(
             RuntimeException exception) {
 
-        String message = exception.getMessage();
+        log.info("Internal server error. Error: {}", exception.getMessage());
+
+        String message = "Internal server error";
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 
@@ -78,7 +83,9 @@ public class GlobalException {
     public ResponseEntity<ApiResponse<String>> handleException(
             Exception exception) {
 
-        String message = exception.getMessage();
+        log.info("Internal server error. Error: {}", exception.getMessage());
+
+        String message = "Internal server error";
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 }
