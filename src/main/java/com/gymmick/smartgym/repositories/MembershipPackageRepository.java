@@ -9,9 +9,9 @@ import com.gymmick.smartgym.entity.MembershipPackage;
 
 public interface MembershipPackageRepository extends JpaRepository<MembershipPackage, UUID> {
 
-  List<MembershipPackage> findByDeletedAtIsNull(Sort sort);
+    Long countByDeletedAtIsNull();
 
-  Optional<MembershipPackage> findByIdAndDeletedAtIsNull(UUID id);
+    List<MembershipPackage> findByDeletedAtIsNull(Sort sort);
 
-  Long countByDeletedAtIsNotNull();
+    Optional<MembershipPackage> findByIdAndDeletedAtIsNull(UUID id);
 }

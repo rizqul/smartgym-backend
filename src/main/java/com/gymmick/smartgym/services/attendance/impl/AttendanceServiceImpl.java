@@ -7,6 +7,7 @@ import java.util.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,273 +26,283 @@ import com.gymmick.smartgym.specification.AttendanceSpecification;
 import com.gymmick.smartgym.utils.JwtToken;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AttendanceServiceImpl implements AttendanceService {
 
-  private final AttendanceRepository attendanceRepository;
-  private final UserRepository userRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final UserRepository userRepository;
 
-  private final AttendanceMapping attendanceMapping;
+    private final AttendanceMapping attendanceMapping;
 
-  private final JwtToken jwtToken;
+    private final JwtToken jwtToken;
 
-  @Override
-  public AttendanceSummaryResponse getSummary() {
-    LocalDate today = LocalDate.now(ZoneId.systemDefault());
-    Instant startOfToday = today.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    Instant startOfTomorrow = today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+    @Override
+    public AttendanceSummaryResponse getSummary() {
 
-    return AttendanceSummaryResponse.builder()
-        .historyCount(attendanceRepository.count())
-        .checkinsToday(attendanceRepository.countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(
-            startOfToday, startOfTomorrow))
-        .activeNow(attendanceRepository.countByStatusAndCheckOutAtIsNull(AttendingStatus.ACCEPTED))
-        .build();
-  }
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        Instant startOfToday = today.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant startOfTomorrow = today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
 
-  @Override
-  public AttendanceHourlyChartResponse getHourlyChart() {
-    ZoneId zone = ZoneId.systemDefault();
-    ZonedDateTime now = ZonedDateTime.now(zone);
-
-    int currentSlotHour = (now.getHour() / 2) * 2;
-    ZonedDateTime currentSlotStart = now.toLocalDate()
-        .atTime(currentSlotHour, 0)
-        .atZone(zone);
-
-    List<AttendanceHourlySlot> slots = new ArrayList<>();
-
-    for (int i = 11; i >= 0; i--) {
-      ZonedDateTime slotZdt = currentSlotStart.minusHours(i * 2L);
-      Instant slotStart = slotZdt.toInstant();
-      Instant slotEnd = slotStart.plus(Duration.ofHours(2));
-
-      long todayCount = attendanceRepository
-          .countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(slotStart, slotEnd);
-
-      Instant historyRangeStart = slotZdt.minusWeeks(1).toInstant();
-      Instant historyRangeEnd = historyRangeStart.plus(Duration.ofHours(2));
-
-      long lastWeekCount = attendanceRepository
-          .countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(historyRangeStart, historyRangeEnd);
-
-      slots.add(AttendanceHourlySlot.builder()
-          .label(String.format("%02d:00", slotZdt.getHour()))
-          .todayCount(todayCount)
-          .lastWeekCount(lastWeekCount)
-          .build());
+        return AttendanceSummaryResponse.builder()
+                .historyCount(attendanceRepository.count())
+                .checkinsToday(attendanceRepository.countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(
+                        startOfToday, startOfTomorrow))
+                .activeNow(attendanceRepository.countByStatusAndCheckOutAtIsNull(AttendingStatus.ACCEPTED))
+                .build();
     }
 
-    return AttendanceHourlyChartResponse.builder()
-        .date(now.toLocalDate().toString())
-        .slots(slots)
-        .build();
-  }
+    @Override
+    public AttendanceHourlyChartResponse getHourlyChart() {
 
-  @Override
-  public PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request) {
-    Integer page = request.getPage();
-    Integer size = request.getSize();
+        ZoneId zone = ZoneId.systemDefault();
+        ZonedDateTime now = ZonedDateTime.now(zone);
 
-    Specification<Attendance> specification = AttendanceSpecification.getMyAttendance(member, request);
+        int currentSlotHour = (now.getHour() / 2) * 2;
+        ZonedDateTime currentSlotStart = now.toLocalDate()
+                .atTime(currentSlotHour, 0)
+                .atZone(zone);
 
-    Sort sortBy = Sort.by(Attendance::getCheckInAt).descending();
-    PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+        List<AttendanceHourlySlot> slots = new ArrayList<>();
 
-    Page<Attendance> attendancePage = attendanceRepository.findAll(specification, pageRequest);
-    List<AttendingResponse> attendances = attendanceMapping.toListResponses(attendancePage.getContent());
+        for (int i = 11; i >= 0; i--) {
+            ZonedDateTime slotZdt = currentSlotStart.minusHours(i * 2L);
+            Instant slotStart = slotZdt.toInstant();
+            Instant slotEnd = slotStart.plus(Duration.ofHours(2));
 
-    PaginationMeta pagination = PaginationLinkBuilder.build(page, attendancePage.getTotalPages(), size,
-        attendancePage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
-            .replaceQueryParam("page", p)
-            .toUriString());
+            long todayCount = attendanceRepository
+                    .countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(slotStart, slotEnd);
 
-    return PaginationResponse.<AttendingResponse>builder()
-        .data(attendances)
-        .pagination(pagination)
-        .build();
-  }
+            Instant historyRangeStart = slotZdt.minusWeeks(1).toInstant();
+            Instant historyRangeEnd = historyRangeStart.plus(Duration.ofHours(2));
 
-  @Override
-  public List<AttendingResponse> findRecentAttending(String limit) {
+            long lastWeekCount = attendanceRepository
+                    .countByCheckInAtGreaterThanEqualAndCheckInAtLessThan(historyRangeStart, historyRangeEnd);
 
-    Integer sizeLimit = NumberUtils.toInt(limit, 10);
-
-    List<Attendance> attendances = attendanceRepository
-        .findAllByOrderByCheckInAtDesc(PageRequest.of(0, sizeLimit > 100 ? 100 : sizeLimit));
-    return attendanceMapping.toListResponses(attendances);
-  }
-
-  @Override
-  public AttendingResponse findActiveCheckIn(User member) {
-    Attendance attendance = attendanceRepository
-        .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(member, AttendingStatus.ACCEPTED)
-        .orElseThrow(() -> new BadRequestException("You haven't checked in today!"));
-
-    return attendanceMapping.toResponse(attendance);
-  }
-
-  @Override
-  public AttendanceTokenResponse generateQrToken() {
-    String token = jwtToken.createAttendanceCheckInToken(Duration.ofHours(1));
-    Instant expiresAt = jwtToken.verifyToken(token).getExpiresAt();
-
-    return AttendanceTokenResponse.builder()
-        .token(token)
-        .expiresAt(expiresAt)
-        .expiresInSeconds(expiresAt.getEpochSecond() - Instant.now().getEpochSecond())
-        .build();
-  }
-
-  @Override
-  @Transactional
-  public AttendingResponse checkIn(String token, User member) {
-    var claims = jwtToken.verifyToken(token);
-
-    if (!claims.getClaimAsString("purpose").equals("checkin")) {
-      throw new BadRequestException("QR check-in tidak valid!");
-    }
-
-    member = userRepository.findByIdForUpdate(member.getId())
-        .orElseThrow(() -> new BadRequestException("Member tidak ditemukan!"));
-
-    if (member.getMembershipExpiredAt() == null || member.getMembershipExpiredAt().isBefore(Instant.now())) {
-      Attendance attendance = Attendance.builder()
-          .member(member)
-          .method(AttendingMethod.QR)
-          .status(AttendingStatus.DECLINED)
-          .checkInAt(Instant.now())
-          .denialReason("Membership tidak aktif atau telah berakhir.")
-          .build();
-
-      attendanceRepository.save(attendance);
-
-      throw new BadRequestException("Anda belum mengaktifkan membership atau membership anda telah berakhir!");
-    }
-
-    attendanceRepository.findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
-        member, AttendingStatus.ACCEPTED)
-        .ifPresent(attendance -> {
-          throw new BadRequestException("Anda telah melakukan check-in sebelumnya!");
-        });
-
-    Attendance attendance = Attendance.builder()
-        .member(member)
-        .method(AttendingMethod.QR)
-        .status(AttendingStatus.ACCEPTED)
-        .checkInAt(Instant.now())
-        .build();
-
-    attendance = attendanceRepository.save(attendance);
-
-    return attendanceMapping.toResponse(attendance);
-  }
-
-  @Override
-  @Transactional
-  public AttendingResponse checkOut(UUID memberId) {
-    User member = userRepository.findByIdForUpdate(memberId)
-        .orElseThrow(() -> new ResourceNotFoundException("Member tidak ditemukan!"));
-
-    if (member.getRole() != UserRole.MEMBER) {
-      throw new ResourceNotFoundException("Member tidak ditemukan!");
-    }
-
-    Attendance attendance = attendanceRepository
-        .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
-            member, AttendingStatus.ACCEPTED)
-        .orElseThrow(() -> new BadRequestException("Anda belum melakukan check-in!"));
-
-    attendance.setCheckOutAt(Instant.now());
-    attendance = attendanceRepository.save(attendance);
-
-    return attendanceMapping.toResponse(attendance);
-  }
-
-  @Override
-  public MemberAttendanceSummaryResponse getMyAttendanceSummary(User member) {
-
-    ZoneId zone = ZoneId.of("Asia/Jakarta");
-    LocalDate today = LocalDate.now(zone);
-
-    List<Attendance> attendances = attendanceRepository.findAllByMemberAndStatusOrderByCheckInAtDesc(
-        member,
-        AttendingStatus.ACCEPTED);
-
-    // 1. Calculate total completed gym duration
-    long totalGymMinutes = attendances.stream()
-        .filter(a -> a.getCheckOutAt() != null)
-        .mapToLong(a -> ChronoUnit.MINUTES.between(
-            a.getCheckInAt(),
-            a.getCheckOutAt()))
-        .filter(minutes -> minutes > 0)
-        .sum();
-
-    // 2. Get unique attendance dates
-    Set<LocalDate> attendanceDates = new TreeSet<>(
-        java.util.Comparator.reverseOrder());
-
-    attendances.forEach(attendance -> attendanceDates.add(
-        attendance.getCheckInAt()
-            .atZone(zone)
-            .toLocalDate()));
-
-    // 3. Calculate current streak
-    long currentStreak = 0;
-
-    if (attendanceDates.contains(today)) {
-
-      LocalDate expectedDate = today;
-
-      for (LocalDate date : attendanceDates) {
-
-        if (!date.equals(expectedDate)) {
-          break;
+            slots.add(AttendanceHourlySlot.builder()
+                    .label(String.format("%02d:00", slotZdt.getHour()))
+                    .todayCount(todayCount)
+                    .lastWeekCount(lastWeekCount)
+                    .build());
         }
 
-        currentStreak++;
-        expectedDate = expectedDate.minusDays(1);
-      }
+        return AttendanceHourlyChartResponse.builder()
+                .date(now.toLocalDate().toString())
+                .slots(slots)
+                .build();
     }
 
-    // 4. Calculate longest streak
-    long longestStreak = 0;
-    long streak = 0;
+    @Override
+    public MemberAttendanceSummaryResponse getMyAttendanceSummary(User member) {
 
-    LocalDate previousDate = null;
+        ZoneId zone = ZoneId.of("Asia/Jakarta");
+        LocalDate today = LocalDate.now(zone);
 
-    for (LocalDate date : new TreeSet<>(attendanceDates)) {
+        List<Attendance> attendances = attendanceRepository.findAllByMemberAndStatusOrderByCheckInAtDesc(
+                member, AttendingStatus.ACCEPTED);
 
-      if (previousDate != null &&
-          date.equals(previousDate.plusDays(1))) {
+        long totalGymMinutes = attendances.stream()
+                .filter(a -> a.getCheckOutAt() != null)
+                .mapToLong(a -> ChronoUnit.MINUTES.between(
+                        a.getCheckInAt(), a.getCheckOutAt()))
+                .filter(minutes -> minutes > 0)
+                .sum();
 
-        streak++;
+        Set<LocalDate> attendanceDates = new TreeSet<>(
+                java.util.Comparator.reverseOrder());
 
-      } else {
+        attendances.forEach(attendance -> attendanceDates.add(
+                attendance.getCheckInAt()
+                        .atZone(zone)
+                        .toLocalDate()));
 
-        streak = 1;
-      }
+        long currentStreak = 0;
 
-      longestStreak = Math.max(longestStreak, streak);
-      previousDate = date;
+        if (attendanceDates.contains(today)) {
+
+            LocalDate expectedDate = today;
+
+            for (LocalDate date : attendanceDates) {
+
+                if (!date.equals(expectedDate)) {
+                    break;
+                }
+
+                currentStreak++;
+                expectedDate = expectedDate.minusDays(1);
+            }
+        }
+
+        long longestStreak = 0;
+        long streak = 0;
+
+        LocalDate previousDate = null;
+
+        for (LocalDate date : new TreeSet<>(attendanceDates)) {
+
+            if (previousDate != null &&
+                    date.equals(previousDate.plusDays(1))) {
+
+                streak++;
+
+            } else {
+
+                streak = 1;
+            }
+
+            longestStreak = Math.max(longestStreak, streak);
+            previousDate = date;
+        }
+
+        Instant lastCheckInAt = attendances.isEmpty()
+                ? null
+                : attendances.get(0).getCheckInAt();
+
+        return MemberAttendanceSummaryResponse.builder()
+                .totalGymMinutes(totalGymMinutes)
+                .totalGymHours(totalGymMinutes / 60f)
+                .currentStreak(currentStreak)
+                .longestStreak(longestStreak)
+                .totalVisits(attendances.size())
+                .lastCheckInAt(lastCheckInAt)
+                .checkedInToday(attendanceDates.contains(today))
+                .build();
     }
 
-    // 5. Get latest check-in
-    Instant lastCheckInAt = attendances.isEmpty()
-        ? null
-        : attendances.get(0).getCheckInAt();
+    @Override
+    public PaginationResponse<AttendingResponse> findAllMyAttendance(User member, AttendanceFilterRequest request) {
 
-    return MemberAttendanceSummaryResponse.builder()
-        .totalGymMinutes(totalGymMinutes)
-        .totalGymHours(totalGymMinutes / 60)
-        .currentStreak(currentStreak)
-        .longestStreak(longestStreak)
-        .totalVisits(attendances.size())
-        .lastCheckInAt(lastCheckInAt)
-        .checkedInToday(attendanceDates.contains(today))
-        .build();
-  }
+        Integer page = request.getPage();
+        Integer size = request.getSize();
+
+        Specification<Attendance> specification = AttendanceSpecification.getMyAttendance(member, request);
+
+        Sort sortBy = Sort.by(Attendance::getCheckInAt).descending();
+        PageRequest pageRequest = PageRequest.of(page, size, sortBy);
+
+        Page<Attendance> attendancePage = attendanceRepository.findAll(specification, pageRequest);
+        List<AttendingResponse> attendances = attendanceMapping.toListResponses(attendancePage.getContent());
+
+        PaginationMeta pagination = PaginationLinkBuilder.build(page, attendancePage.getTotalPages(), size,
+                attendancePage.getTotalElements(), p -> ServletUriComponentsBuilder.fromCurrentRequest()
+                        .replaceQueryParam("page", p)
+                        .toUriString());
+
+        return PaginationResponse.<AttendingResponse>builder()
+                .data(attendances)
+                .pagination(pagination)
+                .build();
+    }
+
+    @Override
+    public List<AttendingResponse> findRecentAttending(String limit) {
+
+        Integer sizeLimit = NumberUtils.toInt(limit, 10);
+
+        List<Attendance> attendances = attendanceRepository
+                .findAllByOrderByCheckInAtDesc(PageRequest.of(0, sizeLimit > 100 ? 100 : sizeLimit));
+        return attendanceMapping.toListResponses(attendances);
+    }
+
+    @Override
+    public AttendingResponse findActiveCheckIn(User member) {
+
+        Attendance attendance = attendanceRepository
+                .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(member, AttendingStatus.ACCEPTED)
+                .orElseThrow(() -> new BadRequestException("You haven't checked in today!"));
+
+        return attendanceMapping.toResponse(attendance);
+    }
+
+    @Override
+    public AttendanceTokenResponse generateQrToken() {
+
+        String token = jwtToken.createAttendanceCheckInToken(Duration.ofHours(1));
+        Instant expiresAt = jwtToken.verifyToken(token).getExpiresAt();
+
+        return AttendanceTokenResponse.builder()
+                .token(token)
+                .expiresAt(expiresAt)
+                .expiresInSeconds(expiresAt.getEpochSecond() - Instant.now().getEpochSecond())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public AttendingResponse checkIn(String token, User member) {
+
+        Jwt claims = jwtToken.verifyToken(token);
+
+        if (!claims.getClaimAsString("purpose").equals("checkin")) {
+
+            log.info("Failed to check-in using invalid check-in QR. User {}", member.getId());
+
+            throw new BadRequestException("Invalid check-in QR!");
+        }
+
+        member = userRepository.findByIdForUpdate(member.getId())
+                .orElseThrow(() -> new BadRequestException("Member not found!"));
+
+        if (member.getMembershipExpiredAt() == null || member.getMembershipExpiredAt().isBefore(Instant.now())) {
+            Attendance attendance = Attendance.builder()
+                    .member(member)
+                    .method(AttendingMethod.QR)
+                    .status(AttendingStatus.DECLINED)
+                    .checkInAt(Instant.now())
+                    .denialReason("Membership not active or expired.")
+                    .build();
+
+            attendanceRepository.save(attendance);
+
+            log.info("Failed to check-in. Reason: Membership not active or expired. User {}", member.getId());
+
+            throw new BadRequestException("You have not activated your membership or your membership has expired!");
+        }
+
+        attendanceRepository.findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
+                member, AttendingStatus.ACCEPTED)
+                .ifPresent(attendance -> {
+                    throw new BadRequestException("You have already checked in before!");
+                });
+
+        Attendance attendance = Attendance.builder()
+                .member(member)
+                .method(AttendingMethod.QR)
+                .status(AttendingStatus.ACCEPTED)
+                .checkInAt(Instant.now())
+                .build();
+
+        attendance = attendanceRepository.save(attendance);
+
+        log.info("Check-in successfully. User {}", member.getId());
+
+        return attendanceMapping.toResponse(attendance);
+    }
+
+    @Override
+    @Transactional
+    public AttendingResponse checkOut(UUID memberId) {
+        User member = userRepository.findByIdForUpdate(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found!"));
+
+        if (member.getRole() != UserRole.MEMBER) {
+            throw new ResourceNotFoundException("Member not found!");
+        }
+
+        Attendance attendance = attendanceRepository
+                .findFirstByMemberAndStatusAndCheckOutAtIsNullOrderByCheckInAtDesc(
+                        member, AttendingStatus.ACCEPTED)
+                .orElseThrow(() -> new BadRequestException("You haven't checked in yet!"));
+
+        attendance.setCheckOutAt(Instant.now());
+        attendance = attendanceRepository.save(attendance);
+
+        log.info("Check-out successfully. User {}", member.getId());
+
+        return attendanceMapping.toResponse(attendance);
+    }
 }

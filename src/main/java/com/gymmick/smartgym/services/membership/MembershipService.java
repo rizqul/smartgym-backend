@@ -9,6 +9,8 @@ import com.gymmick.smartgym.entity.enums.MembershipType;
 
 public interface MembershipService {
 
+    Long countMembershipPackage();
+
     Map<MembershipType, List<MembershipPackageResponse>> findAllPackage();
 
     void createPackage(MembershipPackageCreateRequest request);
@@ -22,6 +24,4 @@ public interface MembershipService {
     void activationMembership(Transaction transaction);
 
     MembershipPackage findById(String id);
-
-    Long countMembershipPackage();
 }

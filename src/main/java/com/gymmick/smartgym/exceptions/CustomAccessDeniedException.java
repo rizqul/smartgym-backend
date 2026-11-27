@@ -23,7 +23,7 @@ public class CustomAccessDeniedException implements AccessDeniedHandler {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("statusCode", HttpStatus.FORBIDDEN.value());
-        body.put("message", "Anda Tidak Memiliki Hak Akses Pada Data Ini!");
+        body.put("message", "You don't have permission to access this data!");
 
         final ObjectMapper objectMapper = new ObjectMapper();
 

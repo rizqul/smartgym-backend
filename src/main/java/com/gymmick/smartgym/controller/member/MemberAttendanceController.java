@@ -20,48 +20,48 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberAttendanceController {
 
-  private final AttendanceService attendanceService;
+    private final AttendanceService attendanceService;
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<List<AttendingResponse>>> findMyAttending(@AuthenticationPrincipal User member,
-      AttendanceFilterRequest request) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<AttendingResponse>>> findMyAttending(@AuthenticationPrincipal User member,
+            AttendanceFilterRequest request) {
 
-    PaginationResponse<AttendingResponse> response = attendanceService.findAllMyAttendance(member, request);
-    return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
-  }
+        PaginationResponse<AttendingResponse> response = attendanceService.findAllMyAttendance(member, request);
+        return ApiResponse.success(HttpStatus.OK, response.getData(), response.getPagination());
+    }
 
-  @GetMapping("/status")
-  public ResponseEntity<ApiResponse<AttendingResponse>> findMyActiveAttending(@AuthenticationPrincipal User member) {
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<AttendingResponse>> findMyActiveAttending(@AuthenticationPrincipal User member) {
 
-    AttendingResponse response = attendanceService.findActiveCheckIn(member);
-    return ApiResponse.success(HttpStatus.OK, response);
-  }
+        AttendingResponse response = attendanceService.findActiveCheckIn(member);
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
 
-  @PostMapping("/check-in")
-  public ResponseEntity<ApiResponse<AttendingResponse>> checkIn(@Valid @RequestBody AttendingRequest request,
-      @AuthenticationPrincipal User member) {
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<MemberAttendanceSummaryResponse>> getMyAttendanceSummary(
+            @AuthenticationPrincipal User member) {
 
-    AttendingResponse response = attendanceService.checkIn(request.getToken(), member);
+        MemberAttendanceSummaryResponse response = attendanceService.getMyAttendanceSummary(member);
 
-    String message = "Berhasil melakukan check-in!";
-    return ApiResponse.success(HttpStatus.CREATED, message, response);
-  }
+        return ApiResponse.success(HttpStatus.OK, response);
+    }
 
-  @PostMapping("/check-out")
-  public ResponseEntity<ApiResponse<AttendingResponse>> checkOut(@AuthenticationPrincipal User member) {
+    @PostMapping("/check-in")
+    public ResponseEntity<ApiResponse<AttendingResponse>> checkIn(@Valid @RequestBody AttendingRequest request,
+            @AuthenticationPrincipal User member) {
 
-    AttendingResponse response = attendanceService.checkOut(member.getId());
+        AttendingResponse response = attendanceService.checkIn(request.getToken(), member);
 
-    String message = "Berhasil melakukan check-out!";
-    return ApiResponse.success(HttpStatus.OK, message, response);
-  }
+        String message = "Check-in successfully!";
+        return ApiResponse.success(HttpStatus.CREATED, message, response);
+    }
 
-  @GetMapping("/summary")
-  public ResponseEntity<ApiResponse<MemberAttendanceSummaryResponse>> getMyAttendanceSummary(
-      @AuthenticationPrincipal User member) {
+    @PostMapping("/check-out")
+    public ResponseEntity<ApiResponse<AttendingResponse>> checkOut(@AuthenticationPrincipal User member) {
 
-    MemberAttendanceSummaryResponse response = attendanceService.getMyAttendanceSummary(member);
+        AttendingResponse response = attendanceService.checkOut(member.getId());
 
-    return ApiResponse.success(HttpStatus.OK, response);
-  }
+        String message = "Check-out successfully!";
+        return ApiResponse.success(HttpStatus.OK, message, response);
+    }
 }
